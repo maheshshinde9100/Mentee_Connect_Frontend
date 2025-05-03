@@ -16,6 +16,9 @@ import BatchForm from './pages/Batch/BatchForm';
 import Login from './pages/Auth/Login';
 import NotFound from './pages/NotFound';
 
+// Protected Routes Component
+import ProtectedRoute from './components/ProtectedRoutes';
+
 const App = () => {
     return (
         <Router>
@@ -26,26 +29,42 @@ const App = () => {
                     <main className="p-6">
                         <Routes>
                             {/* Auth Routes */}
-                            <Route path="/login" exact component={Login} />
+                            <Route path="/login" element={<Login />} />
 
                             {/* Admin Routes */}
-                            <Route path="/admin/dashboard" exact component={AdminDashboard} />
-                            <Route path="/admin/assign-mentor" exact component={AssignMentor} />
+                            <Route path="/admin/dashboard" element={<ProtectedRoute role="ADMIN" />}>
+                                <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                            </Route>
+                            <Route path="/admin/assign-mentor" element={<ProtectedRoute role="ADMIN" />}>
+                                <Route path="/admin/assign-mentor" element={<AssignMentor />} />
+                            </Route>
 
                             {/* Mentor Routes */}
-                            <Route path="/mentors" exact component={MentorList} />
-                            <Route path="/mentors/add" exact component={MentorForm} />
+                            <Route path="/mentors" element={<ProtectedRoute role="MENTOR" />}>
+                                <Route path="/mentors" element={<MentorList />} />
+                            </Route>
+                            <Route path="/mentors/add" element={<ProtectedRoute role="MENTOR" />}>
+                                <Route path="/mentors/add" element={<MentorForm />} />
+                            </Route>
 
                             {/* Student Routes */}
-                            <Route path="/students" exact component={StudentList} />
-                            <Route path="/students/add" exact component={StudentForm} />
+                            <Route path="/students" element={<ProtectedRoute role="STUDENT" />}>
+                                <Route path="/students" element={<StudentList />} />
+                            </Route>
+                            <Route path="/students/add" element={<ProtectedRoute role="STUDENT" />}>
+                                <Route path="/students/add" element={<StudentForm />} />
+                            </Route>
 
                             {/* Batch Routes */}
-                            <Route path="/batches" exact component={BatchList} />
-                            <Route path="/batches/add" exact component={BatchForm} />
+                            <Route path="/batches" element={<ProtectedRoute role="ADMIN" />}>
+                                <Route path="/batches" element={<BatchList />} />
+                            </Route>
+                            <Route path="/batches/add" element={<ProtectedRoute role="ADMIN" />}>
+                                <Route path="/batches/add" element={<BatchForm />} />
+                            </Route>
 
                             {/* 404 Not Found */}
-                            <Route component={NotFound} />
+                            <Route path="*" element={<NotFound />} />
                         </Routes>
                     </main>
                     <Footer />

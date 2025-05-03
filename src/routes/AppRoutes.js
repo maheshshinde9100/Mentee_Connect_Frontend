@@ -1,28 +1,49 @@
+// src/routes/AppRoutes.js
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import AdminDashboard from '../pages/Admin/AdminDashboard';
-import MentorList from '../pages/Mentor/MentorList';
-import MentorForm from '../pages/Mentor/MentorForm';
-import StudentList from '../pages/Student/StudentList';
-import StudentForm from '../pages/Student/StudentForm';
-import BatchList from '../pages/Batch/BatchList';
-import BatchForm from '../pages/Batch/BatchForm';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from '../pages/Auth/Login';
-import NotFound from '../pages/NotFound';
+import Register from '../pages/Auth/Register';
+import AdminDashboard from '../pages/Dashboard/AdminDashboard';
+import MentorDashboard from '../pages/Dashboard/MentorDashboard';
+import StudentDashboard from '../pages/Dashboard/StudentDashboard';
+
+const ProtectedRoute = ({ children, role }) => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user || user.role !== role) return <Navigate to="/login" replace />;
+    return children;
+};
 
 const AppRoutes = () => {
     return (
         <Routes>
-            <Route path="/" element={<AdminDashboard />} />
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
-            <Route path="/mentors" element={<MentorList />} />
-            <Route path="/mentor/new" element={<MentorForm />} />
-            <Route path="/students" element={<StudentList />} />
-            <Route path="/student/new" element={<StudentForm />} />
-            <Route path="/batches" element={<BatchList />} />
-            <Route path="/batch/new" element={<BatchForm />} />
+            <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="/register" element={<Register />} />
+
+            <Route
+                path="/admin"
+                element={
+                    <ProtectedRoute role="ADMIN">
+                        <AdminDashboard />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/mentor"
+                element={
+                    <ProtectedRoute role="MENTOR">
+                        <MentorDashboard />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/student"
+                element={
+                    <ProtectedRoute role="STUDENT">
+                        <StudentDashboard />
+                    </ProtectedRoute>
+                }
+            />
         </Routes>
     );
 };
