@@ -1,51 +1,25 @@
-// src/routes/AppRoutes.js
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+
+// Import the pages
+import AdminDashboard from '../pages/Admin/AdminDashboard';
+import MentorDashboard from '../pages/Mentor/MentorDashboard';
+import StudentDashboard from '../pages/Student/StudentDashboard';
 import Login from '../pages/Auth/Login';
 import Register from '../pages/Auth/Register';
-import AdminDashboard from '../pages/Dashboard/AdminDashboard';
-import MentorDashboard from '../pages/Dashboard/MentorDashboard';
-import StudentDashboard from '../pages/Dashboard/StudentDashboard';
-
-const ProtectedRoute = ({ children, role }) => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (!user || user.role !== role) return <Navigate to="/login" replace />;
-    return children;
-};
+import NotFound from '../pages/NotFound';
 
 const AppRoutes = () => {
-    return (
-        <Routes>
-            <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-
-            <Route
-                path="/admin"
-                element={
-                    <ProtectedRoute role="ADMIN">
-                        <AdminDashboard />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/mentor"
-                element={
-                    <ProtectedRoute role="MENTOR">
-                        <MentorDashboard />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/student"
-                element={
-                    <ProtectedRoute role="STUDENT">
-                        <StudentDashboard />
-                    </ProtectedRoute>
-                }
-            />
-        </Routes>
-    );
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
+      <Route path="/mentor/dashboard" element={<MentorDashboard />} />
+      <Route path="/student/dashboard" element={<StudentDashboard />} />
+      <Route path="*" element={<NotFound />} /> {/* Handle 404 */}
+    </Routes>
+  );
 };
 
 export default AppRoutes;

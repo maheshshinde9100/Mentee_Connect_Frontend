@@ -1,67 +1,79 @@
-// src/pages/Auth/Login.js
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 
 const Login = () => {
-    const [formData, setFormData] = useState({ email: '', password: '' });
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await axios.post('http://localhost:8080/api/login', formData);
-            const { role } = response.data;
-            localStorage.setItem('user', JSON.stringify(response.data));
+    try {
+      const res = await fetch('http://localhost:8080/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-            if (role === 'ADMIN') navigate('/admin');
-            else if (role === 'MENTOR') navigate('/mentor');
-            else if (role === 'STUDENT') navigate('/student');
-            else setError('Unknown role');
-        } catch (err) {
-            setError('Invalid credentials or server error');
-        }
-    };
+      const data = await res.json();
+      if (data.status) {
+        // Example: data = { role: 'ADMIN', name: 'John', token: '...', status: true }
+        login({ ...data });
+      } else {
+        setError(data.message || 'Login failed');
+      }
+    } catch (err) {
+      setError('Server error. Try again later.');
+    }
+  };
 
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-                <h2 className="text-2xl font-semibold mb-6 text-center">Login</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="Email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="w-full p-3 border rounded"
-                        required
-                    />
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        className="w-full p-3 border rounded"
-                        required
-                    />
-                    {error && <p className="text-red-500 text-sm">{error}</p>}
-                    <button
-                        type="submit"
-                        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-                    >
-                        Login
-                    </button>
-                </form>
-            </div>
-        </div>
-    );
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-blue-50">
+      <form
+        onSubmit={handleLogin}
+        className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
+      >
+        <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Login</h2>
+
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full p-2 mb-4 border rounded"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full p-2 mb-4 border rounded"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+
+        <button
+          type="submit"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded"
+        >
+          Login
+        </button>
+
+        <p className="text-sm mt-4 text-center">
+          Don't have an account?{' '}
+          <a href="/register" className="text-blue-600 hover:underline">
+            Register
+          </a>
+        </p>
+      </form>
+    </div>
+  );
 };
 
 export default Login;
