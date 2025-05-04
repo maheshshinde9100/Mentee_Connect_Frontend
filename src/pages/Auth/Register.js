@@ -17,14 +17,19 @@ const Register = () => {
     setMessage('');
 
     try {
-      const res = await fetch(
-        `http://localhost:8080/api/${role.toLowerCase()}/register`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
-        }
-      );
+      // Map role to the correct endpoint
+      const endpoint =
+        role === 'STUDENT'
+          ? '/api/students'
+          : role === 'MENTOR'
+          ? '/api/mentors'
+          : '/api/admin';
+
+      const res = await fetch(`http://localhost:8080${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
 
       const data = await res.json();
       setMessage(data.message || 'Registered successfully!');
@@ -34,14 +39,12 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-green-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <form
         onSubmit={handleRegister}
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
       >
-        <h2 className="text-2xl font-bold mb-4 text-center text-green-600">
-          Register
-        </h2>
+        <h2 className="text-2xl font-bold mb-6 text-center text-green-600">Register</h2>
 
         {message && <p className="text-center text-sm text-blue-500 mb-4">{message}</p>}
 
@@ -54,6 +57,7 @@ const Register = () => {
           >
             <option value="STUDENT">Student</option>
             <option value="MENTOR">Mentor</option>
+            <option value="ADMIN">Admin</option>
           </select>
         </div>
 
@@ -89,13 +93,6 @@ const Register = () => {
         >
           Register
         </button>
-
-        <p className="text-sm mt-4 text-center">
-          Already have an account?{' '}
-          <a href="/login" className="text-green-600 hover:underline">
-            Login
-          </a>
-        </p>
       </form>
     </div>
   );

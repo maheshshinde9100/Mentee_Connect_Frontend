@@ -1,15 +1,15 @@
-import React, { useState, useContext } from 'react';
-import { AuthContext } from '../../context/AuthContext';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
+    setMessage('');
 
     try {
       const res = await fetch('http://localhost:8080/api/login', {
@@ -20,25 +20,27 @@ const Login = () => {
 
       const data = await res.json();
       if (data.status) {
-        // Example: data = { role: 'ADMIN', name: 'John', token: '...', status: true }
-        login({ ...data });
+        // Save user role and email in localStorage
+        localStorage.setItem('user', JSON.stringify({ email, role: data.role }));
+        setMessage(data.message || 'Login successful!');
+        navigate('/dashboard'); // Redirect to dashboard
       } else {
-        setError(data.message || 'Login failed');
+        setMessage(data.message || 'Login failed.');
       }
     } catch (err) {
-      setError('Server error. Try again later.');
+      setMessage('Server error. Try again later.');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <form
         onSubmit={handleLogin}
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
       >
         <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Login</h2>
 
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+        {message && <p className="text-center text-sm text-red-500 mb-4">{message}</p>}
 
         <input
           type="email"
@@ -64,13 +66,6 @@ const Login = () => {
         >
           Login
         </button>
-
-        <p className="text-sm mt-4 text-center">
-          Don't have an account?{' '}
-          <a href="/register" className="text-blue-600 hover:underline">
-            Register
-          </a>
-        </p>
       </form>
     </div>
   );
