@@ -1,11 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Dashboard from './Dashboard';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
+import AdminDashboard from './pages/AdminDashboard';
+import MentorDashboard from './pages/MentorDashboard';
+import StudentDashboard from './pages/StudentDashboard';
 
 const App = () => {
-  const isAuthenticated = localStorage.getItem('user'); // Check if the user is logged in
+  const user = JSON.parse(localStorage.getItem('user')); // Parse user data from localStorage
+  const isAuthenticated = user && user.role; // Check if the user is logged in and has a role
 
   return (
     <Router>
@@ -20,10 +23,18 @@ const App = () => {
           {/* Route for Register */}
           <Route path="/register" element={<Register />} />
 
-          {/* Route for Dashboard */}
+          {/* Role-Based Dashboards */}
           <Route
-            path="/dashboard"
-            element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
+            path="/admin-dashboard"
+            element={isAuthenticated && user.role === 'ADMIN' ? <AdminDashboard /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/mentor-dashboard"
+            element={isAuthenticated && user.role === 'MENTOR' ? <MentorDashboard /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/student-dashboard"
+            element={isAuthenticated && user.role === 'STUDENT' ? <StudentDashboard /> : <Navigate to="/login" />}
           />
 
           {/* Fallback Route */}

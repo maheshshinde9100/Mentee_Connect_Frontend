@@ -23,7 +23,17 @@ const Login = () => {
         // Save user role and email in localStorage
         localStorage.setItem('user', JSON.stringify({ email, role: data.role }));
         setMessage(data.message || 'Login successful!');
-        navigate('/dashboard'); // Redirect to dashboard
+
+        // Redirect based on role
+        if (data.role === 'ADMIN') {
+          navigate('/admin-dashboard');
+        } else if (data.role === 'MENTOR') {
+          navigate('/mentor-dashboard');
+        } else if (data.role === 'STUDENT') {
+          navigate('/student-dashboard');
+        } else {
+          setMessage('Invalid role. Please contact support.');
+        }
       } else {
         setMessage(data.message || 'Login failed.');
       }
