@@ -1,39 +1,24 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import Home from '../pages/Home';
-import Login from '../pages/auth/Login';
-import AdminRoutes from './AdminRoutes';
-import MentorRoutes from './MentorRoutes';
-import StudentRoutes from './StudentRoutes';
+import { Routes, Route } from 'react-router-dom';
+import AdminLayout from '../layouts/AdminLayout';
+import AdminDashboard from '../pages/admin/Dashboard';
+import AssignMentor from '../pages/admin/AssignMentor';
+import Mentors from '../pages/admin/Mentors';
+import Students from '../pages/admin/Students';
+import Batches from '../pages/admin/Batches';
 
-const AppRoutes = () => {
-    const { user, loading } = useAuth();
-
-    if (loading) {
-        return <div className="flex justify-center items-center h-screen">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-        </div>;
-    }
-
-    // Safely get the role or default to empty string
-    const userRole = user?.role || '';
-    const lowerCaseRole = typeof userRole === 'string' ? userRole.toLowerCase() : '';
-
+const AdminRoutes = () => {
     return (
-        <Routes>
-            <Route path="/" element={<Home />} />
-            <Route
-                path="/login"
-                element={!user ? <Login /> : <Navigate to={`/${lowerCaseRole}`} replace />}
-            />
-
-            {userRole === 'ADMIN' && <Route path="/admin/*" element={<AdminRoutes />} />}
-            {userRole === 'MENTOR' && <Route path="/mentor/*" element={<MentorRoutes />} />}
-            {userRole === 'STUDENT' && <Route path="/student/*" element={<StudentRoutes />} />}
-
-            <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <AdminLayout>
+            <Routes>
+                <Route index element={<AdminDashboard />} />
+                <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="assign-mentor" element={<AssignMentor />} />
+                <Route path="mentors" element={<Mentors />} />
+                <Route path="students" element={<Students />} />
+                <Route path="batches" element={<Batches />} />
+            </Routes>
+        </AdminLayout>
     );
 };
 
-export default AppRoutes;
+export default AdminRoutes;
