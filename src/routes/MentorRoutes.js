@@ -8,7 +8,7 @@ const MentorRoutes = () => {
         <MentorLayout>
             <Routes>
                 <Route index element={<MentorDashboard />} />
-                <Route path="mentees" element={<Mentees />} />
+                <Route path="mentees" element={<Mentees />} /> {/* This matches '/mentor/mentees' */}
             </Routes>
         </MentorLayout>
     );

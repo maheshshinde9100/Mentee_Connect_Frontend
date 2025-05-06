@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { getStudents } from '../../api/admin';
-
 const Students = () => {
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);

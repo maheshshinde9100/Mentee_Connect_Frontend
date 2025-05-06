@@ -39,16 +39,53 @@ export const AuthProvider = ({ children }) => {
         initializeAuth();
     }, []);
 
+    // const login = async (email, password) => {
+    //     setAuthState(prev => ({ ...prev, loading: true }));
+    //     try {
+    //         const response = await apiLogin(email, password);
+    //
+    //         if (response?.success) {
+    //             const userData = {
+    //                 email: email,
+    //                 role: response.user.role,
+    //                 // Add other user fields if available
+    //             };
+    //
+    //             localStorage.setItem('user', JSON.stringify(userData));
+    //             setAuthState({
+    //                 user: userData,
+    //                 loading: false,
+    //                 error: null
+    //             });
+    //             return { success: true };
+    //         }
+    //         throw new Error('Login failed');
+    //     } catch (error) {
+    //         setAuthState(prev => ({ ...prev, loading: false, error: error.message }));
+    //         throw error;
+    //     }
+    // };
+
     const login = async (email, password) => {
         setAuthState(prev => ({ ...prev, loading: true }));
         try {
             const response = await apiLogin(email, password);
 
             if (response?.success) {
+                // Common user data
                 const userData = {
                     email: email,
                     role: response.user.role,
-                    // Add other user fields if available
+                    id: response.user.id, // Include the ID from response
+                    name: response.user.name, // Include name for both roles
+                    // For students
+                    ...(response.user.role === 'STUDENT' && {
+                        mentorName: response.user.mentorName
+                    }),
+                    // For mentors
+                    ...(response.user.role === 'MENTOR' && {
+                        expertise: response.user.expertise
+                    })
                 };
 
                 localStorage.setItem('user', JSON.stringify(userData));

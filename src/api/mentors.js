@@ -1,15 +1,9 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/mentors';
+const API_BASE = 'http://localhost:8080/api'; // Adjust if needed
 
-// Mentor API functions
 export const getMentors = async () => {
-    const response = await axios.get(API_URL);
-    return response.data;
-};
-
-export const getMentees = async () => {
-    const response = await axios.get(`${API_URL}/mentees`, {
+    const response = await axios.get(`${API_BASE}/mentors`, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
         }
@@ -17,26 +11,8 @@ export const getMentees = async () => {
     return response.data;
 };
 
-export const createMentor = async (mentorData) => {
-    const response = await axios.post(API_URL, mentorData, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-    });
-    return response.data;
-};
-
-export const updateMentor = async (id, mentorData) => {
-    const response = await axios.put(`${API_URL}/${id}`, mentorData, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-    });
-    return response.data;
-};
-
-export const deleteMentor = async (id) => {
-    const response = await axios.delete(`${API_URL}/${id}`, {
+export const getMyMentees = async () => {
+    const response = await axios.get(`${API_BASE}/mentors/my-mentees`, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
         }
