@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import { authService } from '../services/authService';
+import { studentService } from '../services/studentService';
+import { mentorService } from '../services/mentorService';
 
 const AuthContext = createContext(null);
 
@@ -13,51 +15,45 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    checkAuth();
+    // Check for stored auth token and user data
+    const token = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+
+    if (token && storedUser) {
+      setUser(JSON.parse(storedUser));
+      setIsAuthenticated(true);
+    }
+    setLoading(false);
   }, []);
 
-  const checkAuth = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (token) {
-        const response = await axios.get('/api/auth/me', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setUser(response.data);
-      }
-    } catch (error) {
-      console.error('Auth check failed:', error);
-      localStorage.removeItem('token');
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
+  const login = async (userData, token) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
+    setIsAuthenticated(true);
   };
 
-  const login = async (email, password) => {
-    try {
-      setError(null);
-      const response = await axios.post('/api/auth/login', { email, password });
-      const { token, user: userData } = response.data;
-      localStorage.setItem('token', token);
-      setUser(userData);
-      return userData;
-    } catch (error) {
-      setError(error.response?.data?.message || 'Login failed');
-      throw error;
-    }
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+    setIsAuthenticated(false);
+  };
+
+  const updateUser = (userData) => {
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
   };
 
   const register = async (userData) => {
     try {
       setError(null);
-      const response = await axios.post('/api/auth/register', userData);
-      const { token, user: newUser } = response.data;
-      localStorage.setItem('token', token);
+      const { user: newUser } = await authService.register(userData);
       setUser(newUser);
       return newUser;
     } catch (error) {
@@ -66,17 +62,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-  };
-
   const updateProfile = async (profileData) => {
     try {
       setError(null);
-      const response = await axios.put('/api/users/profile', profileData, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      let response;
+      
+      if (user.role === 'MENTOR') {
+        response = await mentorService.updateProfile(user.id, profileData);
+      } else if (user.role === 'MENTEE') {
+        response = await studentService.updateProfile(user.id, profileData);
+      }
+      
       setUser(response.data);
       return response.data;
     } catch (error) {
@@ -85,20 +81,24 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const value = {
-    user,
-    loading,
-    error,
-    isAuthenticated: !!user,
-    login,
-    register,
-    logout,
-    updateProfile
-  };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <AuthContext.Provider value={value}>
-      {!loading && children}
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated,
+        error,
+        login,
+        logout,
+        updateUser,
+        register,
+        updateProfile
+      }}
+    >
+      {children}
     </AuthContext.Provider>
   );
 };

@@ -1,40 +1,22 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-
-// Admin Pages
+import { AuthProvider } from './contexts/AuthContext';
+import Login from './pages/authentication/Login';
+import Register from './pages/authentication/Register';
 import AdminDashboard from './pages/admin/AdminDashboard';
-import BatchManagement from './pages/admin/BatchManagement';
+import BatchCreation from './pages/admin/BatchCreation';
 import MentorAllocation from './pages/admin/MentorAllocation';
-
-// Mentor Pages
 import MentorDashboard from './pages/mentor/MentorDashboard';
 import TaskManagement from './pages/mentor/TaskManagement';
 import MeetingScheduler from './pages/mentor/MeetingScheduler';
+import Analytics from './pages/admin/Analytics';
+import Users from './pages/admin/Users';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 // Student Pages
 import StudentDashboard from './pages/student/StudentDashboard';
 import MentorDetails from './pages/student/MentorDetails';
 import SkillsManagement from './pages/student/SkillsManagement';
-
-// Auth Pages
-import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
-
-// Protected Route Component
-const ProtectedRoute = ({ children, allowedRoles }) => {
-  const { user, isAuthenticated } = useAuth();
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
-
-  if (allowedRoles && !allowedRoles.includes(user?.role)) {
-    return <Navigate to={`/${user?.role?.toLowerCase()}/dashboard`} />;
-  }
-
-  return children;
-};
 
 function App() {
   return (
@@ -55,10 +37,10 @@ function App() {
             }
           />
           <Route
-            path="/admin/batches"
+            path="/admin/batches/create"
             element={
               <ProtectedRoute allowedRoles={['ADMIN']}>
-                <BatchManagement />
+                <BatchCreation />
               </ProtectedRoute>
             }
           />
@@ -67,6 +49,22 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['ADMIN']}>
                 <MentorAllocation />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/analytics"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <Analytics />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <Users />
               </ProtectedRoute>
             }
           />

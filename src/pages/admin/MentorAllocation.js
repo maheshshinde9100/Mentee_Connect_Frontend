@@ -2,149 +2,192 @@ import React, { useState, useEffect } from 'react';
 import { adminService } from '../../services/api';
 
 const MentorAllocation = () => {
-  const [mentors, setMentors] = useState([]);
   const [students, setStudents] = useState([]);
-  const [selectedMentor, setSelectedMentor] = useState(null);
+  const [mentors, setMentors] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
+  const [selectedMentor, setSelectedMentor] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    fetchUsers();
+    fetchData();
   }, []);
 
-  const fetchUsers = async () => {
+  const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await adminService.getAllUsers();
-      setMentors(response.data.filter(user => user.role === 'MENTOR'));
-      setStudents(response.data.filter(user => user.role === 'MENTEE'));
-    } catch (error) {
-      console.error('Error fetching users:', error);
+      const [studentsResponse, mentorsResponse] = await Promise.all([
+        adminService.getAdminStudents(),
+        adminService.getAdminMentors()
+      ]);
+      
+      // Handle students response (array of students)
+      const unassignedStudents = studentsResponse.data.filter(student => !student.mentorId);
+      setStudents(unassignedStudents);
+
+      // Handle mentors response (paginated response with content array)
+      const mentorsList = mentorsResponse.data.content || mentorsResponse.data;
+      setMentors(mentorsList);
+
+    } catch (err) {
+      setError('Failed to fetch data. Please try again.');
+      console.error('Fetch error:', err);
+      console.error('Error details:', err.response?.data);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAllocateMentor = async () => {
-    if (!selectedMentor || selectedStudents.length === 0) return;
+  const handleStudentSelect = (studentId) => {
+    setSelectedStudents(prev => {
+      if (prev.includes(studentId)) {
+        return prev.filter(id => id !== studentId);
+      } else {
+        return [...prev, studentId];
+      }
+    });
+  };
+
+  const handleMentorChange = (e) => {
+    setSelectedMentor(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedMentor || selectedStudents.length === 0) {
+      setError('Please select both mentor and students');
+      return;
+    }
 
     try {
       setLoading(true);
-      await adminService.allocateMentor(selectedMentor.id, selectedStudents);
+      setError('');
+      setSuccess('');
+
+      // Process each student assignment sequentially
+      for (const studentId of selectedStudents) {
+        await adminService.assignMentorToStudent({
+          studentId,
+          mentorId: selectedMentor
+        });
+      }
+
+      setSuccess('Mentor assigned successfully!');
       setSelectedStudents([]);
-      fetchUsers();
-    } catch (error) {
-      console.error('Error allocating mentor:', error);
+      setSelectedMentor('');
+      fetchData(); // Refresh the data
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to assign mentor. Please try again.');
+      console.error('Assignment error:', err);
     } finally {
       setLoading(false);
     }
   };
+
+  if (loading && !students.length) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
-        <div className="md:grid md:grid-cols-3 md:gap-6">
-          <div className="md:col-span-1">
-            <h3 className="text-lg font-medium leading-6 text-gray-900">Mentor Allocation</h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Allocate mentors to students for the mentoring program.
-            </p>
-          </div>
-          <div className="mt-5 md:mt-0 md:col-span-2">
-            <div className="grid grid-cols-1 gap-6">
-              {/* Mentor Selection */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Select Mentor</label>
-                <select
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                  value={selectedMentor?.id || ''}
-                  onChange={(e) => setSelectedMentor(mentors.find(m => m.id === e.target.value))}
-                >
-                  <option value="">Select a mentor</option>
-                  {mentors.map((mentor) => (
-                    <option key={mentor.id} value={mentor.id}>
-                      {mentor.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Student Selection */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Select Students</label>
-                <div className="mt-1 border border-gray-300 rounded-md max-h-60 overflow-y-auto">
-                  {students.map((student) => (
-                    <div key={student.id} className="relative flex items-start p-3">
-                      <div className="flex items-center h-5">
-                        <input
-                          type="checkbox"
-                          checked={selectedStudents.includes(student.id)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedStudents([...selectedStudents, student.id]);
-                            } else {
-                              setSelectedStudents(selectedStudents.filter(id => id !== student.id));
-                            }
-                          }}
-                          className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                        />
-                      </div>
-                      <div className="ml-3 text-sm">
-                        <label className="font-medium text-gray-700">{student.name}</label>
-                        <p className="text-gray-500">{student.email}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <button
-                  type="button"
-                  onClick={handleAllocateMentor}
-                  disabled={loading || !selectedMentor || selectedStudents.length === 0}
-                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400"
-                >
-                  {loading ? 'Allocating...' : 'Allocate Mentor'}
-                </button>
-              </div>
-            </div>
-          </div>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6">Mentor Allocation</h1>
+      
+      {error && (
+        <div className="bg-red-50 text-red-800 p-4 rounded-md mb-4">
+          {error}
         </div>
-      </div>
-
-      {/* Current Allocations */}
-      <div className="bg-white shadow overflow-hidden sm:rounded-md">
-        <div className="px-4 py-5 sm:px-6">
-          <h3 className="text-lg leading-6 font-medium text-gray-900">Current Allocations</h3>
+      )}
+      
+      {success && (
+        <div className="bg-green-50 text-green-800 p-4 rounded-md mb-4">
+          {success}
         </div>
-        <div className="border-t border-gray-200">
-          <ul className="divide-y divide-gray-200">
-            {mentors.map((mentor) => (
-              <li key={mentor.id} className="px-4 py-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="text-sm font-medium text-indigo-600">{mentor.name}</h4>
-                    <p className="text-sm text-gray-500">{mentor.email}</p>
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    {mentor.assignedStudents?.length || 0} students assigned
-                  </div>
-                </div>
-                {mentor.assignedStudents && mentor.assignedStudents.length > 0 && (
-                  <div className="mt-2">
-                    <ul className="text-sm text-gray-500 list-disc list-inside">
-                      {mentor.assignedStudents.map((student) => (
-                        <li key={student.id}>{student.name}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </li>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Select Mentor
+          </label>
+          <select
+            value={selectedMentor}
+            onChange={handleMentorChange}
+            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          >
+            <option value="">Choose a mentor</option>
+            {mentors.map(mentor => (
+              <option key={mentor.id} value={mentor.id}>
+                {`${mentor.firstName} ${mentor.lastName} (${mentor.email}) - ${mentor.department}`}
+              </option>
             ))}
-          </ul>
+          </select>
+          {selectedMentor && mentors.length > 0 && (
+            <div className="mt-2 text-sm text-gray-600">
+              {(() => {
+                const mentor = mentors.find(m => m.id === selectedMentor);
+                if (mentor) {
+                  return `Available slots: ${mentor.maxStudents - (mentor.assignedStudents?.length || 0)}`;
+                }
+                return '';
+              })()}
+            </div>
+          )}
         </div>
-      </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Select Students
+          </label>
+          <div className="border border-gray-300 rounded-md max-h-96 overflow-y-auto">
+            {students.length === 0 ? (
+              <p className="p-4 text-gray-500">No unassigned students available</p>
+            ) : (
+              students.map(student => (
+                <div
+                  key={student.id}
+                  className="flex items-center p-4 hover:bg-gray-50 border-b border-gray-200 last:border-b-0"
+                >
+                  <input
+                    type="checkbox"
+                    id={`student-${student.id}`}
+                    checked={selectedStudents.includes(student.id)}
+                    onChange={() => handleStudentSelect(student.id)}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  />
+                  <label
+                    htmlFor={`student-${student.id}`}
+                    className="ml-3 block text-sm font-medium text-gray-700"
+                  >
+                    {`${student.firstName} ${student.lastName} (${student.email}) - ${student.branch} - Roll: ${student.rollNumber}`}
+                  </label>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        <div>
+          <button
+            type="submit"
+            disabled={loading || !selectedMentor || selectedStudents.length === 0}
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+          >
+            {loading ? (
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                Assigning...
+              </div>
+            ) : (
+              'Assign Mentor'
+            )}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
