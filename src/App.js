@@ -9,6 +9,7 @@ import MentorDashboard from './pages/mentor/MentorDashboard';
 import TaskManagement from './pages/mentor/TaskManagement';
 import MeetingScheduler from './pages/mentor/MeetingScheduler';
 import Analytics from './pages/admin/Analytics';
+import UserManagement from './pages/admin/UserManagement';
 import Users from './pages/admin/Users';
 import AddMentor from './pages/admin/AddMentor';
 import AddStudent from './pages/admin/AddStudent';
@@ -50,6 +51,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['ADMIN']}>
                 <Analytics />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/user-management"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <UserManagement />
               </ProtectedRoute>
             }
           />

@@ -101,6 +101,13 @@ export const mentorService = {
 
 // Admin Services
 export const adminService = {
+  // User Management
+  getAllUsers: () => api.get('/api/admin/users'),
+  searchUsers: (name) => api.get(`/api/admin/users/search?name=${name}`),
+  deleteUser: (userId) => api.delete(`/api/admin/users/${userId}`),
+  updateUser: (userId, userData) => api.put(`/api/admin/users/${userId}`, userData),
+  getAnalytics: () => api.get('/api/admin/analytics'),
+
   // Student Management
   getAdminStudents: () => api.get('/api/admin/students'),
   createAdminStudent: (studentData) => api.post('/api/admin/students', studentData),
