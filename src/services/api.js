@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/',
+  baseURL: '',  // Empty baseURL to use relative paths
   headers: {
     'Content-Type': 'application/json'
   }
@@ -30,7 +30,7 @@ api.interceptors.response.use(
       const refreshToken = localStorage.getItem('refreshToken');
       if (refreshToken) {
         try {
-          const response = await api.post('/auth/refresh-token', { refreshToken });
+          const response = await api.post('/api/auth/refresh-token', { refreshToken });
           const { token } = response.data;
           localStorage.setItem('token', token);
           
@@ -58,9 +58,9 @@ api.interceptors.response.use(
 
 // Auth Services
 export const authService = {
-  login: (credentials) => api.post('/auth/login', credentials),
-  register: (userData) => api.post('/auth/register', userData),
-  refreshToken: (refreshToken) => api.post('/auth/refresh-token', { refreshToken }),
+  login: (credentials) => api.post('/api/auth/login', credentials),
+  register: (userData) => api.post('/api/auth/register', userData),
+  refreshToken: (refreshToken) => api.post('/api/auth/refresh-token', { refreshToken }),
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
