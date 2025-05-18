@@ -14,6 +14,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import DepartmentManagement from './pages/admin/DepartmentManagement';
 import Communication from './pages/admin/Communication';
 import NotFound from './pages/NotFound';
+import DashboardLayout from './components/layout/DashboardLayout';
 
 // Student Pages
 import StudentDashboard from './pages/student/StudentDashboard';
@@ -39,7 +40,9 @@ function App() {
             path="/admin/dashboard"
             element={
               <ProtectedRoute allowedRoles={['ADMIN']}>
-                <AdminDashboard />
+                <DashboardLayout>
+                  <AdminDashboard />
+                </DashboardLayout>
               </ProtectedRoute>
             }
           />
@@ -47,7 +50,9 @@ function App() {
             path="/admin/analytics"
             element={
               <ProtectedRoute allowedRoles={['ADMIN']}>
-                <Analytics />
+                <DashboardLayout>
+                  <Analytics />
+                </DashboardLayout>
               </ProtectedRoute>
             }
           />
@@ -55,7 +60,9 @@ function App() {
             path="/admin/user-management"
             element={
               <ProtectedRoute allowedRoles={['ADMIN']}>
-                <UserManagement />
+                <DashboardLayout>
+                  <UserManagement />
+                </DashboardLayout>
               </ProtectedRoute>
             }
           />
@@ -63,7 +70,9 @@ function App() {
             path="/admin/users"
             element={
               <ProtectedRoute allowedRoles={['ADMIN']}>
-                <Users />
+                <DashboardLayout>
+                  <Users />
+                </DashboardLayout>
               </ProtectedRoute>
             }
           />
@@ -71,7 +80,9 @@ function App() {
             path="/admin/department-management"
             element={
               <ProtectedRoute allowedRoles={['ADMIN']}>
-                <DepartmentManagement />
+                <DashboardLayout>
+                  <DepartmentManagement />
+                </DashboardLayout>
               </ProtectedRoute>
             }
           />
@@ -79,7 +90,9 @@ function App() {
             path="/admin/communication"
             element={
               <ProtectedRoute allowedRoles={['ADMIN']}>
-                <Communication />
+                <DashboardLayout>
+                  <Communication />
+                </DashboardLayout>
               </ProtectedRoute>
             }
           />
@@ -89,7 +102,9 @@ function App() {
             path="/mentor/dashboard"
             element={
               <ProtectedRoute allowedRoles={['MENTOR']}>
-                <MentorDashboard />
+                <DashboardLayout>
+                  <MentorDashboard />
+                </DashboardLayout>
               </ProtectedRoute>
             }
           />
@@ -97,7 +112,9 @@ function App() {
             path="/mentor/tasks"
             element={
               <ProtectedRoute allowedRoles={['MENTOR']}>
-                <TaskManagement />
+                <DashboardLayout>
+                  <TaskManagement />
+                </DashboardLayout>
               </ProtectedRoute>
             }
           />
@@ -105,7 +122,9 @@ function App() {
             path="/mentor/meetings"
             element={
               <ProtectedRoute allowedRoles={['MENTOR']}>
-                <MeetingScheduler />
+                <DashboardLayout>
+                  <MeetingScheduler />
+                </DashboardLayout>
               </ProtectedRoute>
             }
           />
@@ -114,24 +133,30 @@ function App() {
           <Route
             path="/student/dashboard"
             element={
-              <ProtectedRoute allowedRoles={['MENTEE']}>
-                <StudentDashboard />
+              <ProtectedRoute allowedRoles={['STUDENT', 'MENTEE']}>
+                <DashboardLayout>
+                  <StudentDashboard />
+                </DashboardLayout>
               </ProtectedRoute>
             }
           />
           <Route
             path="/student/mentor"
             element={
-              <ProtectedRoute allowedRoles={['MENTEE']}>
-                <MentorDetails />
+              <ProtectedRoute allowedRoles={['STUDENT', 'MENTEE']}>
+                <DashboardLayout>
+                  <MentorDetails />
+                </DashboardLayout>
               </ProtectedRoute>
             }
           />
           <Route
             path="/student/skills"
             element={
-              <ProtectedRoute allowedRoles={['MENTEE']}>
-                <SkillsManagement />
+              <ProtectedRoute allowedRoles={['STUDENT', 'MENTEE']}>
+                <DashboardLayout>
+                  <SkillsManagement />
+                </DashboardLayout>
               </ProtectedRoute>
             }
           />
