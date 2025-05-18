@@ -18,6 +18,7 @@ import {
   BellIcon,
   ClipboardDocumentListIcon,
   BuildingLibraryIcon,
+  EnvelopeIcon,
 } from '@heroicons/react/24/outline';
 
 function classNames(...classes) {
@@ -50,28 +51,10 @@ const DashboardLayout = ({ children }) => {
       description: 'Manage users and roles',
     },
     {
-      name: 'Mentor Management',
-      href: '/admin/mentor-management',
-      icon: UserGroupIcon,
-      description: 'Manage mentors and assignments',
-    },
-    {
-      name: 'Student Management',
-      href: '/admin/student-management',
-      icon: AcademicCapIcon,
-      description: 'Manage students and progress',
-    },
-    {
       name: 'Department Management',
       href: '/admin/department-management',
       icon: BuildingLibraryIcon,
       description: 'Manage departments and courses',
-    },
-    {
-      name: 'Session Management',
-      href: '/admin/session-management',
-      icon: CalendarIcon,
-      description: 'Monitor mentoring sessions',
     },
     {
       name: 'Communication',
@@ -84,18 +67,6 @@ const DashboardLayout = ({ children }) => {
       href: '/admin/reports',
       icon: DocumentTextIcon,
       description: 'Analytics and reporting',
-    },
-    {
-      name: 'Task Management',
-      href: '/admin/tasks',
-      icon: ClipboardDocumentListIcon,
-      description: 'Manage tasks and assignments',
-    },
-    {
-      name: 'Settings',
-      href: '/admin/settings',
-      icon: CogIcon,
-      description: 'System configuration',
     },
   ];
 
@@ -201,7 +172,26 @@ const DashboardLayout = ({ children }) => {
           })}
         </nav>
       </div>
-      <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
+      <div className="flex-shrink-0 flex flex-col border-t border-gray-200 p-4 space-y-4">
+        {/* Quick Links */}
+        <div className="space-y-1">
+          <Link
+            to="/about"
+            className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-indigo-600 hover:bg-indigo-50"
+          >
+            <UserCircleIcon className="mr-3 flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-indigo-600" />
+            About
+          </Link>
+          <Link
+            to="/contact"
+            className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-indigo-600 hover:bg-indigo-50"
+          >
+            <EnvelopeIcon className="mr-3 flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-indigo-600" />
+            Contact
+          </Link>
+        </div>
+
+        {/* Sign Out Button */}
         <button
           onClick={handleLogout}
           className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
@@ -292,7 +282,8 @@ const DashboardLayout = ({ children }) => {
             <span className="sr-only">Open sidebar</span>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
-          <div className="flex-1 px-4 flex justify-end">
+          <div className="flex-1 px-4 flex justify-between">
+            <div className="flex-1"></div>
             <div className="ml-4 flex items-center md:ml-6">
               {/* Notifications */}
               <button className="relative p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
