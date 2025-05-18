@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import DashboardLayout from '../../components/layout/DashboardLayout';
-import BatchManagement from './BatchManagement';
 import MentorAllocation from './MentorAllocation';
 import Analytics from './Analytics';
 import Users from './Users';
-import { Link } from 'react-router-dom';
 import AddMentor from './AddMentor';
 import AddStudent from './AddStudent';
 
@@ -28,12 +26,6 @@ const AdminDashboard = () => {
   ];
 
   const menuItems = [
-    {
-      title: 'Batch Management',
-      description: 'Create and manage student batches',
-      link: '/admin/batches/create',
-      icon: '📚'
-    },
     {
       title: 'Mentor Allocation',
       description: 'Assign mentors to students',
@@ -193,8 +185,6 @@ const AdminDashboard = () => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'batches':
-        return <BatchManagement />;
       case 'mentors':
         return <AddMentor onMentorAdded={() => {
           // Handle mentor added - maybe refresh a list or show a notification
@@ -220,86 +210,75 @@ const AdminDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           <h1 className="text-2xl font-semibold text-gray-900">Admin Dashboard</h1>
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-          {/* Navigation Tabs */}
-          <div className="border-b border-gray-200 mt-8">
-            <nav className="-mb-px flex space-x-8">
-              <button
-                onClick={() => setActiveTab('overview')}
-                className={`${
-                  activeTab === 'overview'
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-              >
-                Overview
-              </button>
-              <button
-                onClick={() => setActiveTab('mentors')}
-                className={`${
-                  activeTab === 'mentors'
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-              >
-                Add Mentor
-              </button>
-              <button
-                onClick={() => setActiveTab('students')}
-                className={`${
-                  activeTab === 'students'
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-              >
-                Add Student
-              </button>
-              <button
-                onClick={() => setActiveTab('allocation')}
-                className={`${
-                  activeTab === 'allocation'
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-              >
-                Mentor Allocation
-              </button>
-              <button
-                onClick={() => setActiveTab('batches')}
-                className={`${
-                  activeTab === 'batches'
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-              >
-                Batch Management
-              </button>
-              <button
-                onClick={() => setActiveTab('analytics')}
-                className={`${
-                  activeTab === 'analytics'
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-              >
-                Analytics
-              </button>
-              <button
-                onClick={() => setActiveTab('users')}
-                className={`${
-                  activeTab === 'users'
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-              >
-                Users
-              </button>
-            </nav>
-          </div>
-
-          {/* Content */}
-          <div className="py-6">{renderContent()}</div>
+        
+        {/* Navigation Tabs */}
+        <div className="border-b border-gray-200 mt-8">
+          <nav className="-mb-px flex space-x-8">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`${
+                activeTab === 'overview'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+            >
+              Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('mentors')}
+              className={`${
+                activeTab === 'mentors'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+            >
+              Add Mentor
+            </button>
+            <button
+              onClick={() => setActiveTab('students')}
+              className={`${
+                activeTab === 'students'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+            >
+              Add Student
+            </button>
+            <button
+              onClick={() => setActiveTab('allocation')}
+              className={`${
+                activeTab === 'allocation'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+            >
+              Mentor Allocation
+            </button>
+            <button
+              onClick={() => setActiveTab('analytics')}
+              className={`${
+                activeTab === 'analytics'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+            >
+              Analytics
+            </button>
+            <button
+              onClick={() => setActiveTab('users')}
+              className={`${
+                activeTab === 'users'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+            >
+              Users
+            </button>
+          </nav>
         </div>
+
+        {/* Content */}
+        <div className="py-6">{renderContent()}</div>
       </div>
     </DashboardLayout>
   );

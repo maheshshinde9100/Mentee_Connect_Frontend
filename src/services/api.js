@@ -99,15 +99,6 @@ export const mentorService = {
   checkMentorSlots: (id) => api.get(`/mentors/${id}/slots`)
 };
 
-// Batch Services
-export const batchService = {
-  getAllBatches: () => api.get('/batches'),
-  createBatch: (batchData) => api.post('/batches', batchData),
-  updateBatch: (id, batchData) => api.put(`/batches/${id}`, batchData),
-  assignMentor: (id, mentorData) => api.post(`/batches/${id}/assign-mentor`, mentorData),
-  assignStudents: (id, studentData) => api.post(`/batches/${id}/assign-students`, studentData)
-};
-
 // Admin Services
 export const adminService = {
   // Student Management
@@ -124,12 +115,10 @@ export const adminService = {
   
   // Mentor-Student Assignment
   assignMentorToStudent: (data) => api.post('/api/admin/assign-mentor', data),
-  
+
   // Batch Management
   getBatches: () => api.get('/api/admin/batches'),
   createBatch: (batchData) => api.post('/api/admin/batches', batchData),
-  updateBatch: (id, batchData) => api.put(`/api/admin/batches/${id}`, batchData),
-  getBatchStudents: (id) => api.get(`/api/admin/batches/${id}/students`),
   
   // Analytics
   getMentorEngagement: () => api.get('/api/admin/analytics/mentor-engagement'),

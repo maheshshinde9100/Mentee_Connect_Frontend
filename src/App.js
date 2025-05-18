@@ -4,7 +4,6 @@ import { AuthProvider } from './contexts/AuthContext';
 import Login from './pages/authentication/Login';
 import Register from './pages/authentication/Register';
 import AdminDashboard from './pages/admin/AdminDashboard';
-import BatchCreation from './pages/admin/BatchCreation';
 import MentorAllocation from './pages/admin/MentorAllocation';
 import MentorDashboard from './pages/mentor/MentorDashboard';
 import TaskManagement from './pages/mentor/TaskManagement';
@@ -35,14 +34,6 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['ADMIN']}>
                 <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/batches/create"
-            element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
-                <BatchCreation />
               </ProtectedRoute>
             }
           />
