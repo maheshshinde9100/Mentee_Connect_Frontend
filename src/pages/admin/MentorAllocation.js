@@ -17,23 +17,29 @@ const MentorAllocation = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
+      setError('');
+
       const [studentsResponse, mentorsResponse] = await Promise.all([
         adminService.getAdminStudents(),
         adminService.getAdminMentors()
       ]);
       
-      // Handle students response (array of students)
-      const unassignedStudents = studentsResponse.data.filter(student => !student.mentorId);
+      // Handle students response - check for paginated structure
+      const studentsData = studentsResponse?.data?.content || studentsResponse?.data || [];
+      const unassignedStudents = studentsData.filter(student => !student.mentorId);
       setStudents(unassignedStudents);
 
-      // Handle mentors response (paginated response with content array)
-      const mentorsList = mentorsResponse.data.content || mentorsResponse.data;
-      setMentors(mentorsList);
+      // Handle mentors response - check for paginated structure
+      const mentorsData = mentorsResponse?.data?.content || mentorsResponse?.data || [];
+      setMentors(mentorsData);
+
+      console.log('Fetched students:', studentsData);
+      console.log('Fetched mentors:', mentorsData);
 
     } catch (err) {
-      setError('Failed to fetch data. Please try again.');
       console.error('Fetch error:', err);
       console.error('Error details:', err.response?.data);
+      setError('Failed to fetch data. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -67,10 +73,13 @@ const MentorAllocation = () => {
 
       // Process each student assignment sequentially
       for (const studentId of selectedStudents) {
-        await adminService.assignMentorToStudent({
-          studentId,
+        const assignmentData = {
+          studentId: studentId,
           mentorId: selectedMentor
-        });
+        };
+        
+        console.log('Assigning mentor with data:', assignmentData);
+        await adminService.assignMentorToStudent(assignmentData);
       }
 
       setSuccess('Mentor assigned successfully!');
@@ -78,14 +87,15 @@ const MentorAllocation = () => {
       setSelectedMentor('');
       fetchData(); // Refresh the data
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to assign mentor. Please try again.');
       console.error('Assignment error:', err);
+      console.error('Error details:', err.response?.data);
+      setError(err.response?.data?.message || 'Failed to assign mentor. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading && !students.length) {
+  if (loading && (!students.length || !mentors.length)) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
@@ -120,23 +130,12 @@ const MentorAllocation = () => {
             className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           >
             <option value="">Choose a mentor</option>
-            {mentors.map(mentor => (
+            {Array.isArray(mentors) && mentors.map(mentor => (
               <option key={mentor.id} value={mentor.id}>
-                {`${mentor.firstName} ${mentor.lastName} (${mentor.email}) - ${mentor.department}`}
+                {`${mentor.firstName || ''} ${mentor.lastName || ''} (${mentor.email || 'No email'})`}
               </option>
             ))}
           </select>
-          {selectedMentor && mentors.length > 0 && (
-            <div className="mt-2 text-sm text-gray-600">
-              {(() => {
-                const mentor = mentors.find(m => m.id === selectedMentor);
-                if (mentor) {
-                  return `Available slots: ${mentor.maxStudents - (mentor.assignedStudents?.length || 0)}`;
-                }
-                return '';
-              })()}
-            </div>
-          )}
         </div>
 
         <div>
@@ -144,7 +143,7 @@ const MentorAllocation = () => {
             Select Students
           </label>
           <div className="border border-gray-300 rounded-md max-h-96 overflow-y-auto">
-            {students.length === 0 ? (
+            {!Array.isArray(students) || students.length === 0 ? (
               <p className="p-4 text-gray-500">No unassigned students available</p>
             ) : (
               students.map(student => (
@@ -163,7 +162,7 @@ const MentorAllocation = () => {
                     htmlFor={`student-${student.id}`}
                     className="ml-3 block text-sm font-medium text-gray-700"
                   >
-                    {`${student.firstName} ${student.lastName} (${student.email}) - ${student.branch} - Roll: ${student.rollNumber}`}
+                    {`${student.firstName || ''} ${student.lastName || ''} (${student.email || 'No email'})`}
                   </label>
                 </div>
               ))

@@ -6,6 +6,8 @@ import MentorAllocation from './MentorAllocation';
 import Analytics from './Analytics';
 import Users from './Users';
 import { Link } from 'react-router-dom';
+import AddMentor from './AddMentor';
+import AddStudent from './AddStudent';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
@@ -194,11 +196,19 @@ const AdminDashboard = () => {
       case 'batches':
         return <BatchManagement />;
       case 'mentors':
-        return <MentorAllocation />;
+        return <AddMentor onMentorAdded={() => {
+          // Handle mentor added - maybe refresh a list or show a notification
+        }} />;
       case 'analytics':
         return <Analytics />;
       case 'users':
         return <Users />;
+      case 'students':
+        return <AddStudent onStudentAdded={() => {
+          // Handle student added - maybe refresh a list or show a notification
+        }} />;
+      case 'allocation':
+        return <MentorAllocation />;
       default:
         return renderOverview();
     }
@@ -225,6 +235,36 @@ const AdminDashboard = () => {
                 Overview
               </button>
               <button
+                onClick={() => setActiveTab('mentors')}
+                className={`${
+                  activeTab === 'mentors'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              >
+                Add Mentor
+              </button>
+              <button
+                onClick={() => setActiveTab('students')}
+                className={`${
+                  activeTab === 'students'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              >
+                Add Student
+              </button>
+              <button
+                onClick={() => setActiveTab('allocation')}
+                className={`${
+                  activeTab === 'allocation'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              >
+                Mentor Allocation
+              </button>
+              <button
                 onClick={() => setActiveTab('batches')}
                 className={`${
                   activeTab === 'batches'
@@ -233,16 +273,6 @@ const AdminDashboard = () => {
                 } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               >
                 Batch Management
-              </button>
-              <button
-                onClick={() => setActiveTab('mentors')}
-                className={`${
-                  activeTab === 'mentors'
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-              >
-                Mentor Allocation
               </button>
               <button
                 onClick={() => setActiveTab('analytics')}

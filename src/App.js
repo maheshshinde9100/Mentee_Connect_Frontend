@@ -11,6 +11,8 @@ import TaskManagement from './pages/mentor/TaskManagement';
 import MeetingScheduler from './pages/mentor/MeetingScheduler';
 import Analytics from './pages/admin/Analytics';
 import Users from './pages/admin/Users';
+import AddMentor from './pages/admin/AddMentor';
+import AddStudent from './pages/admin/AddStudent';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
 // Student Pages
@@ -65,6 +67,22 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['ADMIN']}>
                 <Users />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/mentors/add"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <AddMentor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/students/add"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <AddStudent />
               </ProtectedRoute>
             }
           />

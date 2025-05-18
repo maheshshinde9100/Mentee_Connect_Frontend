@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080/api',
+  baseURL: '/',
   headers: {
     'Content-Type': 'application/json'
   }
@@ -111,24 +111,30 @@ export const batchService = {
 // Admin Services
 export const adminService = {
   // Student Management
-  getAdminStudents: () => api.get('/admin/students'),
-  createAdminStudent: (studentData) => api.post('/admin/students', studentData),
-  updateAdminStudent: (id, studentData) => api.put(`/admin/students/${id}`, studentData),
-  deleteAdminStudent: (id) => api.delete(`/admin/students/${id}`),
+  getAdminStudents: () => api.get('/api/admin/students'),
+  createAdminStudent: (studentData) => api.post('/api/admin/students', studentData),
+  updateAdminStudent: (id, studentData) => api.put(`/api/admin/students/${id}`, studentData),
+  deleteAdminStudent: (id) => api.delete(`/api/admin/students/${id}`),
   
   // Mentor Management
-  getAdminMentors: () => api.get('/admin/mentors'),
-  createAdminMentor: (mentorData) => api.post('/admin/mentors', mentorData),
+  getAdminMentors: () => api.get('/api/admin/mentors'),
+  createAdminMentor: (mentorData) => api.post('/api/admin/mentors', mentorData),
+  updateAdminMentor: (id, mentorData) => api.put(`/api/admin/mentors/${id}`, mentorData),
+  deleteAdminMentor: (id) => api.delete(`/api/admin/mentors/${id}`),
+  
+  // Mentor-Student Assignment
+  assignMentorToStudent: (data) => api.post('/api/admin/assign-mentor', data),
   
   // Batch Management
-  getBatchStudents: (id) => api.get(`/admin/batches/${id}/students`),
-  assignMentorToStudent: (data) => api.post('/admin/assign-mentor', data),
-  createAdminBatch: (batchData) => api.post('/admin/batches', batchData),
+  getBatches: () => api.get('/api/admin/batches'),
+  createBatch: (batchData) => api.post('/api/admin/batches', batchData),
+  updateBatch: (id, batchData) => api.put(`/api/admin/batches/${id}`, batchData),
+  getBatchStudents: (id) => api.get(`/api/admin/batches/${id}/students`),
   
   // Analytics
-  getMentorEngagement: () => api.get('/admin/analytics/mentor-engagement'),
-  getStudentProgress: () => api.get('/admin/analytics/student-progress'),
-  getMeetingMetrics: () => api.get('/admin/analytics/meeting-metrics')
+  getMentorEngagement: () => api.get('/api/admin/analytics/mentor-engagement'),
+  getStudentProgress: () => api.get('/api/admin/analytics/student-progress'),
+  getMeetingMetrics: () => api.get('/api/admin/analytics/meeting-metrics')
 };
 
 // Meeting Services
