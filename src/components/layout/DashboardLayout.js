@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import {
@@ -7,6 +7,17 @@ import {
   XMarkIcon,
   UserCircleIcon,
   ArrowRightOnRectangleIcon,
+  ChartBarIcon,
+  UsersIcon,
+  AcademicCapIcon,
+  UserGroupIcon,
+  CalendarIcon,
+  ChatBubbleLeftRightIcon,
+  CogIcon,
+  DocumentTextIcon,
+  BellIcon,
+  ClipboardDocumentListIcon,
+  BuildingLibraryIcon,
 } from '@heroicons/react/24/outline';
 
 function classNames(...classes) {
@@ -17,38 +28,190 @@ const DashboardLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [notifications] = useState(3); // Example notification count
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
-  const navigation = [
+  const adminNavigation = [
     {
       name: 'Dashboard',
-      href: `/${user?.role?.toLowerCase()}/dashboard`,
-      current: true,
+      href: '/admin/dashboard',
+      icon: ChartBarIcon,
+      description: 'Overview and analytics',
     },
-    // Add more navigation items based on role
-    ...(user?.role === 'ADMIN'
-      ? [
-          { name: 'Users', href: '/admin/users', current: false },
-          { name: 'Analytics', href: '/admin/analytics', current: false },
-        ]
-      : []),
-    ...(user?.role === 'MENTOR'
-      ? [
-          { name: 'My Mentees', href: '/mentor/mentees', current: false },
-          { name: 'Sessions', href: '/mentor/sessions', current: false },
-        ]
-      : []),
-    ...(user?.role === 'MENTEE'
-      ? [
-          { name: 'My Progress', href: '/student/progress', current: false },
-          { name: 'Find Mentors', href: '/student/mentors', current: false },
-        ]
-      : []),
+    {
+      name: 'User Management',
+      href: '/admin/user-management',
+      icon: UsersIcon,
+      description: 'Manage users and roles',
+    },
+    {
+      name: 'Mentor Management',
+      href: '/admin/mentor-management',
+      icon: UserGroupIcon,
+      description: 'Manage mentors and assignments',
+    },
+    {
+      name: 'Student Management',
+      href: '/admin/student-management',
+      icon: AcademicCapIcon,
+      description: 'Manage students and progress',
+    },
+    {
+      name: 'Department Management',
+      href: '/admin/department-management',
+      icon: BuildingLibraryIcon,
+      description: 'Manage departments and courses',
+    },
+    {
+      name: 'Session Management',
+      href: '/admin/session-management',
+      icon: CalendarIcon,
+      description: 'Monitor mentoring sessions',
+    },
+    {
+      name: 'Communication',
+      href: '/admin/communication',
+      icon: ChatBubbleLeftRightIcon,
+      description: 'Announcements and messages',
+    },
+    {
+      name: 'Reports',
+      href: '/admin/reports',
+      icon: DocumentTextIcon,
+      description: 'Analytics and reporting',
+    },
+    {
+      name: 'Task Management',
+      href: '/admin/tasks',
+      icon: ClipboardDocumentListIcon,
+      description: 'Manage tasks and assignments',
+    },
+    {
+      name: 'Settings',
+      href: '/admin/settings',
+      icon: CogIcon,
+      description: 'System configuration',
+    },
   ];
+
+  const mentorNavigation = [
+    {
+      name: 'Dashboard',
+      href: '/mentor/dashboard',
+      icon: ChartBarIcon,
+      description: 'Your overview',
+    },
+    {
+      name: 'My Mentees',
+      href: '/mentor/mentees',
+      icon: UsersIcon,
+      description: 'View and manage mentees',
+    },
+    {
+      name: 'Sessions',
+      href: '/mentor/sessions',
+      icon: CalendarIcon,
+      description: 'Manage mentoring sessions',
+    },
+  ];
+
+  const studentNavigation = [
+    {
+      name: 'Dashboard',
+      href: '/student/dashboard',
+      icon: ChartBarIcon,
+      description: 'Your overview',
+    },
+    {
+      name: 'My Progress',
+      href: '/student/progress',
+      icon: AcademicCapIcon,
+      description: 'Track your progress',
+    },
+    {
+      name: 'Find Mentors',
+      href: '/student/mentors',
+      icon: UserGroupIcon,
+      description: 'Browse available mentors',
+    },
+  ];
+
+  const navigation = user?.role === 'ADMIN' 
+    ? adminNavigation 
+    : user?.role === 'MENTOR'
+    ? mentorNavigation
+    : studentNavigation;
+
+  const renderSidebarContent = () => (
+    <>
+      <div className="flex items-center flex-shrink-0 px-4">
+        <img
+          className="h-12 w-auto"
+          src="/logo.png"
+          alt="Mentee Connect"
+        />
+      </div>
+      <div className="mt-8">
+        <div className="px-4">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            {user?.role?.toLowerCase()}
+          </p>
+          <div className="mt-2 flex items-center">
+            <div className="flex-shrink-0">
+              <UserCircleIcon className="h-8 w-8 text-gray-400" />
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-medium text-gray-900">{user?.firstName} {user?.lastName}</p>
+              <p className="text-xs text-gray-500">{user?.email}</p>
+            </div>
+          </div>
+        </div>
+        <nav className="mt-8 flex-1 px-2 space-y-1">
+          {navigation.map((item) => {
+            const isActive = location.pathname === item.href;
+            return (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={classNames(
+                  isActive
+                    ? 'bg-indigo-50 border-indigo-600 text-indigo-600'
+                    : 'border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                  'group flex items-center px-3 py-2 text-sm font-medium border-l-4 hover:bg-gray-50'
+                )}
+              >
+                <item.icon
+                  className={classNames(
+                    isActive ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500',
+                    'mr-3 flex-shrink-0 h-6 w-6'
+                  )}
+                  aria-hidden="true"
+                />
+                <div>
+                  <span>{item.name}</span>
+                  <p className="text-xs text-gray-500">{item.description}</p>
+                </div>
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+      <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+        >
+          <ArrowRightOnRectangleIcon className="mr-2 h-5 w-5" />
+          Sign Out
+        </button>
+      </div>
+    </>
+  );
 
   return (
     <div className="h-screen flex overflow-hidden bg-gray-100">
@@ -100,31 +263,7 @@ const DashboardLayout = ({ children }) => {
                   </button>
                 </div>
               </Transition.Child>
-              <div className="flex-shrink-0 flex items-center px-4">
-                <img
-                  className="h-8 w-auto"
-                  src="/logo.png"
-                  alt="Mentee Connect"
-                />
-              </div>
-              <div className="mt-5 flex-1 h-0 overflow-y-auto">
-                <nav className="px-2 space-y-1">
-                  {navigation.map((item) => (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      className={classNames(
-                        item.current
-                          ? 'bg-gray-100 text-gray-900'
-                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                        'group flex items-center px-2 py-2 text-base font-medium rounded-md'
-                      )}
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                </nav>
-              </div>
+              {renderSidebarContent()}
             </div>
           </Transition.Child>
           <div className="flex-shrink-0 w-14" aria-hidden="true">
@@ -135,33 +274,9 @@ const DashboardLayout = ({ children }) => {
 
       {/* Static sidebar for desktop */}
       <div className="hidden md:flex md:flex-shrink-0">
-        <div className="flex flex-col w-64">
+        <div className="flex flex-col w-80">
           <div className="flex flex-col flex-grow border-r border-gray-200 pt-5 pb-4 bg-white overflow-y-auto">
-            <div className="flex items-center flex-shrink-0 px-4">
-              <img
-                className="h-8 w-auto"
-                src="/logo.png"
-                alt="Mentee Connect"
-              />
-            </div>
-            <div className="mt-5 flex-grow flex flex-col">
-              <nav className="flex-1 px-2 space-y-1">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className={classNames(
-                      item.current
-                        ? 'bg-gray-100 text-gray-900'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                      'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
-                    )}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </nav>
-            </div>
+            {renderSidebarContent()}
           </div>
         </div>
       </div>
@@ -179,6 +294,15 @@ const DashboardLayout = ({ children }) => {
           </button>
           <div className="flex-1 px-4 flex justify-end">
             <div className="ml-4 flex items-center md:ml-6">
+              {/* Notifications */}
+              <button className="relative p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <span className="sr-only">View notifications</span>
+                <BellIcon className="h-6 w-6" aria-hidden="true" />
+                {notifications > 0 && (
+                  <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400 ring-2 ring-white" />
+                )}
+              </button>
+
               {/* Profile dropdown */}
               <Menu as="div" className="ml-3 relative">
                 <div>
@@ -199,15 +323,28 @@ const DashboardLayout = ({ children }) => {
                   <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <Menu.Item>
                       {({ active }) => (
-                        <button
-                          onClick={() => {}} // Add proper profile handling later
+                        <Link
+                          to="/profile"
                           className={classNames(
                             active ? 'bg-gray-100' : '',
-                            'block w-full text-left px-4 py-2 text-sm text-gray-700'
+                            'block px-4 py-2 text-sm text-gray-700'
                           )}
                         >
                           Your Profile
-                        </button>
+                        </Link>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <Link
+                          to="/settings"
+                          className={classNames(
+                            active ? 'bg-gray-100' : '',
+                            'block px-4 py-2 text-sm text-gray-700'
+                          )}
+                        >
+                          Settings
+                        </Link>
                       )}
                     </Menu.Item>
                     <Menu.Item>
