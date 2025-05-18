@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import DashboardLayout from '../../components/layout/DashboardLayout';
 import TaskManagement from './TaskManagement';
 import MeetingScheduler from './MeetingScheduler';
 
@@ -197,65 +196,44 @@ const MentorDashboard = () => {
     </div>
   );
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'tasks':
-        return <TaskManagement />;
-      case 'meetings':
-        return <MeetingScheduler />;
-      default:
-        return renderOverview();
-    }
-  };
-
   return (
-    <DashboardLayout>
-      <div className="py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+    <div className="py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-8">
           <h1 className="text-2xl font-semibold text-gray-900">Mentor Dashboard</h1>
+          <p className="mt-1 text-sm text-gray-600">
+            Welcome back, {user?.firstName}! Here's an overview of your mentoring activities.
+          </p>
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-          {/* Navigation Tabs */}
-          <div className="border-b border-gray-200 mt-8">
-            <nav className="-mb-px flex space-x-8">
-              <button
-                onClick={() => setActiveTab('overview')}
-                className={`${
-                  activeTab === 'overview'
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-              >
-                Overview
-              </button>
-              <button
-                onClick={() => setActiveTab('tasks')}
-                className={`${
-                  activeTab === 'tasks'
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-              >
-                Task Management
-              </button>
-              <button
-                onClick={() => setActiveTab('meetings')}
-                className={`${
-                  activeTab === 'meetings'
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-              >
-                Schedule Meetings
-              </button>
-            </nav>
-          </div>
 
-          {/* Content */}
-          <div className="py-6">{renderContent()}</div>
+        <div className="mb-6">
+          <nav className="flex space-x-4">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`px-3 py-2 text-sm font-medium rounded-md ${
+                activeTab === 'overview'
+                  ? 'bg-indigo-100 text-indigo-700'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('mentees')}
+              className={`px-3 py-2 text-sm font-medium rounded-md ${
+                activeTab === 'mentees'
+                  ? 'bg-indigo-100 text-indigo-700'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              My Mentees
+            </button>
+          </nav>
         </div>
+
+        {activeTab === 'overview' ? renderOverview() : renderMentees()}
       </div>
-    </DashboardLayout>
+    </div>
   );
 };
 

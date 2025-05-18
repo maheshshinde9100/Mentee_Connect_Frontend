@@ -15,6 +15,8 @@ import DepartmentManagement from './pages/admin/DepartmentManagement';
 import Communication from './pages/admin/Communication';
 import NotFound from './pages/NotFound';
 import DashboardLayout from './components/layout/DashboardLayout';
+import Profile from './pages/profile/Profile';
+import LandingPage from './pages/LandingPage';
 
 // Student Pages
 import StudentDashboard from './pages/student/StudentDashboard';
@@ -35,6 +37,18 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           
+          {/* Profile Route - Accessible to all authenticated users */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN', 'MENTOR', 'STUDENT', 'MENTEE']}>
+                <DashboardLayout>
+                  <Profile />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+
           {/* Admin Routes */}
           <Route
             path="/admin/dashboard"
@@ -161,8 +175,8 @@ function App() {
             }
           />
 
-          {/* Default Route */}
-          <Route path="/" element={<Navigate to="/login" />} />
+          {/* Default Route - Landing Page */}
+          <Route path="/" element={<LandingPage />} />
           
           {/* 404 Not Found Route - Must be last */}
           <Route path="*" element={<NotFound />} />
