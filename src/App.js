@@ -13,6 +13,9 @@ import Users from './pages/admin/Users';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import DepartmentManagement from './pages/admin/DepartmentManagement';
 import Communication from './pages/admin/Communication';
+import SendNotification from './pages/admin/SendNotification';
+import NotificationManagement from './pages/admin/NotificationManagement';
+import Notifications from './pages/user/Notifications';
 import NotFound from './pages/NotFound';
 import DashboardLayout from './components/layout/DashboardLayout';
 import Profile from './pages/profile/Profile';
@@ -44,6 +47,18 @@ function App() {
               <ProtectedRoute allowedRoles={['ADMIN', 'MENTOR', 'STUDENT', 'MENTEE']}>
                 <DashboardLayout>
                   <Profile />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Notifications Route - Accessible to all authenticated users */}
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN', 'MENTOR', 'STUDENT', 'MENTEE']}>
+                <DashboardLayout>
+                  <Notifications />
                 </DashboardLayout>
               </ProtectedRoute>
             }
@@ -106,6 +121,26 @@ function App() {
               <ProtectedRoute allowedRoles={['ADMIN']}>
                 <DashboardLayout>
                   <Communication />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/notifications"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <DashboardLayout>
+                  <SendNotification />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/notification-management"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <DashboardLayout>
+                  <NotificationManagement />
                 </DashboardLayout>
               </ProtectedRoute>
             }

@@ -15,11 +15,10 @@ import {
   ChatBubbleLeftRightIcon,
   CogIcon,
   DocumentTextIcon,
-  BellIcon,
-  ClipboardDocumentListIcon,
   BuildingLibraryIcon,
   EnvelopeIcon,
 } from '@heroicons/react/24/outline';
+import NotificationIcon from './NotificationIcon';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -30,7 +29,6 @@ const DashboardLayout = ({ children }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [notifications] = useState(3); // Example notification count
 
   const handleLogout = () => {
     logout();
@@ -286,13 +284,7 @@ const DashboardLayout = ({ children }) => {
             <div className="flex-1"></div>
             <div className="ml-4 flex items-center md:ml-6">
               {/* Notifications */}
-              <button className="relative p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <span className="sr-only">View notifications</span>
-                <BellIcon className="h-6 w-6" aria-hidden="true" />
-                {notifications > 0 && (
-                  <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400 ring-2 ring-white" />
-                )}
-              </button>
+              <NotificationIcon />
 
               {/* Profile dropdown */}
               <Menu as="div" className="ml-3 relative">
