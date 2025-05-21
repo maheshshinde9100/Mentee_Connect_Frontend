@@ -12,6 +12,7 @@ import UserManagement from './pages/admin/UserManagement';
 import Users from './pages/admin/Users';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import DepartmentManagement from './pages/admin/DepartmentManagement';
+import BatchManagement from './pages/admin/BatchManagement';
 import Communication from './pages/admin/Communication';
 import SendNotification from './pages/admin/SendNotification';
 import NotificationManagement from './pages/admin/NotificationManagement';
@@ -20,6 +21,7 @@ import NotFound from './pages/NotFound';
 import DashboardLayout from './components/layout/DashboardLayout';
 import Profile from './pages/profile/Profile';
 import LandingPage from './pages/LandingPage';
+import TestComponent from './components/TestComponent';
 
 // Student Pages
 import StudentDashboard from './pages/student/StudentDashboard';
@@ -111,6 +113,16 @@ function App() {
               <ProtectedRoute allowedRoles={['ADMIN']}>
                 <DashboardLayout>
                   <DepartmentManagement />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/batch-management"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <DashboardLayout>
+                  <BatchManagement />
                 </DashboardLayout>
               </ProtectedRoute>
             }

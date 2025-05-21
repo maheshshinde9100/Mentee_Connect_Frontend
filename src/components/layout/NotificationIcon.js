@@ -14,13 +14,12 @@ const NotificationIcon = () => {
                      location.pathname.includes('/mentor') || 
                      location.pathname.includes('/student');
   
+  // Remove automatic polling and only fetch initially
   useEffect(() => {
-    fetchUnreadCount();
+    // Initial fetch on mount - we could remove this too if you don't want any automatic fetching
+    // fetchUnreadCount();
     
-    // Set up polling for new notifications
-    const interval = setInterval(fetchUnreadCount, 30000); // Check every 30 seconds
-    
-    return () => clearInterval(interval);
+    // No more interval polling
   }, []);
   
   const fetchUnreadCount = async () => {
@@ -45,9 +44,8 @@ const NotificationIcon = () => {
   
   const toggleNotificationPanel = () => {
     setIsPanelOpen(!isPanelOpen);
-    if (!isPanelOpen) {
-      fetchUnreadCount(); // Refresh count when opening
-    }
+    // Always fetch when toggling
+    fetchUnreadCount();
   };
   
   const handleClosePanel = () => {

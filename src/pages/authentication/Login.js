@@ -10,6 +10,7 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [debug, setDebug] = useState('');
 
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -25,14 +26,27 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setDebug('');
 
     try {
+      console.log('Login attempt for:', formData.email);
       const response = await authService.login(formData);
+      console.log('Login response received:', {
+        hasToken: !!response.data.token,
+        tokenLength: response.data.token ? response.data.token.length : 0
+      });
+      
       const { token, email, roles, id } = response.data;
+      
+      // Validate token
+      if (!token) {
+        throw new Error('Server returned success but no token was provided');
+      }
       
       // Store refresh token if provided
       if (response.data.refreshToken) {
         localStorage.setItem('refreshToken', response.data.refreshToken);
+        console.log('Refresh token stored');
       }
 
       const userData = {
@@ -42,14 +56,46 @@ const Login = () => {
         roles
       };
       
+      console.log('Calling login with userData:', {
+        id: userData.id,
+        role: userData.role,
+        tokenStart: token.substring(0, 15) + '...'
+      });
+      
       await login(userData, token);
+      
+      // Verify token was stored correctly
+      const storedToken = localStorage.getItem('token');
+      if (!storedToken) {
+        setDebug('WARNING: Token was not stored in localStorage after login');
+        console.error('Token was not stored in localStorage');
+        // Try storing it again
+        localStorage.setItem('token', token);
+      } else {
+        console.log('Token successfully stored:', storedToken.substring(0, 15) + '...');
+      }
 
       // Redirect based on user role
       const redirectPath = `/${userData.role.toLowerCase()}/dashboard`;
+      console.log('Redirecting to:', redirectPath);
       navigate(redirectPath);
     } catch (err) {
       console.error('Login error:', err);
-      setError(err.response?.data?.message || 'Failed to login. Please try again.');
+      
+      if (err.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        setError(`Login failed: ${err.response.data?.message || err.response.statusText || 'Server error'}`);
+        console.error('Response data:', err.response.data);
+        console.error('Response status:', err.response.status);
+      } else if (err.request) {
+        // The request was made but no response was received
+        setError('No response from server. Please check your internet connection and try again.');
+        console.error('No response received');
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        setError(err.message || 'Failed to login. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -74,6 +120,12 @@ const Login = () => {
           {error && (
             <div className="bg-red-50 text-red-800 p-4 rounded-md mb-4">
               {error}
+            </div>
+          )}
+          
+          {debug && (
+            <div className="bg-yellow-50 text-yellow-800 p-4 rounded-md mb-4">
+              {debug}
             </div>
           )}
 

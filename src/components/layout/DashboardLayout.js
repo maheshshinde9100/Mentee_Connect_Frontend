@@ -55,6 +55,12 @@ const DashboardLayout = ({ children }) => {
       description: 'Manage departments and courses',
     },
     {
+      name: 'Batch Management',
+      href: '/admin/batch-management',
+      icon: AcademicCapIcon,
+      description: 'Manage batches and assignments',
+    },
+    {
       name: 'Communication',
       href: '/admin/communication',
       icon: ChatBubbleLeftRightIcon,
@@ -121,7 +127,7 @@ const DashboardLayout = ({ children }) => {
       <div className="flex items-center flex-shrink-0 px-4">
         <img
           className="h-12 w-auto"
-          src="/logo.png"
+          src="/logo192.png"
           alt="Mentee Connect"
         />
       </div>
