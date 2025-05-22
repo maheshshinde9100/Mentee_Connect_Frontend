@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import {
   AcademicCapIcon,
@@ -9,12 +9,62 @@ import {
   CalendarIcon,
   ClipboardDocumentListIcon,
   BookOpenIcon,
+  VideoCameraIcon,
 } from '@heroicons/react/24/outline';
+import meetingService from '../../services/meetingService';
+import VideoCall from '../../components/VideoCall';
 
 const StudentDashboard = () => {
   const { user, isAuthenticated } = useAuth();
+  const [activeMeetings, setActiveMeetings] = useState([]);
+  const [currentMeeting, setCurrentMeeting] = useState(null);
+  const [loading, setLoading] = useState(false);
   
   console.log('Auth State:', { user, isAuthenticated }); // Debugging line
+
+  useEffect(() => {
+    // Fetch active meetings when the component mounts
+    if (user && user.id) {
+      fetchActiveMeetings();
+    }
+    
+    // Poll for new meetings every 60 seconds
+    const intervalId = setInterval(() => {
+      if (user && user.id) {
+        fetchActiveMeetings();
+      }
+    }, 60000);
+    
+    return () => clearInterval(intervalId);
+  }, [user]);
+
+  const fetchActiveMeetings = async () => {
+    try {
+      setLoading(true);
+      // In a real app, you'd use the actual student ID
+      const studentId = user?.id || 'currentStudent';
+      const response = await meetingService.getStudentMeetings(studentId);
+      
+      // Only show active or upcoming meetings
+      const active = response.data.filter(
+        meeting => meeting.status === 'active' || meeting.status === 'scheduled'
+      );
+      
+      setActiveMeetings(active);
+    } catch (error) {
+      console.error('Error fetching active meetings:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleJoinMeeting = (meeting) => {
+    setCurrentMeeting(meeting);
+  };
+
+  const handleLeaveMeeting = () => {
+    setCurrentMeeting(null);
+  };
 
   // Example data - In a real app, this would come from your backend
   const studentInfo = {
@@ -103,6 +153,40 @@ const StudentDashboard = () => {
     },
   ];
 
+  // If student is in a meeting, show the video call interface
+  if (currentMeeting) {
+    return (
+      <div className="py-6 px-4 sm:px-6 md:px-8">
+        <div className="mb-6 flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-gray-900">
+            Meeting: {currentMeeting.title}
+          </h1>
+          <button
+            onClick={handleLeaveMeeting}
+            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md text-gray-800 transition"
+          >
+            Back to Dashboard
+          </button>
+        </div>
+        
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="mb-4">
+            <p className="text-sm text-gray-600">
+              Mentor: <span className="font-medium">{currentMeeting.mentorName}</span>
+            </p>
+            <p className="text-sm text-gray-600 mt-1">{currentMeeting.description}</p>
+          </div>
+          
+          <VideoCall
+            meetingId={currentMeeting.id}
+            meetingLink={currentMeeting.meetingLink}
+            isHost={false}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="py-6">
       {/* Student Info Header */}
@@ -125,6 +209,40 @@ const StudentDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Active Meetings Alert */}
+      {activeMeetings.length > 0 && (
+        <div className="px-4 sm:px-6 md:px-8 mb-6">
+          <div className="bg-indigo-50 border-l-4 border-indigo-500 rounded-lg shadow-md p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <VideoCameraIcon className="h-6 w-6 text-indigo-600" />
+              </div>
+              <div className="ml-3">
+                <h3 className="text-lg font-medium text-indigo-800">
+                  Active Meeting{activeMeetings.length > 1 ? 's' : ''} Available!
+                </h3>
+                <div className="mt-2 space-y-2">
+                  {activeMeetings.map(meeting => (
+                    <div key={meeting.id} className="flex justify-between items-center">
+                      <div>
+                        <p className="text-indigo-700 font-medium">{meeting.title}</p>
+                        <p className="text-sm text-indigo-600">Hosted by {meeting.mentorName}</p>
+                      </div>
+                      <button
+                        onClick={() => handleJoinMeeting(meeting)}
+                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-md text-white transition"
+                      >
+                        Join Meeting
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-4 sm:px-6 md:px-8 mb-6">

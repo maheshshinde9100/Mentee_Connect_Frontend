@@ -16,6 +16,7 @@ import BatchManagement from './pages/admin/BatchManagement';
 import Communication from './pages/admin/Communication';
 import SendNotification from './pages/admin/SendNotification';
 import NotificationManagement from './pages/admin/NotificationManagement';
+import MeetingHistory from './pages/admin/MeetingHistory';
 import Notifications from './pages/user/Notifications';
 import NotFound from './pages/NotFound';
 import DashboardLayout from './components/layout/DashboardLayout';
@@ -123,6 +124,16 @@ function App() {
               <ProtectedRoute allowedRoles={['ADMIN']}>
                 <DashboardLayout>
                   <BatchManagement />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/meeting-history"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <DashboardLayout>
+                  <MeetingHistory />
                 </DashboardLayout>
               </ProtectedRoute>
             }
