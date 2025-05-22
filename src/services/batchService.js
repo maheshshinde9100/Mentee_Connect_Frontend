@@ -3,6 +3,105 @@ import api from './api';
 // Flag to enable mock mode for testing
 let useMockData = false;
 
+// Helper function to process student response data
+const processStudentsResponse = (response) => {
+  let studentsArray = [];
+  
+  if (response.data) {
+    if (Array.isArray(response.data)) {
+      studentsArray = response.data;
+    } else if (response.data.students && Array.isArray(response.data.students)) {
+      studentsArray = response.data.students;
+    } else if (response.data.content && Array.isArray(response.data.content)) {
+      studentsArray = response.data.content;
+    } else if (typeof response.data === 'object') {
+      // If it has student-like properties, it might be a single student
+      if (response.data.firstName || response.data.email) {
+        studentsArray = [response.data];
+      } else {
+        // Try to find student arrays in the object
+        const potentialStudents = Object.values(response.data).find(val => Array.isArray(val));
+        if (potentialStudents) {
+          studentsArray = potentialStudents;
+        }
+      }
+    }
+  }
+  
+  // Ensure all students have id property (may be _id in MongoDB)
+  studentsArray = studentsArray.map(student => {
+    if (student._id && !student.id) {
+      return { ...student, id: student._id };
+    }
+    return student;
+  });
+  
+  return studentsArray;
+};
+
+// Helper function to process mentor response data
+const processMentorsResponse = (response) => {
+  let mentorsArray = [];
+  
+  if (response.data) {
+    // Case 1: Direct array
+    if (Array.isArray(response.data)) {
+      console.log('Response data is a direct array of mentors');
+      mentorsArray = response.data;
+    } 
+    // Case 2: Nested mentors array
+    else if (response.data.mentors && Array.isArray(response.data.mentors)) {
+      console.log('Found mentors array in response.data.mentors');
+      mentorsArray = response.data.mentors;
+    } 
+    // Case 3: Paginated response (Spring Data format)
+    else if (response.data.content && Array.isArray(response.data.content)) {
+      console.log('Found paginated mentors in content array');
+      mentorsArray = response.data.content;
+      
+      // Log pagination info
+      if (response.data.totalElements !== undefined) {
+        console.log('Pagination info:', {
+          totalElements: response.data.totalElements,
+          totalPages: response.data.totalPages,
+          currentPage: response.data.number,
+          pageSize: response.data.size
+        });
+      }
+    } 
+    // Case 4: Object with mentor properties (single mentor)
+    else if (typeof response.data === 'object') {
+      // If it has mentor-like properties, it might be a single mentor
+      if (response.data.firstName || response.data.email) {
+        console.log('Found single mentor object');
+        mentorsArray = [response.data];
+      } else {
+        // Try to find mentor arrays in the object
+        const arrayProperties = Object.entries(response.data)
+          .filter(([_, val]) => Array.isArray(val));
+        
+        if (arrayProperties.length > 0) {
+          const [key, value] = arrayProperties[0];
+          console.log(`Found array in response.data.${key}`);
+          mentorsArray = value;
+        } else {
+          console.warn('Could not find mentor array in response');
+        }
+      }
+    }
+  }
+  
+  // Ensure all mentors have id property (may be _id in MongoDB)
+  mentorsArray = mentorsArray.map(mentor => {
+    if (mentor._id && !mentor.id) {
+      return { ...mentor, id: mentor._id };
+    }
+    return mentor;
+  });
+  
+  return mentorsArray;
+};
+
 export const batchService = {
   // Get all batches
   getAllBatches: async () => {
@@ -249,42 +348,6 @@ export const batchService = {
     }
   },
   
-  // Helper function to process student response data
-  const processStudentsResponse = (response) => {
-    let studentsArray = [];
-    
-    if (response.data) {
-      if (Array.isArray(response.data)) {
-        studentsArray = response.data;
-      } else if (response.data.students && Array.isArray(response.data.students)) {
-        studentsArray = response.data.students;
-      } else if (response.data.content && Array.isArray(response.data.content)) {
-        studentsArray = response.data.content;
-      } else if (typeof response.data === 'object') {
-        // If it has student-like properties, it might be a single student
-        if (response.data.firstName || response.data.email) {
-          studentsArray = [response.data];
-        } else {
-          // Try to find student arrays in the object
-          const potentialStudents = Object.values(response.data).find(val => Array.isArray(val));
-          if (potentialStudents) {
-            studentsArray = potentialStudents;
-          }
-        }
-      }
-    }
-    
-    // Ensure all students have id property (may be _id in MongoDB)
-    studentsArray = studentsArray.map(student => {
-      if (student._id && !student.id) {
-        return { ...student, id: student._id };
-      }
-      return student;
-    });
-    
-    return studentsArray;
-  },
-  
   // Get mentors in a batch
   getBatchMentors: async (batchId) => {
     try {
@@ -366,83 +429,31 @@ export const batchService = {
     }
   },
   
-  // Helper function to process mentor response data
-  const processMentorsResponse = (response) => {
-    let mentorsArray = [];
-    
-    if (response.data) {
-      // Case 1: Direct array
-      if (Array.isArray(response.data)) {
-        console.log('Response data is a direct array of mentors');
-        mentorsArray = response.data;
-      } 
-      // Case 2: Nested mentors array
-      else if (response.data.mentors && Array.isArray(response.data.mentors)) {
-        console.log('Found mentors array in response.data.mentors');
-        mentorsArray = response.data.mentors;
-      } 
-      // Case 3: Paginated response (Spring Data format)
-      else if (response.data.content && Array.isArray(response.data.content)) {
-        console.log('Found paginated mentors in content array');
-        mentorsArray = response.data.content;
-        
-        // Log pagination info
-        if (response.data.totalElements !== undefined) {
-          console.log('Pagination info:', {
-            totalElements: response.data.totalElements,
-            totalPages: response.data.totalPages,
-            currentPage: response.data.number,
-            pageSize: response.data.size
-          });
-        }
-      } 
-      // Case 4: Object with mentor properties (single mentor)
-      else if (typeof response.data === 'object') {
-        // If it has mentor-like properties, it might be a single mentor
-        if (response.data.firstName || response.data.email) {
-          console.log('Found single mentor object');
-          mentorsArray = [response.data];
-        } else {
-          // Try to find mentor arrays in the object
-          const arrayProperties = Object.entries(response.data)
-            .filter(([_, val]) => Array.isArray(val));
-          
-          if (arrayProperties.length > 0) {
-            const [key, value] = arrayProperties[0];
-            console.log(`Found array in response.data.${key}`);
-            mentorsArray = value;
-          } else {
-            console.warn('Could not find mentor array in response');
-          }
-        }
-      }
-    }
-    
-    // Ensure all mentors have id property (may be _id in MongoDB)
-    mentorsArray = mentorsArray.map(mentor => {
-      if (mentor._id && !mentor.id) {
-        return { ...mentor, id: mentor._id };
-      }
-      return mentor;
-    });
-    
-    return mentorsArray;
-  },
-  
   // Assign students to a batch
   assignStudentsToBatch: async (batchId, studentIds) => {
     try {
       console.log(`Assigning students ${JSON.stringify(studentIds)} to batch ${batchId}`);
       
-      // Use exact format as provided in the example
-      const requestBody = {
-        batchId,
-        studentIds
-      };
+      // First get current batch data
+      const batchResponse = await api.get(`/api/admin/batches/${batchId}`);
+      const batchData = batchResponse.data;
       
-      console.log('Sending request with body:', requestBody);
+      // Add students to batch data
+      if (!batchData.studentsAssigned) {
+        batchData.studentsAssigned = [];
+      }
       
-      const response = await api.post(`/api/admin/batches/assign-students`, requestBody);
+      // Add new student IDs without duplicates
+      studentIds.forEach(studentId => {
+        if (!batchData.studentsAssigned.includes(studentId)) {
+          batchData.studentsAssigned.push(studentId);
+        }
+      });
+      
+      console.log('Updating batch with updated students:', batchData);
+      
+      // Use PUT to update the batch with new students list
+      const response = await api.put(`/api/admin/batches/${batchId}`, batchData);
       console.log('Students assigned successfully:', response.data);
       return response;
     } catch (error) {
@@ -459,15 +470,26 @@ export const batchService = {
     try {
       console.log(`Assigning mentors ${JSON.stringify(mentorIds)} to batch ${batchId}`);
       
-      // Use exact format as provided in the example
-      const requestBody = {
-        batchId,
-        mentorIds
-      };
+      // First get current batch data
+      const batchResponse = await api.get(`/api/admin/batches/${batchId}`);
+      const batchData = batchResponse.data;
       
-      console.log('Sending request with body:', requestBody);
+      // Add mentors to batch data
+      if (!batchData.mentorsAssigned) {
+        batchData.mentorsAssigned = [];
+      }
       
-      const response = await api.post(`/api/admin/batches/assign-mentor`, requestBody);
+      // Add new mentor IDs without duplicates
+      mentorIds.forEach(mentorId => {
+        if (!batchData.mentorsAssigned.includes(mentorId)) {
+          batchData.mentorsAssigned.push(mentorId);
+        }
+      });
+      
+      console.log('Updating batch with updated mentors:', batchData);
+      
+      // Use PUT to update the batch with new mentors list
+      const response = await api.put(`/api/admin/batches/${batchId}`, batchData);
       console.log('Mentors assigned successfully:', response.data);
       return response;
     } catch (error) {
@@ -512,14 +534,19 @@ export const batchService = {
     try {
       console.log(`Removing student ${studentId} from batch ${batchId}`);
       
-      const requestBody = {
-        batchId,
-        studentId
-      };
+      // First get current batch data
+      const batchResponse = await api.get(`/api/admin/batches/${batchId}`);
+      const batchData = batchResponse.data;
       
-      console.log('Sending request with body:', requestBody);
+      // Remove student from studentsAssigned array
+      if (batchData.studentsAssigned) {
+        batchData.studentsAssigned = batchData.studentsAssigned.filter(id => id !== studentId);
+      }
       
-      const response = await api.post(`/api/admin/batches/remove-student`, requestBody);
+      console.log('Updating batch with student removed:', batchData);
+      
+      // Use PUT to update the batch
+      const response = await api.put(`/api/admin/batches/${batchId}`, batchData);
       console.log('Student removed successfully:', response.data);
       return response;
     } catch (error) {
@@ -536,14 +563,19 @@ export const batchService = {
     try {
       console.log(`Removing mentor ${mentorId} from batch ${batchId}`);
       
-      const requestBody = {
-        batchId,
-        mentorId
-      };
+      // First get current batch data
+      const batchResponse = await api.get(`/api/admin/batches/${batchId}`);
+      const batchData = batchResponse.data;
       
-      console.log('Sending request with body:', requestBody);
+      // Remove mentor from mentorsAssigned array
+      if (batchData.mentorsAssigned) {
+        batchData.mentorsAssigned = batchData.mentorsAssigned.filter(id => id !== mentorId);
+      }
       
-      const response = await api.post(`/api/admin/batches/remove-mentor`, requestBody);
+      console.log('Updating batch with mentor removed:', batchData);
+      
+      // Use PUT to update the batch
+      const response = await api.put(`/api/admin/batches/${batchId}`, batchData);
       console.log('Mentor removed successfully:', response.data);
       return response;
     } catch (error) {

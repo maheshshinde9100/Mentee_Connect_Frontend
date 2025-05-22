@@ -220,6 +220,18 @@ const BatchManagement = () => {
       const batchResponse = await batchService.getBatchById(batchId);
       console.log('Batch data fetched:', batchResponse.data);
       
+      // Extract student IDs for filtering assigned students
+      if (batchResponse.data) {
+        let studentIds = [];
+        
+        if (batchResponse.data.studentsAssigned && Array.isArray(batchResponse.data.studentsAssigned)) {
+          studentIds = batchResponse.data.studentsAssigned;
+          console.log('Extracted student IDs from batch:', studentIds);
+          setCurrentBatchStudentIds(studentIds);
+        }
+      }
+      
+      // Fetch students
       const studentsResponse = await batchService.getBatchStudents(batchId);
       // Ensure students data is an array
       const studentsData = Array.isArray(studentsResponse.data) 
@@ -227,13 +239,6 @@ const BatchManagement = () => {
         : (studentsResponse.data?.students || []);
       
       console.log('Batch students fetched:', studentsData);
-      
-      // Extract student IDs for filtering assigned students
-      if (studentsData && Array.isArray(studentsData)) {
-        const studentIds = studentsData.map(student => student.id || student._id);
-        console.log('Extracted student IDs from batch:', studentIds);
-        setCurrentBatchStudentIds(studentIds);
-      }
       
       // Fetch mentors
       let mentorsData = [];
