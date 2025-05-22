@@ -227,50 +227,84 @@ const BatchManagement = () => {
         if (batchResponse.data.studentsAssigned && Array.isArray(batchResponse.data.studentsAssigned)) {
           studentIds = batchResponse.data.studentsAssigned;
           console.log('Extracted student IDs from batch:', studentIds);
-          setCurrentBatchStudentIds(studentIds);
         }
+        // Ensure we always set currentBatchStudentIds, even if it's an empty array
+        setCurrentBatchStudentIds(studentIds);
       }
       
-      // Fetch students
-      const studentsResponse = await batchService.getBatchStudents(batchId);
-      // Ensure students data is an array
-      const studentsData = Array.isArray(studentsResponse.data) 
-        ? studentsResponse.data 
-        : (studentsResponse.data?.students || []);
-      
-      console.log('Batch students fetched:', studentsData);
+      // Fetch detailed student information for the assigned student IDs
+      let studentsData = [];
+      try {
+        // If we have student IDs assigned to this batch, fetch their details
+        if (currentBatchStudentIds.length > 0) {
+          const studentsResponse = await adminService.getAllStudents();
+          
+          if (studentsResponse && studentsResponse.data) {
+            // Get all students
+            const allStudents = Array.isArray(studentsResponse.data) 
+              ? studentsResponse.data 
+              : (studentsResponse.data.content || []);
+            
+            // Filter to only include students assigned to this batch
+            studentsData = allStudents.filter(student => {
+              const studentId = student.id || student._id;
+              return studentId && currentBatchStudentIds.includes(studentId);
+            });
+            
+            console.log('Filtered students by ID:', studentsData);
+          }
+        } else {
+          console.log('No student IDs assigned to this batch');
+        }
+      } catch (studErr) {
+        console.error('Error fetching student details:', studErr);
+      }
       
       // Fetch mentors
       let mentorsData = [];
       try {
-        const mentorsResponse = await batchService.getBatchMentors(batchId);
-        // Ensure mentors data is an array
-        mentorsData = Array.isArray(mentorsResponse.data) 
-          ? mentorsResponse.data 
-          : (mentorsResponse.data?.mentors || []);
-        
-        console.log('Batch mentors fetched:', mentorsData);
-        
         // Extract mentor IDs for filtering assigned mentors
-        if (batchResponse.data) {
-          let mentorIds = [];
-          
-          if (batchResponse.data.mentorsAssigned && Array.isArray(batchResponse.data.mentorsAssigned)) {
-            mentorIds = batchResponse.data.mentorsAssigned;
-          } else if (batchResponse.data.mentorAssigned) {
-            if (Array.isArray(batchResponse.data.mentorAssigned)) {
-              mentorIds = batchResponse.data.mentorAssigned;
-            } else {
-              mentorIds = [batchResponse.data.mentorAssigned];
-            }
+        let mentorIds = [];
+        if (batchResponse.data.mentorsAssigned && Array.isArray(batchResponse.data.mentorsAssigned)) {
+          mentorIds = batchResponse.data.mentorsAssigned;
+        } else if (batchResponse.data.mentorAssigned) {
+          if (Array.isArray(batchResponse.data.mentorAssigned)) {
+            mentorIds = batchResponse.data.mentorAssigned;
+          } else if (batchResponse.data.mentorAssigned !== null) {
+            mentorIds = [batchResponse.data.mentorAssigned];
           }
+        }
+        
+        console.log('Extracted mentor IDs from batch:', mentorIds);
+        // Ensure we always set currentBatchMentorIds, even if it's an empty array
+        setCurrentBatchMentorIds(mentorIds);
+        
+        // If we have mentor IDs assigned to this batch, fetch their details
+        if (mentorIds.length > 0) {
+          const mentorsResponse = await adminService.getAllMentors();
           
-          console.log('Extracted mentor IDs from batch:', mentorIds);
-          setCurrentBatchMentorIds(mentorIds);
+          if (mentorsResponse && mentorsResponse.data) {
+            // Get all mentors
+            const allMentors = Array.isArray(mentorsResponse.data) 
+              ? mentorsResponse.data 
+              : (mentorsResponse.data.content || []);
+            
+            // Filter to only include mentors assigned to this batch
+            mentorsData = allMentors.filter(mentor => {
+              const mentorId = mentor.id || mentor._id;
+              return mentorId && mentorIds.includes(mentorId);
+            });
+            
+            console.log('Filtered mentors by ID:', mentorsData);
+          }
+        } else {
+          console.log('No mentor IDs assigned to this batch');
         }
       } catch (mentorErr) {
         console.error('Error fetching mentors for batch:', mentorErr);
         setError('Could not load mentors for this batch.');
+        // Make sure to set empty array for mentors on error
+        setCurrentBatchMentorIds([]);
       }
       
       setBatchDetails({
@@ -287,6 +321,9 @@ const BatchManagement = () => {
         students: [],
         mentors: []
       });
+      // Make sure to reset the ID arrays on error
+      setCurrentBatchStudentIds([]);
+      setCurrentBatchMentorIds([]);
     } finally {
       setLoading(prevState => ({ ...prevState, batchDetails: false }));
     }
@@ -386,7 +423,25 @@ const BatchManagement = () => {
       console.log('Assignment response:', response.data);
       
       setSuccess('Students assigned to batch successfully!');
+      
+      // Update the current batch student IDs
+      setCurrentBatchStudentIds(prev => {
+        const updatedIds = [...prev];
+        selectedStudents.forEach(id => {
+          if (!updatedIds.includes(id)) {
+            updatedIds.push(id);
+          }
+        });
+        return updatedIds;
+      });
+      
+      // Clear selection
       setSelectedStudents([]);
+      
+      // If we're showing batch details, refresh to show the newly assigned students
+      if (activeTab === 'batchDetails') {
+        fetchBatchDetails(selectedBatch);
+      }
     } catch (err) {
       console.error('Error assigning students:', err);
       setError('Failed to assign students to batch.');
@@ -410,6 +465,19 @@ const BatchManagement = () => {
       console.log('Assignment response:', response.data);
       
       setSuccess('Mentors assigned to batch successfully!');
+      
+      // Update the current batch mentor IDs
+      setCurrentBatchMentorIds(prev => {
+        const updatedIds = [...prev];
+        selectedMentors.forEach(id => {
+          if (!updatedIds.includes(id)) {
+            updatedIds.push(id);
+          }
+        });
+        return updatedIds;
+      });
+      
+      // Clear selection
       setSelectedMentors([]);
       
       // Refresh batch details to show updated mentors
@@ -438,8 +506,20 @@ const BatchManagement = () => {
       
       setSuccess('Student removed from batch successfully!');
       
-      // Refresh batch details to show updated students list
-      fetchBatchDetails(selectedBatch);
+      // Update currentBatchStudentIds to remove this student ID
+      setCurrentBatchStudentIds(prev => {
+        const updated = prev.filter(id => id !== studentId);
+        console.log('Updated currentBatchStudentIds:', updated);
+        return updated;
+      });
+      
+      // If we're in the assignStudents tab, refresh the student list to make the removed student available again
+      if (activeTab === 'assignStudents') {
+        fetchStudents();
+      } else {
+        // Refresh batch details to show updated students list
+        fetchBatchDetails(selectedBatch);
+      }
     } catch (err) {
       console.error('Error removing student:', err);
       setError('Failed to remove student from batch.');
@@ -464,8 +544,20 @@ const BatchManagement = () => {
       
       setSuccess('Mentor removed from batch successfully!');
       
-      // Refresh batch details to show updated mentors list
-      fetchBatchDetails(selectedBatch);
+      // Update currentBatchMentorIds to remove this mentor ID
+      setCurrentBatchMentorIds(prev => {
+        const updated = prev.filter(id => id !== mentorId);
+        console.log('Updated currentBatchMentorIds:', updated);
+        return updated;
+      });
+      
+      // If we're in the assignMentors tab, refresh the mentor list to make the removed mentor available again
+      if (activeTab === 'assignMentors') {
+        fetchMentors();
+      } else {
+        // Refresh batch details to show updated mentors list
+        fetchBatchDetails(selectedBatch);
+      }
     } catch (err) {
       console.error('Error removing mentor:', err);
       setError('Failed to remove mentor from batch.');
@@ -991,34 +1083,57 @@ const BatchManagement = () => {
                     <p className="mt-1 max-w-2xl text-sm text-gray-500">Students currently enrolled in this batch.</p>
                   </div>
                   <div className="border-t border-gray-200">
-                    {!Array.isArray(batchDetails.students) ? (
+                    {!batchDetails.batch || !Array.isArray(batchDetails.batch.studentsAssigned) ? (
                       <div className="p-4 text-center text-gray-500">Cannot display students (data format error)</div>
-                    ) : batchDetails.students.length === 0 ? (
+                    ) : batchDetails.batch.studentsAssigned.length === 0 ? (
                       <div className="p-4 text-center text-gray-500">No students assigned to this batch yet</div>
                     ) : (
                       <ul className="divide-y divide-gray-200">
-                        {batchDetails.students.map(student => (
-                          <li key={student.id || `student-${Math.random()}`} className="px-4 py-4 sm:px-6">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-sm font-medium text-indigo-600 truncate">{student.firstName || ''} {student.lastName || ''}</p>
-                                <p className="text-sm text-gray-500">{student.email || 'No email provided'}</p>
+                        {/* If we have detailed student info, display it */}
+                        {Array.isArray(batchDetails.students) && batchDetails.students.length > 0 ? (
+                          batchDetails.students.map(student => (
+                            <li key={student.id || student._id || `student-${Math.random()}`} className="px-4 py-4 sm:px-6">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <p className="text-sm font-medium text-indigo-600 truncate">{student.firstName || ''} {student.lastName || ''}</p>
+                                  <p className="text-sm text-gray-500">{student.email || 'No email provided'}</p>
+                                </div>
+                                <div className="flex-shrink-0 flex items-center space-x-2">
+                                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    Active
+                                  </span>
+                                  <button
+                                    onClick={() => handleRemoveStudent(student.id || student._id)}
+                                    className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                    disabled={loading.batchDetails}
+                                  >
+                                    {loading.batchDetails ? 'Removing...' : 'Remove'}
+                                  </button>
+                                </div>
                               </div>
-                              <div className="flex-shrink-0 flex items-center space-x-2">
-                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                  Active
-                                </span>
-                                <button
-                                  onClick={() => handleRemoveStudent(student.id || student._id)}
-                                  className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                                  disabled={loading.batchDetails}
-                                >
-                                  {loading.batchDetails ? 'Removing...' : 'Remove'}
-                                </button>
+                            </li>
+                          ))
+                        ) : (
+                          /* If we only have student IDs, display those */
+                          batchDetails.batch.studentsAssigned.map(studentId => (
+                            <li key={`student-id-${studentId}`} className="px-4 py-4 sm:px-6">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <p className="text-sm font-medium text-indigo-600 truncate">Student ID: {studentId}</p>
+                                </div>
+                                <div className="flex-shrink-0 flex items-center space-x-2">
+                                  <button
+                                    onClick={() => handleRemoveStudent(studentId)}
+                                    className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                    disabled={loading.batchDetails}
+                                  >
+                                    {loading.batchDetails ? 'Removing...' : 'Remove'}
+                                  </button>
+                                </div>
                               </div>
-                            </div>
-                          </li>
-                        ))}
+                            </li>
+                          ))
+                        )}
                       </ul>
                     )}
                   </div>
@@ -1031,46 +1146,69 @@ const BatchManagement = () => {
                     <p className="mt-1 max-w-2xl text-sm text-gray-500">Mentors assigned to this batch.</p>
                   </div>
                   <div className="border-t border-gray-200">
-                    {!Array.isArray(batchDetails.mentors) ? (
+                    {!batchDetails.batch || !Array.isArray(batchDetails.batch.mentorsAssigned) ? (
                       <div className="p-4 text-center text-gray-500">Cannot display mentors (data format error)</div>
-                    ) : batchDetails.mentors.length === 0 ? (
+                    ) : batchDetails.batch.mentorsAssigned.length === 0 ? (
                       <div className="p-4 text-center text-gray-500">No mentors assigned to this batch yet</div>
                     ) : (
                       <ul className="divide-y divide-gray-200">
-                        {batchDetails.mentors.map(mentor => (
-                          <li key={mentor.id || mentor._id || `mentor-${Math.random()}`} className="px-4 py-4 sm:px-6">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-sm font-medium text-indigo-600 truncate">{mentor.firstName || ''} {mentor.lastName || ''}</p>
-                                <p className="text-sm text-gray-500">{mentor.email || 'No email provided'}</p>
-                                {mentor.mentorId && (
-                                  <p className="text-xs text-gray-500">ID: {mentor.mentorId}</p>
-                                )}
-                                {mentor.department && (
-                                  <p className="text-xs text-gray-500">Department: {mentor.department}</p>
-                                )}
-                                {mentor.specialization && (
-                                  <p className="text-xs text-gray-500">Specialization: {mentor.specialization}</p>
-                                )}
-                                {mentor.designation && (
-                                  <p className="text-xs text-gray-500">Designation: {mentor.designation}</p>
-                                )}
+                        {/* If we have detailed mentor info, display it */}
+                        {Array.isArray(batchDetails.mentors) && batchDetails.mentors.length > 0 ? (
+                          batchDetails.mentors.map(mentor => (
+                            <li key={mentor.id || mentor._id || `mentor-${Math.random()}`} className="px-4 py-4 sm:px-6">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <p className="text-sm font-medium text-indigo-600 truncate">{mentor.firstName || ''} {mentor.lastName || ''}</p>
+                                  <p className="text-sm text-gray-500">{mentor.email || 'No email provided'}</p>
+                                  {mentor.mentorId && (
+                                    <p className="text-xs text-gray-500">ID: {mentor.mentorId}</p>
+                                  )}
+                                  {mentor.department && (
+                                    <p className="text-xs text-gray-500">Department: {mentor.department}</p>
+                                  )}
+                                  {mentor.specialization && (
+                                    <p className="text-xs text-gray-500">Specialization: {mentor.specialization}</p>
+                                  )}
+                                  {mentor.designation && (
+                                    <p className="text-xs text-gray-500">Designation: {mentor.designation}</p>
+                                  )}
+                                </div>
+                                <div className="flex-shrink-0 flex items-center space-x-2">
+                                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                                    Mentor
+                                  </span>
+                                  <button
+                                    onClick={() => handleRemoveMentor(mentor.id || mentor._id)}
+                                    className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                    disabled={loading.batchDetails}
+                                  >
+                                    {loading.batchDetails ? 'Removing...' : 'Remove'}
+                                  </button>
+                                </div>
                               </div>
-                              <div className="flex-shrink-0 flex items-center space-x-2">
-                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
-                                  Mentor
-                                </span>
-                                <button
-                                  onClick={() => handleRemoveMentor(mentor.id || mentor._id)}
-                                  className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                                  disabled={loading.batchDetails}
-                                >
-                                  {loading.batchDetails ? 'Removing...' : 'Remove'}
-                                </button>
+                            </li>
+                          ))
+                        ) : (
+                          /* If we only have mentor IDs, display those */
+                          batchDetails.batch.mentorsAssigned.map(mentorId => (
+                            <li key={`mentor-id-${mentorId}`} className="px-4 py-4 sm:px-6">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <p className="text-sm font-medium text-indigo-600 truncate">Mentor ID: {mentorId}</p>
+                                </div>
+                                <div className="flex-shrink-0 flex items-center space-x-2">
+                                  <button
+                                    onClick={() => handleRemoveMentor(mentorId)}
+                                    className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                    disabled={loading.batchDetails}
+                                  >
+                                    {loading.batchDetails ? 'Removing...' : 'Remove'}
+                                  </button>
+                                </div>
                               </div>
-                            </div>
-                          </li>
-                        ))}
+                            </li>
+                          ))
+                        )}
                       </ul>
                     )}
                   </div>

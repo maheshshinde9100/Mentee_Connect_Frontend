@@ -541,6 +541,9 @@ export const batchService = {
       // Remove student from studentsAssigned array
       if (batchData.studentsAssigned) {
         batchData.studentsAssigned = batchData.studentsAssigned.filter(id => id !== studentId);
+      } else {
+        // If studentsAssigned doesn't exist, create an empty array
+        batchData.studentsAssigned = [];
       }
       
       console.log('Updating batch with student removed:', batchData);
@@ -570,6 +573,9 @@ export const batchService = {
       // Remove mentor from mentorsAssigned array
       if (batchData.mentorsAssigned) {
         batchData.mentorsAssigned = batchData.mentorsAssigned.filter(id => id !== mentorId);
+      } else {
+        // If mentorsAssigned doesn't exist, create an empty array
+        batchData.mentorsAssigned = [];
       }
       
       console.log('Updating batch with mentor removed:', batchData);
