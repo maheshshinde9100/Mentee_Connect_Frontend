@@ -35,6 +35,7 @@ const BatchManagement = () => {
   });
   const { isAuthenticated, user } = useAuth();
   const [currentBatchMentorIds, setCurrentBatchMentorIds] = useState([]);
+  const [currentBatchStudentIds, setCurrentBatchStudentIds] = useState([]);
 
   useEffect(() => {
     // Try to fetch batches
@@ -227,6 +228,13 @@ const BatchManagement = () => {
       
       console.log('Batch students fetched:', studentsData);
       
+      // Extract student IDs for filtering assigned students
+      if (studentsData && Array.isArray(studentsData)) {
+        const studentIds = studentsData.map(student => student.id || student._id);
+        console.log('Extracted student IDs from batch:', studentIds);
+        setCurrentBatchStudentIds(studentIds);
+      }
+      
       // Fetch mentors
       let mentorsData = [];
       try {
@@ -326,8 +334,8 @@ const BatchManagement = () => {
 
   const handleBatchSelect = (batchId) => {
     setSelectedBatch(batchId);
-    // If we're in assign mentors tab, fetch batch details to know current assigned mentors
-    if (activeTab === 'assignMentors' && batchId) {
+    // If we're in assign mentors or assign students tab, fetch batch details to know current assigned mentors/students
+    if ((activeTab === 'assignMentors' || activeTab === 'assignStudents') && batchId) {
       fetchBatchDetails(batchId);
     }
   };
@@ -406,6 +414,58 @@ const BatchManagement = () => {
       setError('Failed to assign mentors to batch.');
     } finally {
       setLoading(prevState => ({ ...prevState, mentors: false }));
+    }
+  };
+
+  const handleRemoveStudent = async (studentId) => {
+    if (!selectedBatch) {
+      setError('Batch not selected');
+      return;
+    }
+
+    try {
+      setLoading(prevState => ({ ...prevState, batchDetails: true }));
+      console.log(`Removing student ${studentId} from batch ${selectedBatch}`);
+      
+      // Call the API to remove the student
+      const response = await batchService.removeStudentFromBatch(selectedBatch, studentId);
+      console.log('Removal response:', response.data);
+      
+      setSuccess('Student removed from batch successfully!');
+      
+      // Refresh batch details to show updated students list
+      fetchBatchDetails(selectedBatch);
+    } catch (err) {
+      console.error('Error removing student:', err);
+      setError('Failed to remove student from batch.');
+    } finally {
+      setLoading(prevState => ({ ...prevState, batchDetails: false }));
+    }
+  };
+
+  const handleRemoveMentor = async (mentorId) => {
+    if (!selectedBatch) {
+      setError('Batch not selected');
+      return;
+    }
+
+    try {
+      setLoading(prevState => ({ ...prevState, batchDetails: true }));
+      console.log(`Removing mentor ${mentorId} from batch ${selectedBatch}`);
+      
+      // Call the API to remove the mentor
+      const response = await batchService.removeMentorFromBatch(selectedBatch, mentorId);
+      console.log('Removal response:', response.data);
+      
+      setSuccess('Mentor removed from batch successfully!');
+      
+      // Refresh batch details to show updated mentors list
+      fetchBatchDetails(selectedBatch);
+    } catch (err) {
+      console.error('Error removing mentor:', err);
+      setError('Failed to remove mentor from batch.');
+    } finally {
+      setLoading(prevState => ({ ...prevState, batchDetails: false }));
     }
   };
 
@@ -686,6 +746,13 @@ const BatchManagement = () => {
         );
 
       case 'assignStudents':
+        // Filter out already assigned students
+        const availableStudents = Array.isArray(students) ? 
+          students.filter(student => 
+            !currentBatchStudentIds.includes(student.id) && 
+            !currentBatchStudentIds.includes(student._id)
+          ) : [];
+        
         return (
           <div className="mt-6">
             <h2 className="text-xl font-semibold mb-4">Assign Students to Batch</h2>
@@ -711,11 +778,13 @@ const BatchManagement = () => {
                 <div className="flex justify-center">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
                 </div>
-              ) : students.length === 0 ? (
-                <p className="text-gray-500 text-center">No students found</p>
+              ) : !Array.isArray(availableStudents) ? (
+                <p className="text-gray-500 text-center">Error loading students data. Please try again.</p>
+              ) : availableStudents.length === 0 ? (
+                <p className="text-gray-500 text-center">No available students found. All students may already be assigned to this batch.</p>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {students.map((student) => (
+                  {availableStudents.map((student) => (
                     <div 
                       key={student.id} 
                       className={`border rounded-lg p-4 cursor-pointer ${
@@ -930,10 +999,17 @@ const BatchManagement = () => {
                                 <p className="text-sm font-medium text-indigo-600 truncate">{student.firstName || ''} {student.lastName || ''}</p>
                                 <p className="text-sm text-gray-500">{student.email || 'No email provided'}</p>
                               </div>
-                              <div className="flex-shrink-0">
+                              <div className="flex-shrink-0 flex items-center space-x-2">
                                 <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                   Active
                                 </span>
+                                <button
+                                  onClick={() => handleRemoveStudent(student.id || student._id)}
+                                  className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                  disabled={loading.batchDetails}
+                                >
+                                  {loading.batchDetails ? 'Removing...' : 'Remove'}
+                                </button>
                               </div>
                             </div>
                           </li>
@@ -975,10 +1051,17 @@ const BatchManagement = () => {
                                   <p className="text-xs text-gray-500">Designation: {mentor.designation}</p>
                                 )}
                               </div>
-                              <div className="flex-shrink-0">
+                              <div className="flex-shrink-0 flex items-center space-x-2">
                                 <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
                                   Mentor
                                 </span>
+                                <button
+                                  onClick={() => handleRemoveMentor(mentor.id || mentor._id)}
+                                  className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                  disabled={loading.batchDetails}
+                                >
+                                  {loading.batchDetails ? 'Removing...' : 'Remove'}
+                                </button>
                               </div>
                             </div>
                           </li>

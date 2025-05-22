@@ -56,6 +56,14 @@ api.interceptors.response.use(
       status: error.response?.status,
       message: error.message
     });
+    
+    // Additional error debugging for batch operations
+    if (error.config?.url.includes('/api/admin/batches')) {
+      console.log('Batch operation error detected, detailed diagnostics:');
+      debugToken();
+      console.log('Request headers:', error.config.headers);
+      console.log('Request data:', error.config.data);
+    }
 
     // Only handle 401 errors for non-login endpoints
     if (error.response?.status === 401 && 
@@ -64,6 +72,30 @@ api.interceptors.response.use(
       
       console.log('Handling 401 Unauthorized error - will not redirect to login');
       debugToken(); // Debug token in case of 401
+      
+      // Check if token needs format fixing for batch operations specifically
+      if (error.config?.url.includes('/api/admin/batches')) {
+        const token = localStorage.getItem('token');
+        if (token) {
+          // Fix token format if needed - ensure format is correct without 'Bearer ' prefix in storage
+          if (token.startsWith('Bearer ')) {
+            const cleanToken = token.replace('Bearer ', '');
+            console.log('Correcting token storage format by removing Bearer prefix');
+            localStorage.setItem('token', cleanToken);
+          }
+          
+          // Retry with current token
+          console.log('Retrying batch operation with corrected token format');
+          const config = { ...error.config };
+          const retryToken = localStorage.getItem('token');
+          config.headers.Authorization = `Bearer ${retryToken}`;
+          try {
+            return await axios(config);
+          } catch (retryError) {
+            console.error('Retry failed:', retryError);
+          }
+        }
+      }
       
       // Try refreshing token but never redirect
       const refreshToken = localStorage.getItem('refreshToken');
