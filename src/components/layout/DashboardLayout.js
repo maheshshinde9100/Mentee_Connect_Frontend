@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Dialog, Menu, Transition } from '@headlessui/react';
@@ -19,6 +19,7 @@ import {
   EnvelopeIcon,
 } from '@heroicons/react/24/outline';
 import NotificationIcon from './NotificationIcon';
+import { notificationService } from '../../services/notificationService';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -29,11 +30,34 @@ const DashboardLayout = ({ children }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
+
+  // Fetch unread notifications count
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const response = await notificationService.getUnreadCount();
+        if (response && response.data) {
+          setUnreadCount(response.data.count || 0);
+        }
+      } catch (error) {
+        console.error('Failed to fetch unread count:', error);
+        setUnreadCount(0);
+      }
+    };
+
+    fetchUnreadCount();
+
+    // Refresh unread count every 30 seconds
+    const intervalId = setInterval(fetchUnreadCount, 30000);
+    
+    return () => clearInterval(intervalId);
+  }, []);
 
   const adminNavigation = [
     {
@@ -61,10 +85,17 @@ const DashboardLayout = ({ children }) => {
       description: 'Manage batches and assignments',
     },
     {
+      name: 'Mentor Allocation',
+      href: '/admin/mentor-allocation',
+      icon: UserGroupIcon,
+      description: 'Assign mentors to students',
+    },
+    {
       name: 'Communication',
       href: '/admin/communication',
       icon: ChatBubbleLeftRightIcon,
       description: 'Announcements and messages',
+      badge: unreadCount > 0 ? unreadCount : null,
     },
     {
       name: 'Reports',
@@ -167,10 +198,15 @@ const DashboardLayout = ({ children }) => {
                   )}
                   aria-hidden="true"
                 />
-                <div>
+                <div className="flex-1">
                   <span>{item.name}</span>
                   <p className="text-xs text-gray-500">{item.description}</p>
                 </div>
+                {item.badge && (
+                  <span className="bg-red-400 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center ml-2">
+                    {item.badge > 9 ? '9+' : item.badge}
+                  </span>
+                )}
               </Link>
             );
           })}

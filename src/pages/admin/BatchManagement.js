@@ -36,6 +36,7 @@ const BatchManagement = () => {
   const { isAuthenticated, user } = useAuth();
   const [currentBatchMentorIds, setCurrentBatchMentorIds] = useState([]);
   const [currentBatchStudentIds, setCurrentBatchStudentIds] = useState([]);
+  const [loadingMessage, setLoadingMessage] = useState(null);
 
   useEffect(() => {
     // Try to fetch batches
@@ -153,10 +154,19 @@ const BatchManagement = () => {
   const fetchMentors = async () => {
     try {
       setLoading(prevState => ({ ...prevState, mentors: true }));
-      console.log('Fetching mentors...');
+      console.log('Fetching mentors (this may take some time for ~1500 entries)...');
+      
+      // Set a message to show user that fetching large paginated data is in progress
+      setMentors([]);
+      setLoadingMessage('Loading mentors across multiple pages. This may take a moment...');
       
       const response = await adminService.getAllMentors();
-      console.log('Mentors API response in component:', response);
+      console.log('Mentors API response in component:', {
+        dataLength: response?.data?.length || 0,
+        hasPagination: !!response?.pagination,
+        totalPages: response?.pagination?.totalPages || 0,
+        totalElements: response?.pagination?.totalElements || 0
+      });
       
       // Process response to ensure we have an array
       let mentorsArray = [];
@@ -168,6 +178,11 @@ const BatchManagement = () => {
           // If we have pagination info, log it
           if (response.pagination) {
             console.log('Pagination info received:', response.pagination);
+            
+            // Update loading message with number of mentors loaded
+            if (response.pagination.totalElements) {
+              setLoadingMessage(`Successfully loaded ${mentorsArray.length} of ${response.pagination.totalElements} mentors`);
+            }
           }
         } else if (response.content && Array.isArray(response.content)) {
           console.log('Using content array directly from response');
@@ -185,6 +200,8 @@ const BatchManagement = () => {
         console.warn('2. You have proper authentication');
         console.warn('3. The backend API is returning mentors in the expected format');
         console.warn('4. Check the Network tab in DevTools to see the actual response');
+        setLoadingMessage(null);
+        setError('No mentors found. Please check authentication and API configuration.');
       }
       
       // Ensure all mentors have id property (MongoDB may use _id)
@@ -195,8 +212,9 @@ const BatchManagement = () => {
         return mentor;
       });
       
-      console.log('Processed mentors array:', mentorsArray);
+      console.log(`Processed ${mentorsArray.length} mentors successfully`);
       setMentors(mentorsArray);
+      setLoadingMessage(null);
       setError(null);
     } catch (err) {
       console.error('Error fetching mentors:', err);
@@ -205,6 +223,7 @@ const BatchManagement = () => {
         request: err.request,
         message: err.message
       });
+      setLoadingMessage(null);
       setError('Failed to load mentors from API. Check console for details.');
       setMentors([]);
     } finally {
@@ -963,50 +982,83 @@ const BatchManagement = () => {
             <div className="mt-4">
               <h3 className="text-lg font-medium mb-2">Select Mentors</h3>
               {loading.mentors ? (
-                <div className="flex justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+                <div className="flex flex-col items-center justify-center p-8">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mb-4"></div>
+                  {loadingMessage && (
+                    <p className="text-sm text-gray-600 text-center">{loadingMessage}</p>
+                  )}
+                  <p className="text-xs text-gray-500 mt-2">
+                    This may take some time as we're fetching approximately 1500 mentors
+                  </p>
                 </div>
               ) : !Array.isArray(availableMentors) ? (
                 <p className="text-gray-500 text-center">Error loading mentors data. Please try again.</p>
               ) : availableMentors.length === 0 ? (
-                <p className="text-gray-500 text-center">No available mentors found. All mentors may already be assigned to this batch.</p>
+                <div className="text-center">
+                  <p className="text-gray-500 mb-2">No available mentors found. All mentors may already be assigned to this batch.</p>
+                  <button 
+                    onClick={fetchMentors}
+                    className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
+                  >
+                    <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Refresh Mentors List
+                  </button>
+                </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {availableMentors.map((mentor) => (
-                    <div
-                      key={mentor.id || mentor._id || `mentor-${Math.random()}`}
-                      className={`border rounded-lg p-4 cursor-pointer ${
-                        selectedMentors.includes(mentor.id || mentor._id) ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200'
-                      }`}
-                      onClick={() => handleMentorSelect(mentor.id || mentor._id)}
+                <>
+                  <div className="mb-4 flex justify-between items-center">
+                    <p className="text-sm text-gray-600">
+                      Showing {availableMentors.length} available mentors
+                    </p>
+                    <button 
+                      onClick={fetchMentors}
+                      className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
                     >
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          checked={selectedMentors.includes(mentor.id || mentor._id)}
-                          onChange={() => {}}
-                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                        />
-                        <div className="ml-3">
-                          <p className="text-sm font-medium text-indigo-600 truncate">{mentor.firstName || ''} {mentor.lastName || ''}</p>
-                          <p className="text-sm text-gray-500">{mentor.email || 'No email provided'}</p>
-                          {mentor.mentorId && (
-                            <p className="text-xs text-gray-500">ID: {mentor.mentorId}</p>
-                          )}
-                          {mentor.department && (
-                            <p className="text-xs text-gray-500">Department: {mentor.department}</p>
-                          )}
-                          {mentor.specialization && (
-                            <p className="text-xs text-gray-500">Specialization: {mentor.specialization}</p>
-                          )}
-                          {mentor.designation && (
-                            <p className="text-xs text-gray-500">Designation: {mentor.designation}</p>
-                          )}
+                      <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                      Refresh
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {availableMentors.map((mentor) => (
+                      <div
+                        key={mentor.id || mentor._id || `mentor-${Math.random()}`}
+                        className={`border rounded-lg p-4 cursor-pointer ${
+                          selectedMentors.includes(mentor.id || mentor._id) ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200'
+                        }`}
+                        onClick={() => handleMentorSelect(mentor.id || mentor._id)}
+                      >
+                        <div className="flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={selectedMentors.includes(mentor.id || mentor._id)}
+                            onChange={() => {}}
+                            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                          />
+                          <div className="ml-3">
+                            <p className="text-sm font-medium text-indigo-600 truncate">{mentor.firstName || ''} {mentor.lastName || ''}</p>
+                            <p className="text-sm text-gray-500">{mentor.email || 'No email provided'}</p>
+                            {mentor.mentorId && (
+                              <p className="text-xs text-gray-500">ID: {mentor.mentorId}</p>
+                            )}
+                            {mentor.department && (
+                              <p className="text-xs text-gray-500">Department: {mentor.department}</p>
+                            )}
+                            {mentor.specialization && (
+                              <p className="text-xs text-gray-500">Specialization: {mentor.specialization}</p>
+                            )}
+                            {mentor.designation && (
+                              <p className="text-xs text-gray-500">Designation: {mentor.designation}</p>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
 

@@ -13,6 +13,7 @@ import Users from './pages/admin/Users';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import DepartmentManagement from './pages/admin/DepartmentManagement';
 import BatchManagement from './pages/admin/BatchManagement';
+import MentorAllocation from './pages/admin/MentorAllocation';
 import Communication from './pages/admin/Communication';
 import SendNotification from './pages/admin/SendNotification';
 import NotificationManagement from './pages/admin/NotificationManagement';
@@ -124,6 +125,16 @@ function App() {
               <ProtectedRoute allowedRoles={['ADMIN']}>
                 <DashboardLayout>
                   <BatchManagement />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/mentor-allocation"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <DashboardLayout>
+                  <MentorAllocation />
                 </DashboardLayout>
               </ProtectedRoute>
             }

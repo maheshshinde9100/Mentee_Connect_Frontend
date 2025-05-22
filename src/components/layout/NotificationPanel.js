@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { formatRelativeTime } from '../../utils/dateUtils';
 import { Link, useLocation } from 'react-router-dom';
 
-const NotificationPanel = ({ isOpen, onClose }) => {
+const NotificationPanel = ({ isOpen, onClose, embedded = false }) => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
@@ -30,13 +30,13 @@ const NotificationPanel = ({ isOpen, onClose }) => {
       }
     }
 
-    if (isOpen) {
+    if (isOpen && !embedded) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, embedded]);
 
   const fetchNotifications = async () => {
     try {
@@ -81,17 +81,15 @@ const NotificationPanel = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  return (
-    <div 
-      ref={panelRef}
-      className={`absolute ${isDashboard ? 'right-0 top-12' : 'right-0 mt-2'} w-80 bg-white rounded-md shadow-lg overflow-hidden z-20 max-h-96 overflow-y-auto`}
-    >
-      <div className="p-3 bg-indigo-600 text-white flex justify-between items-center">
+  // Content of the notification panel
+  const notificationContent = (
+    <>
+      <div className={`p-3 ${embedded ? 'bg-gray-100' : 'bg-indigo-600 text-white'} flex justify-between items-center`}>
         <h3 className="font-medium">Notifications</h3>
         {notifications.some(n => !n.read) && (
           <button 
             onClick={handleMarkAllAsRead}
-            className="text-xs bg-indigo-500 hover:bg-indigo-400 py-1 px-2 rounded"
+            className={`text-xs ${embedded ? 'bg-indigo-600 text-white' : 'bg-indigo-500 hover:bg-indigo-400'} py-1 px-2 rounded`}
           >
             Mark all as read
           </button>
@@ -104,7 +102,7 @@ const NotificationPanel = ({ isOpen, onClose }) => {
         ) : notifications.length === 0 ? (
           <div className="p-4 text-center text-gray-500">No notifications</div>
         ) : (
-          notifications.slice(0, 5).map(notification => (
+          notifications.slice(0, embedded ? 10 : 5).map(notification => (
             <div 
               key={notification.id} 
               className={`p-3 hover:bg-gray-50 ${!notification.read ? 'bg-blue-50' : ''}`}
@@ -131,25 +129,42 @@ const NotificationPanel = ({ isOpen, onClose }) => {
         )}
       </div>
       
-      <div className="p-3 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
-        <Link 
-          to="/notifications"
-          className="text-indigo-600 text-sm hover:text-indigo-800"
-          onClick={onClose}
-        >
-          View all notifications
-        </Link>
-        
-        {user?.role === 'ADMIN' && (
+      {!embedded && (
+        <div className="p-3 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
           <Link 
-            to="/admin/notifications"
-            className="px-3 py-1 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700"
+            to="/notifications"
+            className="text-indigo-600 text-sm hover:text-indigo-800"
             onClick={onClose}
           >
-            Send New
+            View all notifications
           </Link>
-        )}
-      </div>
+          
+          {user?.role === 'ADMIN' && (
+            <Link 
+              to="/admin/notifications"
+              className="px-3 py-1 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700"
+              onClick={onClose}
+            >
+              Send New
+            </Link>
+          )}
+        </div>
+      )}
+    </>
+  );
+
+  // If embedded, return content directly; otherwise wrap in the floating panel
+  if (embedded) {
+    return notificationContent;
+  }
+
+  // Floating panel for header notifications
+  return (
+    <div 
+      ref={panelRef}
+      className={`absolute ${isDashboard ? 'right-0 top-12' : 'right-0 mt-2'} w-80 bg-white rounded-md shadow-lg overflow-hidden z-20 max-h-96 overflow-y-auto`}
+    >
+      {notificationContent}
     </div>
   );
 };

@@ -11,59 +11,108 @@ export const adminService = {
   createMentor: (mentorData) => api.post('/api/admin/mentors', mentorData),
   getAllMentors: async () => {
     try {
-      // Request a large page size to get all mentors at once
-      const response = await api.get('/api/admin/mentors?size=100');
-      console.log('Raw mentors API response:', response);
+      console.log('Fetching all mentors with pagination...');
       
-      // Log the exact structure to debug
-      console.log('Response structure:', {
-        hasData: !!response.data,
-        isDataArray: Array.isArray(response.data),
-        dataType: typeof response.data,
-        dataKeys: response.data && typeof response.data === 'object' ? Object.keys(response.data) : []
-      });
+      // Initial request to get first page and pagination info
+      const initialResponse = await api.get('/api/admin/mentors?size=100&page=0');
+      console.log('Initial mentors API response:', initialResponse);
       
-      // Process different response formats:
-      
-      // Case 1: Direct array in response.data
-      if (Array.isArray(response.data)) {
-        console.log('Response data is directly an array, using it');
-        return { data: response.data };
-      }
-      
-      // Case 2: Array in response.data.data (Axios often wraps responses)
-      if (response.data && Array.isArray(response.data.data)) {
-        console.log('Found array in response.data.data');
-        return { data: response.data.data };
-      }
-      
-      // Case 3: If raw response contains the array (unusual but possible)
-      if (Array.isArray(response)) {
-        console.log('Raw response is an array, using it directly');
-        return { data: response };
-      }
-      
-      // Case 4: Paginated response
-      if (response.data && response.data.content && Array.isArray(response.data.content)) {
-        console.log('Found paginated mentors in content array');
+      // Check if response is paginated
+      if (initialResponse.data && 
+          initialResponse.data.content && 
+          Array.isArray(initialResponse.data.content)) {
+        
+        const totalPages = initialResponse.data.totalPages || 1;
+        const totalElements = initialResponse.data.totalElements || 0;
+        
+        console.log(`Detected paginated response with ${totalElements} total mentors across ${totalPages} pages`);
+        
+        // If we have only 1 page, return the content directly
+        if (totalPages <= 1) {
+          console.log('Single page of mentors, returning directly');
+          return { 
+            data: initialResponse.data.content,
+            pagination: {
+              totalElements: initialResponse.data.totalElements,
+              totalPages: initialResponse.data.totalPages,
+              currentPage: initialResponse.data.number,
+              pageSize: initialResponse.data.size
+            }
+          };
+        }
+        
+        // If we have multiple pages, fetch all pages
+        console.log(`Fetching all ${totalPages} pages of mentors...`);
+        
+        // Start with the first page we already have
+        let allMentors = [...initialResponse.data.content];
+        
+        // Create array of promises for remaining pages
+        const pagePromises = [];
+        for (let page = 1; page < totalPages; page++) {
+          pagePromises.push(api.get(`/api/admin/mentors?size=100&page=${page}`));
+        }
+        
+        // Fetch all pages in parallel
+        const pageResponses = await Promise.all(pagePromises);
+        
+        // Extract mentors from each page response and add to allMentors
+        pageResponses.forEach(response => {
+          if (response.data && 
+              response.data.content && 
+              Array.isArray(response.data.content)) {
+            allMentors = [...allMentors, ...response.data.content];
+          }
+        });
+        
+        console.log(`Successfully fetched all ${allMentors.length} mentors across ${totalPages} pages`);
+        
         return { 
-          data: response.data.content,
+          data: allMentors,
           pagination: {
-            totalElements: response.data.totalElements,
-            totalPages: response.data.totalPages,
-            currentPage: response.data.number,
-            pageSize: response.data.size
+            totalElements: initialResponse.data.totalElements,
+            totalPages: initialResponse.data.totalPages,
+            currentPage: 'all',
+            pageSize: allMentors.length
           }
         };
       }
       
+      // Handle non-paginated responses (fallback to previous implementation)
+      
+      // Log the exact structure to debug
+      console.log('Response structure:', {
+        hasData: !!initialResponse.data,
+        isDataArray: Array.isArray(initialResponse.data),
+        dataType: typeof initialResponse.data,
+        dataKeys: initialResponse.data && typeof initialResponse.data === 'object' ? Object.keys(initialResponse.data) : []
+      });
+      
+      // Case 1: Direct array in response.data
+      if (Array.isArray(initialResponse.data)) {
+        console.log('Response data is directly an array, using it');
+        return { data: initialResponse.data };
+      }
+      
+      // Case 2: Array in response.data.data (Axios often wraps responses)
+      if (initialResponse.data && Array.isArray(initialResponse.data.data)) {
+        console.log('Found array in response.data.data');
+        return { data: initialResponse.data.data };
+      }
+      
+      // Case 3: If raw response contains the array (unusual but possible)
+      if (Array.isArray(initialResponse)) {
+        console.log('Raw response is an array, using it directly');
+        return { data: initialResponse };
+      }
+      
       // If we got here but still have a valid response, try to extract the first array property
-      if (response.data && typeof response.data === 'object') {
-        const keys = Object.keys(response.data);
+      if (initialResponse.data && typeof initialResponse.data === 'object') {
+        const keys = Object.keys(initialResponse.data);
         for (const key of keys) {
-          if (Array.isArray(response.data[key])) {
+          if (Array.isArray(initialResponse.data[key])) {
             console.log(`Found array in response.data.${key}`);
-            return { data: response.data[key] };
+            return { data: initialResponse.data[key] };
           }
         }
       }
@@ -78,6 +127,10 @@ export const adminService = {
   },
   assignMentorToStudent: (studentId, mentorId) => 
     api.post('/api/admin/assign-mentor', { studentId, mentorId }),
+
+  // Bulk assign multiple students to a mentor in a single request
+  assignMentorToStudents: (assignmentData) =>
+    api.post('/api/admin/assign-mentor', assignmentData),
 
   // Batch Management
   createBatch: (batchData) => api.post('/api/admin/batches', batchData),
