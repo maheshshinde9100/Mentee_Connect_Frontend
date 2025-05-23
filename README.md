@@ -1,70 +1,343 @@
-# Getting Started with Create React App
+# 🚀 MenteeConnect
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<div align="center">
+  <img src="https://img.shields.io/badge/Spring_Boot-3.0+-6DB33F?style=for-the-badge&logo=spring&logoColor=white" alt="Spring Boot" />
+  <img src="https://img.shields.io/badge/MongoDB-4.4+-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
+  <img src="https://img.shields.io/badge/React-18.0+-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React" />
+  <img src="https://img.shields.io/badge/JWT-Auth-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" alt="JWT" />
+</div>
 
-## Available Scripts
+<div align="center">
+  <h3>🎯 Streamlined mentor-student management platform</h3>
+  <p><em>A comprehensive web application that simplifies academic mentorship through intuitive batch management, progress tracking, and role-based access control.</em></p>
+</div>
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## ✨ What Makes MenteeConnect Special
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+**MenteeConnect** is a robust mentorship management system built for educational institutions and training organizations:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- 👥 **Multi-role System** with Admin, Mentor, and Student access levels
+- 🎓 **Batch Management** for organized student grouping
+- 📊 **Progress Tracking** with qualifications and certificates
+- 🔐 **Secure Authentication** with JWT and Spring Security
+- 📱 **Modern React UI** with Tailwind CSS and responsive design
+- 🎥 **Real-time Video Calls** with WebRTC integration
+- 💬 **Live Communication** via Socket.io
+- ⚡ **Fast Performance** with MongoDB and optimized queries
 
-### `npm test`
+## 🎭 User Roles & Capabilities
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 🛡️ **Admin Dashboard**
+*Complete system control and oversight*
+- ➕ **User Management** - Add, edit, remove mentors and students
+- 🎓 **Batch Operations** - Create batches and assign mentors
+- 📊 **System Analytics** - View platform-wide performance metrics
+- 📋 **Report Generation** - Generate comprehensive performance reports
+- 🔧 **Account Management** - Manage user roles and permissions
 
-### `npm run build`
+### 👨‍🏫 **Mentor Portal** 
+*Focused tools for student guidance*
+- 📚 **Student Overview** - View complete list of assigned students
+- 📈 **Progress Updates** - Track and update student academic progress
+- 🏆 **Qualification Management** - Add/update student achievements
+- 📜 **Certificate Handling** - Manage student certifications
+- 👤 **Profile Management** - Update personal mentor information
+- 🎯 **Batch Insights** - Access detailed batch performance data
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 🎓 **Student Interface**
+*Personalized learning experience*
+- 👤 **Personal Dashboard** - View complete personal profile
+- 👨‍🏫 **Mentor Details** - Access assigned mentor information  
+- 📊 **Academic Progress** - Track learning journey and achievements
+- 🏆 **Certificates & Qualifications** - View earned credentials
+- 🎓 **Batch Information** - Access batch details and peers
+- ✏️ **Profile Updates** - Manage personal information
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🛠️ Technology Stack
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Frontend Powerhouse
+```javascript
+⚛️ React 18+          // Modern component-based architecture
+🎨 Tailwind CSS       // Utility-first styling framework
+🔄 React Router v6    // Client-side routing & navigation
+📡 Socket.io Client   // Real-time WebSocket communication
+🎥 WebRTC            // Peer-to-peer video/audio streaming
+📋 React Hook Form   // Elegant form handling & validation
+🌐 Axios             // HTTP client for API requests
+📅 date-fns          // Modern date/time utilities
+🎭 Hero Icons        // Beautiful SVG icon library
+```
 
-### `npm run eject`
+### Backend Architecture
+```java
+☕ Java 17+           // Modern JVM with latest features
+🍃 Spring Boot 3+     // Production-ready framework
+🔒 Spring Security    // Comprehensive security framework
+🍃 Spring Data MongoDB // Elegant database integration
+🔐 JWT Authentication // Stateless security tokens
+📡 WebSocket Support  // Real-time bidirectional communication
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Database & Infrastructure
+```javascript
+🍃 MongoDB 4.4+      // NoSQL document database
+🔧 Maven             // Backend dependency management
+📦 npm/yarn          // Frontend package management
+📚 Swagger/OpenAPI   // API documentation
+🌿 MongoDB Compass   // Database management GUI
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🚀 Quick Start Guide
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Prerequisites
+Make sure you have these installed:
+- ☕ **Java 17+** 
+- 🍃 **MongoDB 4.4+** (running on default port)
+- 🔧 **Maven 3.6+**
+- 🌐 Modern web browser
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Lightning Setup ⚡
 
-## Learn More
+```bash
+# Clone the repository
+git clone https://github.com/coder-mahi/Mentee_Connect.git
+cd Mentee_Connect
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+# Backend Setup
+cd backend
+mvn clean install
+mvn spring-boot:run
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+# Frontend Setup (new terminal)
+cd ../frontend
+npm install
+npm start
 
-### Code Splitting
+# Start MongoDB (if not running)
+mongod
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+**🎉 Backend API: `http://localhost:8080`**  
+**🎉 Frontend App: `http://localhost:3000`**
 
-### Analyzing the Bundle Size
+### Default Login Credentials
+```
+Admin:   admin@menteeconnect.com / admin123
+Mentor:  mentor@menteeconnect.com / mentor123  
+Student: student@menteeconnect.com / student123
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 🌟 Core Features Deep Dive
 
-### Making a Progressive Web App
+<table>
+<tr>
+<td width="50%">
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### 🎥 **Real-time Communication**
+- **Video Conferencing** - WebRTC peer-to-peer calls
+- **Live Chat** - Socket.io instant messaging
+- **Screen Sharing** - Present and collaborate live
+- **Audio Controls** - Mute/unmute functionality
+- **Meeting Management** - Start/join/end sessions
+- **Connection Quality** - Adaptive streaming
 
-### Advanced Configuration
+</td>
+<td width="50%">
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### 📊 **Modern React Experience**
+- **Component Architecture** - Reusable UI components
+- **State Management** - Context API & React hooks
+- **Form Validation** - React Hook Form + Yup
+- **Responsive Design** - Tailwind CSS utilities
+- **Route Protection** - Secure navigation
+- **Performance Optimized** - Code splitting & lazy loading
 
-### Deployment
+</td>
+</tr>
+</table>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 🏗️ System Architecture
 
-### `npm run build` fails to minify
+### Full-Stack Architecture
+```
+📁 MenteeConnect/
+├── 🎨 frontend/                # React Application
+│   ├── src/
+│   │   ├── components/         # Reusable UI components
+│   │   │   ├── common/         # Shared components
+│   │   │   ├── forms/          # Form components
+│   │   │   └── video/          # Video call components
+│   │   ├── pages/              # Route-based pages
+│   │   │   ├── admin/          # Admin dashboard
+│   │   │   ├── mentor/         # Mentor portal
+│   │   │   └── student/        # Student interface
+│   │   ├── hooks/              # Custom React hooks
+│   │   ├── context/            # React Context providers
+│   │   ├── services/           # API integration
+│   │   └── utils/              # Helper functions
+│   ├── public/                 # Static assets
+│   └── package.json            # Dependencies
+└── ⚙️ backend/                 # Spring Boot API
+    ├── src/main/java/
+    │   ├── controllers/        # REST endpoints
+    │   ├── services/           # Business logic
+    │   ├── models/             # Data entities
+    │   ├── repositories/       # Data access layer
+    │   └── security/           # Security configuration
+    └── pom.xml                 # Maven dependencies
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Communication Flow
+```mermaid
+graph LR
+    A[React Frontend] -->|HTTP/REST| B[Spring Boot API]
+    A -->|WebSocket| C[Socket.io Server]
+    A -->|WebRTC| D[Peer Connection]
+    B -->|Query/Update| E[MongoDB]
+    C -->|Real-time| A
+    D -->|Direct P2P| A
+```
+
+## 📈 Key Workflows
+
+### Admin Workflow
+```mermaid
+graph TD
+    A[Admin Login] --> B[Dashboard Overview]
+    B --> C[Manage Users]
+    B --> D[Create Batches] 
+    B --> E[Assign Mentors]
+    B --> F[Generate Reports]
+    C --> G[Add/Edit/Remove Users]
+    D --> H[Batch Configuration]
+    E --> I[Mentor-Batch Assignment]
+```
+
+### Mentor Workflow  
+```mermaid
+graph TD
+    A[Mentor Login] --> B[View Assigned Students]
+    B --> C[Update Progress]
+    B --> D[Manage Qualifications]
+    B --> E[Handle Certificates]
+    C --> F[Progress Tracking]
+    D --> G[Add Achievements]
+    E --> H[Certificate Management]
+```
+
+## 🔧 Configuration
+
+### Database Configuration
+```yaml
+# application.yml
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/menteeconnect
+      database: menteeconnect
+```
+
+### Security Configuration
+```yaml
+jwt:
+  secret: your-secret-key
+  expiration: 86400000 # 24 hours
+```
+
+## 🚀 Deployment Options
+
+### Cloud Platforms
+- ☁️ **AWS** - EC2, ECS, or Elastic Beanstalk
+- 🚀 **Heroku** - Easy Git-based deployment
+- 🚄 **Railway** - Modern deployment platform
+- 🌐 **DigitalOcean** - App Platform or Droplets
+
+### Docker Deployment
+```dockerfile
+FROM openjdk:17-jdk-slim
+COPY target/menteeconnect.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how to get started:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/NewFeature`)
+3. **Commit** changes (`git commit -m 'Add NewFeature'`)
+4. **Push** to branch (`git push origin feature/NewFeature`)  
+5. **Open** a Pull Request
+
+### Development Guidelines
+- Follow Java coding conventions
+- Write unit tests for new features
+- Update documentation as needed
+- Ensure responsive design compatibility
+
+## 🛣️ Roadmap
+
+### 🎯 Immediate Goals
+- [ ] 📧 Email notification system
+- [ ] 📊 Advanced analytics dashboard  
+- [ ] 📱 Mobile app development (React Native)
+- [ ] 🔔 Push notifications
+- [ ] 🤖 AI-powered mentor matching
+
+### 🔮 Future Enhancements
+- [ ] 🎮 Gamification features
+- [ ] 📈 Machine learning insights
+- [ ] 🌍 Multi-language support
+- [ ] 📅 Advanced scheduling system
+- [ ] 🔍 Advanced search and filtering
+- [ ] 📊 Real-time collaboration tools
+
+## 📊 System Requirements
+
+### Minimum Requirements
+- **Java**: 17 or higher
+- **Node.js**: 16+ with npm/yarn
+- **MongoDB**: 4.4+  
+- **RAM**: 4GB minimum
+- **Storage**: 2GB available space
+- **Network**: Stable internet for video calls
+
+### Recommended Specifications
+- **Java**: Latest LTS version
+- **Node.js**: Latest LTS version
+- **MongoDB**: Latest stable version
+- **RAM**: 8GB or higher
+- **Storage**: 10GB+ available space
+- **CPU**: Multi-core processor
+- **Network**: High-speed broadband
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+Special thanks to:
+- ⚛️ **React Team** for the incredible frontend framework
+- 🍃 **Spring Team** for the amazing backend framework
+- 🍃 **MongoDB** for flexible database solutions  
+- 🎨 **Tailwind CSS** for utility-first styling
+- 🔄 **Socket.io** for real-time communication
+- 👥 **Open Source Community** for continuous inspiration
+
+---
+
+<div align="center">
+  <h3>🌟 Built with ❤️ for educational excellence</h3>
+  <p>
+    <strong>MenteeConnect</strong> - Empowering education through technology
+  </p>
+  <p>
+    <a href="#-menteeconnect">⬆️ Back to top</a> •
+    <a href="https://github.com/coder-mahi/Mentee_Connect/issues">🐛 Report Bug</a> •
+    <a href="https://github.com/coder-mahi/Mentee_Connect/issues">✨ Request Feature</a>
+  </p>
+</div>
