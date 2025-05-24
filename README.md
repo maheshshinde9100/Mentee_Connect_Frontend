@@ -295,38 +295,9 @@ We welcome contributions! Here's how to get started:
 - [ ] 🔍 Advanced search and filtering
 - [ ] 📊 Real-time collaboration tools
 
-## 📊 System Requirements
-
-### Minimum Requirements
-- **Java**: 17 or higher
-- **Node.js**: 16+ with npm/yarn
-- **MongoDB**: 4.4+  
-- **RAM**: 4GB minimum
-- **Storage**: 2GB available space
-- **Network**: Stable internet for video calls
-
-### Recommended Specifications
-- **Java**: Latest LTS version
-- **Node.js**: Latest LTS version
-- **MongoDB**: Latest stable version
-- **RAM**: 8GB or higher
-- **Storage**: 10GB+ available space
-- **CPU**: Multi-core processor
-- **Network**: High-speed broadband
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-Special thanks to:
-- ⚛️ **React Team** for the incredible frontend framework
-- 🍃 **Spring Team** for the amazing backend framework
-- 🍃 **MongoDB** for flexible database solutions  
-- 🎨 **Tailwind CSS** for utility-first styling
-- 🔄 **Socket.io** for real-time communication
-- 👥 **Open Source Community** for continuous inspiration
 
 ---
 
