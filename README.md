@@ -1,237 +1,149 @@
 # 🚀 MenteeConnect
 
 <div align="center">
-  <img src="https://img.shields.io/badge/Spring_Boot-3.0+-6DB33F?style=for-the-badge&logo=spring&logoColor=white" alt="Spring Boot" />
-  <img src="https://img.shields.io/badge/MongoDB-4.4+-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
-  <img src="https://img.shields.io/badge/React-18.0+-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React" />
-  <img src="https://img.shields.io/badge/JWT-Auth-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" alt="JWT" />
+  <img src="https://img.shields.io/badge/Spring_Boot-3.0+-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" />
+  <img src="https://img.shields.io/badge/MongoDB-4.4+-47A248?style=for-the-badge&logo=mongodb&logoColor=white" />
+  <img src="https://img.shields.io/badge/React-18.0+-61DAFB?style=for-the-badge&logo=react&logoColor=white" />
+  <img src="https://img.shields.io/badge/JWT-Auth-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" />
+  <img src="https://img.shields.io/badge/WebRTC-Socket.io-FE6F61?style=for-the-badge&logo=webrtc&logoColor=white" />
 </div>
 
 <div align="center">
-  <h3>🎯 Streamlined mentor-student management platform</h3>
-  <p><em>A comprehensive web application that simplifies academic mentorship through intuitive batch management, progress tracking, and role-based access control.</em></p>
+  <h3>🎯 Mentor-Student Management System</h3>
+  <p><em>An intuitive full-stack platform to streamline academic mentorship with role-based access, progress tracking, and communication features.</em></p>
 </div>
 
 ---
 
-## ✨ What Makes MenteeConnect Special
+## ✨ Key Highlights
 
-**MenteeConnect** is a robust mentorship management system built for educational institutions and training organizations:
+- Multi-role system: Admin, Mentor, and Student
+- Batch and profile management
+- Academic progress tracking with certificates
+- JWT-based secure authentication
+- Modern React frontend with Tailwind CSS
+- Real-time video and chat using WebRTC + Socket.io
 
-- 👥 **Multi-role System** with Admin, Mentor, and Student access levels
-- 🎓 **Batch Management** for organized student grouping
-- 📊 **Progress Tracking** with qualifications and certificates
-- 🔐 **Secure Authentication** with JWT and Spring Security
-- 📱 **Modern React UI** with Tailwind CSS and responsive design
-- 🎥 **Real-time Video Calls** with WebRTC integration
-- 💬 **Live Communication** via Socket.io
-- ⚡ **Fast Performance** with MongoDB and optimized queries
+---
 
-## 🎭 User Roles & Capabilities
+## 🎭 User Roles
 
-### 🛡️ **Admin Dashboard**
-*Complete system control and oversight*
-- ➕ **User Management** - Add, edit, remove mentors and students
-- 🎓 **Batch Operations** - Create batches and assign mentors
-- 📊 **System Analytics** - View platform-wide performance metrics
-- 📋 **Report Generation** - Generate comprehensive performance reports
-- 🔧 **Account Management** - Manage user roles and permissions
+### 🛡️ Admin
+- Manage users and roles  
+- Create batches and assign mentors  
+- Access analytics and generate reports  
 
-### 👨‍🏫 **Mentor Portal** 
-*Focused tools for student guidance*
-- 📚 **Student Overview** - View complete list of assigned students
-- 📈 **Progress Updates** - Track and update student academic progress
-- 🏆 **Qualification Management** - Add/update student achievements
-- 📜 **Certificate Handling** - Manage student certifications
-- 👤 **Profile Management** - Update personal mentor information
-- 🎯 **Batch Insights** - Access detailed batch performance data
+### 👨‍🏫 Mentor
+- View and manage assigned students  
+- Update student progress and qualifications  
+- Manage personal profile  
 
-### 🎓 **Student Interface**
-*Personalized learning experience*
-- 👤 **Personal Dashboard** - View complete personal profile
-- 👨‍🏫 **Mentor Details** - Access assigned mentor information  
-- 📊 **Academic Progress** - Track learning journey and achievements
-- 🏆 **Certificates & Qualifications** - View earned credentials
-- 🎓 **Batch Information** - Access batch details and peers
-- ✏️ **Profile Updates** - Manage personal information
+### 🎓 Student
+- View personal dashboard and mentor details  
+- Track academic progress and earned certificates  
+- Edit profile information  
 
-## 🛠️ Technology Stack
+---
 
-### Frontend Powerhouse
-```javascript
-⚛️ React 18+          // Modern component-based architecture
-🎨 Tailwind CSS       // Utility-first styling framework
-🔄 React Router v6    // Client-side routing & navigation
-📡 Socket.io Client   // Real-time WebSocket communication
-🎥 WebRTC            // Peer-to-peer video/audio streaming
-📋 React Hook Form   // Elegant form handling & validation
-🌐 Axios             // HTTP client for API requests
-📅 date-fns          // Modern date/time utilities
-🎭 Hero Icons        // Beautiful SVG icon library
-```
+## 🛠️ Tech Stack
 
-### Backend Architecture
-```java
-☕ Java 17+           // Modern JVM with latest features
-🍃 Spring Boot 3+     // Production-ready framework
-🔒 Spring Security    // Comprehensive security framework
-🍃 Spring Data MongoDB // Elegant database integration
-🔐 JWT Authentication // Stateless security tokens
-📡 WebSocket Support  // Real-time bidirectional communication
-```
+### Frontend
 
-### Database & Infrastructure
-```javascript
-🍃 MongoDB 4.4+      // NoSQL document database
-🔧 Maven             // Backend dependency management
-📦 npm/yarn          // Frontend package management
-📚 Swagger/OpenAPI   // API documentation
-🌿 MongoDB Compass   // Database management GUI
-```
+| Technology | Badge |
+|-----------|--------|
+| React | ![React](https://img.shields.io/badge/React-18.0+-61DAFB?style=for-the-badge&logo=react&logoColor=white) |
+| Tailwind CSS | ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.0+-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white) |
+| Axios | ![Axios](https://img.shields.io/badge/Axios-HTTP_Client-5A29E4?style=for-the-badge&logo=axios&logoColor=white) |
+| React Router | ![React Router](https://img.shields.io/badge/React_Router-v6-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white) |
+| WebRTC | ![WebRTC](https://img.shields.io/badge/WebRTC-Peer_to_Peer-FE6F61?style=for-the-badge&logo=webrtc&logoColor=white) |
 
-## 🚀 Quick Start Guide
+### Backend
+
+| Technology | Badge |
+|-----------|--------|
+| Java | ![Java](https://img.shields.io/badge/Java-17+-007396?style=for-the-badge&logo=java&logoColor=white) |
+| Spring Boot | ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.0+-6DB33F?style=for-the-badge&logo=springboot&logoColor=white) |
+| JWT | ![JWT](https://img.shields.io/badge/JWT-Auth-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white) |
+| WebSocket | ![WebSocket](https://img.shields.io/badge/WebSocket-Real_time-FFCA28?style=for-the-badge&logo=websocket&logoColor=black) |
+
+### Database
+
+| Technology | Badge |
+|-----------|--------|
+| MongoDB | ![MongoDB](https://img.shields.io/badge/MongoDB-4.4+-47A248?style=for-the-badge&logo=mongodb&logoColor=white) |
+| MongoDB Compass | ![MongoDB Compass](https://img.shields.io/badge/Compass-GUI-47A248?style=for-the-badge&logo=mongodb&logoColor=white) |
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
-Make sure you have these installed:
-- ☕ **Java 17+** 
-- 🍃 **MongoDB 4.4+** (running on default port)
-- 🔧 **Maven 3.6+**
-- 🌐 Modern web browser
+- Java 17+  
+- MongoDB 4.4+  
+- Maven 3.6+  
+- Node.js + npm  
 
-### Lightning Setup ⚡
+### Setup Instructions
 
 ```bash
-# Clone the repository
+# Clone the repo
 git clone https://github.com/coder-mahi/Mentee_Connect.git
 cd Mentee_Connect
 
-# Backend Setup
+# Backend
 cd backend
 mvn clean install
 mvn spring-boot:run
 
-# Frontend Setup (new terminal)
+# Frontend (in new terminal)
 cd ../frontend
 npm install
 npm start
-
-# Start MongoDB (if not running)
-mongod
 ```
 
-**🎉 Backend API: `http://localhost:8080`**  
-**🎉 Frontend App: `http://localhost:3000`**
+MongoDB should be running on default port.
 
-### Default Login Credentials
+### Access Points
+- Backend: `http://localhost:8080`  
+- Frontend: `http://localhost:3000`
+
+### Demo Logins
 ```
 Admin:   admin@menteeconnect.com / admin123
-Mentor:  mentor@menteeconnect.com / mentor123  
+Mentor:  mentor@menteeconnect.com / mentor123
 Student: student@menteeconnect.com / student123
 ```
 
-## 🌟 Core Features Deep Dive
+---
 
-<table>
-<tr>
-<td width="50%">
+## 🧩 Project Structure
 
-### 🎥 **Real-time Communication**
-- **Video Conferencing** - WebRTC peer-to-peer calls
-- **Live Chat** - Socket.io instant messaging
-- **Screen Sharing** - Present and collaborate live
-- **Audio Controls** - Mute/unmute functionality
-- **Meeting Management** - Start/join/end sessions
-- **Connection Quality** - Adaptive streaming
-
-</td>
-<td width="50%">
-
-### 📊 **Modern React Experience**
-- **Component Architecture** - Reusable UI components
-- **State Management** - Context API & React hooks
-- **Form Validation** - React Hook Form + Yup
-- **Responsive Design** - Tailwind CSS utilities
-- **Route Protection** - Secure navigation
-- **Performance Optimized** - Code splitting & lazy loading
-
-</td>
-</tr>
-</table>
-
-## 🏗️ System Architecture
-
-### Full-Stack Architecture
 ```
-📁 MenteeConnect/
-├── 🎨 frontend/                # React Application
-│   ├── src/
-│   │   ├── components/         # Reusable UI components
-│   │   │   ├── common/         # Shared components
-│   │   │   ├── forms/          # Form components
-│   │   │   └── video/          # Video call components
-│   │   ├── pages/              # Route-based pages
-│   │   │   ├── admin/          # Admin dashboard
-│   │   │   ├── mentor/         # Mentor portal
-│   │   │   └── student/        # Student interface
-│   │   ├── hooks/              # Custom React hooks
-│   │   ├── context/            # React Context providers
-│   │   ├── services/           # API integration
-│   │   └── utils/              # Helper functions
-│   ├── public/                 # Static assets
-│   └── package.json            # Dependencies
-└── ⚙️ backend/                 # Spring Boot API
-    ├── src/main/java/
-    │   ├── controllers/        # REST endpoints
-    │   ├── services/           # Business logic
-    │   ├── models/             # Data entities
-    │   ├── repositories/       # Data access layer
-    │   └── security/           # Security configuration
-    └── pom.xml                 # Maven dependencies
+MenteeConnect/
+├── frontend/
+│   └── src/
+│       ├── components/
+│       ├── pages/
+│       ├── hooks/
+│       ├── context/
+│       ├── services/
+│       └── utils/
+└── backend/
+    └── src/main/java/
+        ├── controllers/
+        ├── services/
+        ├── models/
+        ├── repositories/
+        └── security/
 ```
 
-### Communication Flow
-```mermaid
-graph LR
-    A[React Frontend] -->|HTTP/REST| B[Spring Boot API]
-    A -->|WebSocket| C[Socket.io Server]
-    A -->|WebRTC| D[Peer Connection]
-    B -->|Query/Update| E[MongoDB]
-    C -->|Real-time| A
-    D -->|Direct P2P| A
-```
-
-## 📈 Key Workflows
-
-### Admin Workflow
-```mermaid
-graph TD
-    A[Admin Login] --> B[Dashboard Overview]
-    B --> C[Manage Users]
-    B --> D[Create Batches] 
-    B --> E[Assign Mentors]
-    B --> F[Generate Reports]
-    C --> G[Add/Edit/Remove Users]
-    D --> H[Batch Configuration]
-    E --> I[Mentor-Batch Assignment]
-```
-
-### Mentor Workflow  
-```mermaid
-graph TD
-    A[Mentor Login] --> B[View Assigned Students]
-    B --> C[Update Progress]
-    B --> D[Manage Qualifications]
-    B --> E[Handle Certificates]
-    C --> F[Progress Tracking]
-    D --> G[Add Achievements]
-    E --> H[Certificate Management]
-```
+---
 
 ## 🔧 Configuration
 
-### Database Configuration
+### MongoDB (`application.yml`)
+
 ```yaml
-# application.yml
 spring:
   data:
     mongodb:
@@ -239,22 +151,27 @@ spring:
       database: menteeconnect
 ```
 
-### Security Configuration
-```yaml
-jwt:
-  secret: your-secret-key
-  expiration: 86400000 # 24 hours
-```
+### JWT Configuration
 
-## 🚀 Deployment Options
+Sensitive JWT secrets should be stored in environment variables or external vaults for security.
 
-### Cloud Platforms
-- ☁️ **AWS** - EC2, ECS, or Elastic Beanstalk
-- 🚀 **Heroku** - Easy Git-based deployment
-- 🚄 **Railway** - Modern deployment platform
-- 🌐 **DigitalOcean** - App Platform or Droplets
+---
 
-### Docker Deployment
+## 🧠 Workflows
+
+### Admin
+- Login → Dashboard → Manage Users → Create Batches → Assign Mentors → Generate Reports
+
+### Mentor
+- Login → View Students → Update Progress → Add Certificates
+
+### Student
+- Login → View Profile → See Mentor Info → Track Progress
+
+---
+
+## 🐳 Docker Deployment
+
 ```dockerfile
 FROM openjdk:17-jdk-slim
 COPY target/menteeconnect.jar app.jar
@@ -262,53 +179,24 @@ EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 ```
 
+---
+
 ## 🤝 Contributing
 
-We welcome contributions! Here's how to get started:
+We welcome contributions:
 
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/NewFeature`)
-3. **Commit** changes (`git commit -m 'Add NewFeature'`)
-4. **Push** to branch (`git push origin feature/NewFeature`)  
-5. **Open** a Pull Request
-
-### Development Guidelines
-- Follow Java coding conventions
-- Write unit tests for new features
-- Update documentation as needed
-- Ensure responsive design compatibility
-
-## 🛣️ Roadmap
-
-### 🎯 Immediate Goals
-- [ ] 📧 Email notification system
-- [ ] 📊 Advanced analytics dashboard  
-- [ ] 📱 Mobile app development (React Native)
-- [ ] 🔔 Push notifications
-- [ ] 🤖 AI-powered mentor matching
-
-### 🔮 Future Enhancements
-- [ ] 🎮 Gamification features
-- [ ] 📈 Machine learning insights
-- [ ] 🌍 Multi-language support
-- [ ] 📅 Advanced scheduling system
-- [ ] 🔍 Advanced search and filtering
-- [ ] 📊 Real-time collaboration tools
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+1. Fork the repo  
+2. Create a feature branch  
+3. Commit and push your code  
+4. Open a Pull Request  
 
 ---
 
-<div align="center">
-  <h3>🌟 Built with ❤️ for educational excellence</h3>
-  <p>
-    <strong>MenteeConnect</strong> - Empowering education through technology
-  </p>
-  <p>
-    <a href="#-menteeconnect">⬆️ Back to top</a> •
-    <a href="https://github.com/coder-mahi/Mentee_Connect/issues">🐛 Report Bug</a> •
-    <a href="https://github.com/coder-mahi/Mentee_Connect/issues">✨ Request Feature</a>
-  </p>
-</div>
+## 🛣️ Future Enhancements
+
+- [ ] Email notifications  
+- [ ] Calendar integrations  
+- [ ] Cloud deployment pipeline  
+- [ ] Role-based access logging  
+
+---
