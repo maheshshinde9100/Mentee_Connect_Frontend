@@ -33,6 +33,13 @@ import SkillsManagement from './pages/student/SkillsManagement';
 import About from './pages/common/About';
 import Contact from './pages/common/Contact';
 
+import MyMentees from './pages/mentor/MyMentees';
+import MenteeDetail from './pages/mentor/MenteeDetail';
+import TaskForm from './pages/mentor/TaskForm';
+import AttendanceForm from './pages/mentor/AttendanceForm';
+import Updates from './pages/mentor/Updates';
+import ShareUpdate from './pages/mentor/ShareUpdate';
+
 function App() {
   return (
     <Router>
@@ -207,6 +214,88 @@ function App() {
               <ProtectedRoute allowedRoles={['MENTOR']}>
                 <DashboardLayout>
                   <MeetingScheduler />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* New Mentor Routes */}
+          <Route
+            path="/mentor/mentees"
+            element={
+              <ProtectedRoute allowedRoles={['MENTOR']}>
+                <DashboardLayout>
+                  <MyMentees />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mentor/mentees/:menteeId"
+            element={
+              <ProtectedRoute allowedRoles={['MENTOR']}>
+                <DashboardLayout>
+                  <MenteeDetail />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mentor/tasks/new"
+            element={
+              <ProtectedRoute allowedRoles={['MENTOR']}>
+                <DashboardLayout>
+                  <TaskForm />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mentor/tasks/edit/:taskId"
+            element={
+              <ProtectedRoute allowedRoles={['MENTOR']}>
+                <DashboardLayout>
+                  <TaskForm />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mentor/attendance/record"
+            element={
+              <ProtectedRoute allowedRoles={['MENTOR']}>
+                <DashboardLayout>
+                  <AttendanceForm />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mentor/updates"
+            element={
+              <ProtectedRoute allowedRoles={['MENTOR']}>
+                <DashboardLayout>
+                  <Updates />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mentor/updates/new"
+            element={
+              <ProtectedRoute allowedRoles={['MENTOR']}>
+                <DashboardLayout>
+                  <ShareUpdate />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mentor/updates/edit/:updateId"
+            element={
+              <ProtectedRoute allowedRoles={['MENTOR']}>
+                <DashboardLayout>
+                  <ShareUpdate />
                 </DashboardLayout>
               </ProtectedRoute>
             }

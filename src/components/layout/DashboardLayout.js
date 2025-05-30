@@ -119,10 +119,28 @@ const DashboardLayout = ({ children }) => {
       description: 'View and manage mentees',
     },
     {
-      name: 'Sessions',
-      href: '/mentor/sessions',
+      name: 'Tasks',
+      href: '/mentor/tasks',
+      icon: DocumentTextIcon,
+      description: 'Manage tasks and goals',
+    },
+    {
+      name: 'Meetings',
+      href: '/mentor/meetings',
       icon: CalendarIcon,
-      description: 'Manage mentoring sessions',
+      description: 'Schedule and conduct meetings',
+    },
+    {
+      name: 'Attendance',
+      href: '/mentor/attendance/record',
+      icon: AcademicCapIcon,
+      description: 'Record mentee attendance',
+    },
+    {
+      name: 'Updates',
+      href: '/mentor/updates',
+      icon: ChatBubbleLeftRightIcon,
+      description: 'Share resources and updates',
     },
   ];
 

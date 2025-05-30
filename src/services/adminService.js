@@ -13,11 +13,10 @@ export const adminService = {
     try {
       console.log('Fetching all mentors with pagination...');
       
-      // Initial request to get first page and pagination info
       const initialResponse = await api.get('/api/admin/mentors?size=100&page=0');
       console.log('Initial mentors API response:', initialResponse);
       
-      // Check if response is paginated
+     
       if (initialResponse.data && 
           initialResponse.data.content && 
           Array.isArray(initialResponse.data.content)) {
@@ -27,7 +26,6 @@ export const adminService = {
         
         console.log(`Detected paginated response with ${totalElements} total mentors across ${totalPages} pages`);
         
-        // If we have only 1 page, return the content directly
         if (totalPages <= 1) {
           console.log('Single page of mentors, returning directly');
           return { 
@@ -40,23 +38,16 @@ export const adminService = {
             }
           };
         }
-        
-        // If we have multiple pages, fetch all pages
+      
         console.log(`Fetching all ${totalPages} pages of mentors...`);
-        
-        // Start with the first page we already have
         let allMentors = [...initialResponse.data.content];
-        
-        // Create array of promises for remaining pages
         const pagePromises = [];
         for (let page = 1; page < totalPages; page++) {
           pagePromises.push(api.get(`/api/admin/mentors?size=100&page=${page}`));
         }
         
-        // Fetch all pages in parallel
         const pageResponses = await Promise.all(pagePromises);
         
-        // Extract mentors from each page response and add to allMentors
         pageResponses.forEach(response => {
           if (response.data && 
               response.data.content && 

@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+signaling-server
 /.pnp
 .pnp.js
 .idea
