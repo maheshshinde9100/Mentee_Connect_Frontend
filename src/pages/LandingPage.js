@@ -18,8 +18,8 @@ const LandingPage = () => {
       ),
     },
     {
-      title: 'Career Development',
-      description: 'Plan your career path, develop essential skills, and receive guidance from experienced mentors in your field.',
+      title: 'Mentoring Sessions',
+      description: 'Regular one-on-one sessions with mentors to discuss academic progress and receive guidance.',
       icon: (
         <svg className="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -27,8 +27,8 @@ const LandingPage = () => {
       ),
     },
     {
-      title: 'Personal Support',
-      description: 'Get help with educational challenges, personal growth, and maintain regular communication with your dedicated mentor.',
+      title: 'Academic Resources',
+      description: 'Access to study materials and resources shared by mentors to support your academic learning.',
       icon: (
         <svg className="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -139,11 +139,11 @@ const LandingPage = () => {
           <div className="mt-16 mx-auto max-w-7xl px-4 sm:mt-24 sm:px-6">
             <div className="text-center">
               <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-                <span className="block">Streamlined Student</span>
-                <span className="block text-indigo-600">Mentoring System</span>
+                <span className="block">MenteeConnect</span>
+                <span className="block text-indigo-600">Student Mentoring System</span>
               </h1>
               <p className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-                A centralized platform connecting students with dedicated mentors to enhance academic performance, career development, and personal growth throughout your college journey.
+                A digital platform designed to enhance academic performance through personalized mentoring and guidance.
               </p>
               <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
                 <div className="rounded-md shadow">
@@ -230,4 +230,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage; 
+export default LandingPage;

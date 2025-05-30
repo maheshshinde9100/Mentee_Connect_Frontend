@@ -3,8 +3,8 @@ import React from 'react';
 const Dashboard = () => {
   // Mock data - In real app, this would come from your Spring Boot backend
   const upcomingSessions = [
-    { id: 1, mentor: "Dr. Sarah Wilson", topic: "Career Guidance", date: "2024-03-20", time: "14:00" },
-    { id: 2, mentor: "Prof. James Miller", topic: "Academic Planning", date: "2024-03-22", time: "15:30" }
+    { id: 1, mentor: "Dr. Thor Odinson", topic: "Career Guidance", date: "2024-03-20", time: "14:00" },
+    { id: 2, mentor: "Prof. Loki", topic: "Academic Planning", date: "2024-03-22", time: "15:30" }
   ];
 
   const recentActivities = [
