@@ -238,6 +238,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 // Replace this import with your actual application icon
 import logo from '../logo.svg'; // <-- PUT YOUR APPLICATION ICON HERE
+import MenteeConnectLogo from '../MenteeConnectLogo';
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -329,14 +330,7 @@ const LandingPage = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <div className="flex-shrink-0 flex items-center">
-                <img
-                  className="h-10 w-auto"
-                  src={logo}
-                  alt="MenteeConnect"
-                />
-                <span className="ml-3 text-2xl font-bold text-indigo-600">
-                  MenteeConnect
-                </span>
+                <MenteeConnectLogo size="md" animate />
               </div>
             </div>
             
@@ -544,15 +538,15 @@ const LandingPage = () => {
               MenteeConnect represents my commitment to improving academic mentorship through modern web technologies.
             </p>
             <div className="flex justify-center space-x-6">
-              <a href="#" className="flex items-center text-gray-600 hover:text-indigo-600 transition-colors">
+              <a href="https://github.com/coder-mahi" className="flex items-center text-gray-600 hover:text-indigo-600 transition-colors">
                 <Github className="h-6 w-6 mr-2" />
                 GitHub
               </a>
-              <a href="#" className="flex items-center text-gray-600 hover:text-indigo-600 transition-colors">
+              <a href="www.linkedin.com/in/mahesh-shinde-0a666b23b" className="flex items-center text-gray-600 hover:text-indigo-600 transition-colors">
                 <Linkedin className="h-6 w-6 mr-2" />
-                LinkedIn
+               LinkedIn
               </a>
-              <a href="#" className="flex items-center text-gray-600 hover:text-indigo-600 transition-colors">
+              <a href="https://shindemaheshportfolio.netlify.app" className="flex items-center text-gray-600 hover:text-indigo-600 transition-colors">
                 <User className="h-6 w-6 mr-2" />
                 Portfolio
               </a>
@@ -574,7 +568,7 @@ const LandingPage = () => {
               <div className="space-y-4">
                 <div className="flex items-center">
                   <Mail className="h-6 w-6 text-indigo-600 mr-4" />
-                  <span className="text-gray-700">mahesh.shinde@example.com</span>
+                  <span className="text-gray-700">contact.shindemahesh2112@gmail.com</span>
                 </div>
                 <div className="flex items-center">
                   <MapPin className="h-6 w-6 text-indigo-600 mr-4" />
@@ -585,13 +579,13 @@ const LandingPage = () => {
             <div className="bg-gray-50 p-8 rounded-xl">
               <h3 className="text-2xl font-bold text-gray-900 mb-6">Connect Online</h3>
               <div className="space-y-4">
-                <a href="#" className="flex items-center text-gray-700 hover:text-indigo-600 transition-colors">
+                <a href="https://github.com/coder-mahi" className="flex items-center text-gray-700 hover:text-indigo-600 transition-colors">
                   <Github className="h-6 w-6 mr-4" />
-                  GitHub Profile
+                GitHub Profile
                 </a>
-                <a href="#" className="flex items-center text-gray-700 hover:text-indigo-600 transition-colors">
+                <a href="www.linkedin.com/in/mahesh-shinde-0a666b23b" className="flex items-center text-gray-700 hover:text-indigo-600 transition-colors">
                   <Linkedin className="h-6 w-6 mr-4" />
-                  LinkedIn Profile
+            LinkedIn Profile
                 </a>
               </div>
             </div>
@@ -719,6 +713,26 @@ const LandingPage = () => {
  <div className="absolute top-20 right-20 w-32 h-32 bg-gradient-to-r from-indigo-600/20 to-purple-600/20 rounded-full blur-xl"></div>
  <div className="absolute bottom-20 left-20 w-24 h-24 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-full blur-xl"></div>
 </footer>
+{/* 
+
+// Header logo
+<MenteeConnectLogo size="md" animate />
+
+// Sidebar (icon only)
+<MenteeConnectLogo size="sm" showText={false} />
+
+// Loading screen
+<MenteeConnectLogo size="xl" animate />
+
+// Dark background
+<MenteeConnectLogo variant="white" />
+
+// Minimal version
+<MenteeConnectLogo variant="minimal" showText={false} />
+
+
+ */}
+
    </div>
  );
 };
