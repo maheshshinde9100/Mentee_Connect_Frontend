@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Dialog, Menu, Transition } from '@headlessui/react';
+import MenteeConnectLogo from '../../MenteeConnectLogo';
 import {
   Bars3Icon,
   XMarkIcon,
@@ -174,11 +175,8 @@ const DashboardLayout = ({ children }) => {
   const renderSidebarContent = () => (
     <>
       <div className="flex items-center flex-shrink-0 px-4">
-        <img
-          className="h-12 w-auto"
-          src="/logo192.png"
-          alt="Mentee Connect"
-        />
+        <MenteeConnectLogo size="sm" showText={false} />
+
       </div>
       <div className="mt-8">
         <div className="px-4">
