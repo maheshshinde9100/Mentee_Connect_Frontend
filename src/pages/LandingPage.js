@@ -16,7 +16,6 @@
 
 import React, { useState } from 'react';
 import { User, Users, Shield, MessageSquare, Calendar, Target, Bell, Video, TrendingUp, CheckCircle, Github, Linkedin, Mail, MapPin, Menu, X, MessageCircle  } from 'lucide-react';
-
 // Mock components for demonstration
 const Link = ({ to, children, className }) => (
   <a href={to} className={className}>{children}</a>
@@ -57,6 +56,13 @@ const MenteeConnectLogo = ({ size = "md", animate = false, variant = "default", 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAuthenticated, user } = useAuth();
+
+  const devInfo = {
+    name: 'Mahesh Shinde',
+    title: 'Full Stack Java & Android Developer',
+    bio: 'A passionate and self-driven developer with a strong interest in Android and web development. I enjoy building creative digital solutions and continuously exploring new technologies to enhance my skills.',
+    photo: '/mahesh.png', 
+  };
 
   const features = [
     {
@@ -373,7 +379,8 @@ const LandingPage = () => {
           <h2 className="text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent mb-8">About the Developer</h2>
           <div className="bg-white/70 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-indigo-100">
             <div className="w-32 h-32 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg">
-              <User className="h-16 w-16 text-white" />
+              {/* <User className="h-16 w-16 text-white" /> */}
+              <img src={devInfo.photo}/>
             </div>
             <h3 className="text-2xl font-bold text-slate-900 mb-2">Mahesh Shinde</h3>
             <p className="text-lg text-slate-600 mb-6">Student at Sanjivani College of Engineering</p>

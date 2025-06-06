@@ -7,12 +7,11 @@ import {
 } from '@heroicons/react/24/outline';
 
 const Contact = () => {
-  const contactInfo = {
-    email: 'contact.shindemahesh2112@gmail.com',
-    phone: '+91 95295 44681',
-    location: 'Undirwadi, Yeola, Nashik, Maharashtra – 423402',
-  };
-
+const contactInfo = {
+  email: 'contact.shindemahesh2112@gmail.com',
+  phone: '+91 95295 44681',
+  location: 'Undirwadi, Yeola Taluka, Nashik District, Maharashtra – 423402, India',
+};
   const socialProfiles = [
     {
       name: 'LinkedIn',

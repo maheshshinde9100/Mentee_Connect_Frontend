@@ -363,7 +363,7 @@ const Register = () => {
                   <div className="flex items-center">
                     <span>Create Account</span>
                     <div className="ml-3 group-hover:translate-x-1 transition-transform duration-300">
-                      ✨
+                  
                     </div>
                   </div>
                 )}
