@@ -56,6 +56,12 @@ const Contact = () => {
       icon: '/gfg.svg',
       color: 'bg-green-50 text-green-700 hover:bg-green-100',
     },
+    {
+      name:'StackOverflow',
+      url:'https://stackoverflow.com/users/22119667/mahesh-shinde',
+      icon:'/gfg.svg',
+      color:'bg-gray-50 text-gray-700 hover:bg-gray-100',
+    }
   ];
 
   return (
