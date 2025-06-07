@@ -2,13 +2,23 @@ import api from './api';
 
 export const studentService = {
   // Profile Management
-  getCurrentProfile: () => api.get('/api/students/me'),
+  getCurrentProfile: () => api.get('/api/students/me/profile'),
+  updateProfile: (profileData) => api.put('/api/students/me/profile', profileData),
   getStudentById: (id) => api.get(`/api/students/${id}`),
-  updateProfile: (id, profileData) => api.put(`/api/students/${id}`, profileData),
 
   // Mentor Related
-  getMyMentor: () => api.get('/api/students/my-mentor'),
+  getMyMentor: () => api.get('/api/students/me/mentor'),
   getStudentsByMentor: (mentorId) => api.get(`/api/students/mentor/${mentorId}`),
+  
+  // Certificate Management
+  uploadCertificate: (formData) => api.post('/api/students/me/certificates', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }),
+  getMyCertificates: () => api.get('/api/students/me/certificates'),
+  deleteCertificate: (certificateId) => api.delete(`/api/students/me/certificates/${certificateId}`),
+  getCertificateFile: (filename) => api.get(`/api/certificates/${filename}`),
   
   // Meeting Management
   getMyMeetings: (id) => api.get(`/api/students/${id}/meetings`),
