@@ -296,7 +296,7 @@ const VideoCall = ({ meetingId, meetingLink, isHost, onEndMeeting, onLeave }) =>
     );
   }
   
-  return (
+    return (
     <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg">
       {error && (
         <div className="w-full mb-4 p-4 bg-yellow-50 text-yellow-700 rounded-lg">
@@ -331,21 +331,21 @@ const VideoCall = ({ meetingId, meetingLink, isHost, onEndMeeting, onLeave }) =>
           />
           <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
             You
-          </div>
+            </div>
         </div>
         <div className="relative">
-          <video
+              <video
             ref={remoteVideoRef}
-            autoPlay
-            playsInline
+                autoPlay
+                playsInline
             className="w-full rounded-lg shadow-lg bg-gray-900"
-          />
+              />
           <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded">
             Remote User
-          </div>
+            </div>
         </div>
       </div>
-
+      
       <div className="flex gap-4">
         <button
           onClick={toggleVideo}
