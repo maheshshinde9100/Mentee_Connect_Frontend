@@ -50,7 +50,6 @@ const MentorDashboard = () => {
   const fetchDashboardStats = async () => {
     try {
       setLoading(true);
-      // Fetch real stats from your backend
       const mentorId = user?.id;
       const menteesResponse = await mentorService.getMyStudents(mentorId);
       const sessionsResponse = await meetingService.getMentorMeetings(mentorId);
@@ -63,10 +62,9 @@ const MentorDashboard = () => {
         totalMentees,
         completedSessions,
         upcomingSessions,
-        averageRating: 0 // This would come from a separate API call if you implement ratings
+        averageRating: 0
       });
 
-      // Set upcoming sessions
       const upcoming = sessionsResponse.data
         ?.filter(s => s.status === 'SCHEDULED')
         ?.map(session => ({
@@ -99,8 +97,35 @@ const MentorDashboard = () => {
     }
   };
 
-  const handleStartNewMeeting = () => {
-    setShowNewMeetingForm(true);
+  const handleStartNewMeeting = async () => {
+    try {
+      setLoading(true);
+      console.log('Starting new instant meeting...');
+      
+      // Create meeting data
+      const meetingData = {
+        title: "Instant Meeting",
+        description: "Instant meeting started by mentor",
+        scheduledTime: new Date().toISOString(),
+        mentorId: user.id,
+        selectedMentees: [], // Empty array for instant meeting
+        duration: 60, // Default duration in minutes
+        status: 'IN_PROGRESS' // Set status directly in creation
+      };
+
+      console.log('Creating meeting with data:', meetingData);
+      const response = await meetingService.createMeeting(meetingData);
+      console.log('Meeting created successfully:', response);
+
+      // Set current meeting and show video call
+      setCurrentMeeting(response);
+      setShowNewMeetingForm(true);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error starting instant meeting:', error);
+      setError('Failed to start instant meeting. Please try again.');
+      setLoading(false);
+    }
   };
 
   const handleMeetingFormChange = (e) => {
@@ -130,12 +155,21 @@ const MentorDashboard = () => {
       setLoading(true);
       setError(null);
 
-      const mentorId = user?.id;
-      const response = await meetingService.startMeeting(mentorId, {
-        ...meetingForm,
-        startTime: new Date().toISOString()
-      });
-      
+      const meetingData = {
+        title: meetingForm.title,
+        description: meetingForm.description,
+        scheduledTime: meetingForm.scheduledTime,
+        mentor: {
+          id: user.id
+        },
+        student: {
+          id: meetingForm.selectedMentees[0] // Using the first selected mentee
+        },
+        type: 'ONLINE',
+        status: 'SCHEDULED'
+      };
+
+      const response = await meetingService.createMeeting(meetingData);
       setCurrentMeeting(response.data);
       setShowNewMeetingForm(false);
       setMeetingForm({
@@ -160,7 +194,7 @@ const MentorDashboard = () => {
 
       await meetingService.endMeeting(user.id, meetingId);
       setCurrentMeeting(null);
-      fetchMeetings(); // Refresh the meetings list
+      fetchMeetings();
     } catch (error) {
       console.error('Error ending meeting:', error);
       setError('Failed to end meeting. Please try again.');
@@ -169,114 +203,9 @@ const MentorDashboard = () => {
     }
   };
 
-  const renderVideoCall = () => (
-    <div className="space-y-6">
-      {error && (
-        <div className="bg-red-50 border-l-4 border-red-400 p-4">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <p className="text-sm text-red-700">{error}</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {currentMeeting ? (
-        <div>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-medium text-gray-900">
-              Active Meeting: {currentMeeting.title}
-            </h2>
-            <div className="text-sm text-gray-500">
-              Started at: {new Date(currentMeeting.startTime).toLocaleTimeString()}
-            </div>
-          </div>
-          
-          <VideoCall 
-            meetingId={currentMeeting.id} 
-            meetingLink={currentMeeting.meetingLink}
-            isHost={true}
-            onEndMeeting={handleEndMeeting}
-          />
-          
-          <div className="mt-4 text-sm text-gray-500">
-            <p>Share meeting link with your mentees: <span className="font-medium text-indigo-600">{currentMeeting.meetingLink}</span></p>
-          </div>
-        </div>
-      ) : showNewMeetingForm ? (
-        <div>
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Start a New Meeting</h2>
-          
-          <form onSubmit={handleCreateMeeting} className="space-y-6 bg-white p-6 rounded-lg shadow">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Meeting Title</label>
-              <input
-                type="text"
-                name="title"
-                value={meetingForm.title}
-                onChange={handleMeetingFormChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                required
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Meeting Description</label>
-              <textarea
-                name="description"
-                value={meetingForm.description}
-                onChange={handleMeetingFormChange}
-                rows={3}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                required
-              ></textarea>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Select Mentees</label>
-              <div className="grid grid-cols-2 gap-4">
-                {myMentees.map(mentee => (
-                  <div key={mentee.id} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id={`mentee-${mentee.id}`}
-                      checked={meetingForm.selectedMentees.includes(mentee.id)}
-                      onChange={() => handleSelectMentee(mentee.id)}
-                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                    />
-                    <label htmlFor={`mentee-${mentee.id}`} className="ml-2 text-sm text-gray-700">
-                      {mentee.name}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            <div className="flex space-x-3">
-              <button
-                type="submit"
-                disabled={loading}
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                {loading ? 'Creating...' : 'Start Meeting Now'}
-              </button>
-              
-              <button
-                type="button"
-                onClick={() => setShowNewMeetingForm(false)}
-                className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      ) : (
+  const renderVideoCall = () => {
+    if (!currentMeeting) {
+      return (
         <div className="text-center py-12">
           <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -295,39 +224,33 @@ const MentorDashboard = () => {
             </button>
           </div>
         </div>
-      )}
-      
-      {meetings.length > 0 && (
-        <div className="mt-8">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Past Meetings</h3>
-          <div className="bg-white shadow overflow-hidden sm:rounded-md">
-            <ul className="divide-y divide-gray-200">
-              {meetings.map((meeting) => (
-                <li key={meeting.id}>
-                  <div className="px-4 py-4 sm:px-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="text-sm font-medium text-indigo-600">{meeting.title}</h4>
-                        <p className="mt-1 text-sm text-gray-500">{meeting.description}</p>
-                      </div>
-                      <div className="ml-4 flex-shrink-0 flex">
-                        <p className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                          {new Date(meeting.startTime).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="mt-2 text-sm text-gray-500">
-                      <p>Attendees: {meeting.attendees ? meeting.attendees.join(', ') : 'None'}</p>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+      );
+    }
+
+    return (
+      <div>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-medium text-gray-900">
+            Active Meeting: {currentMeeting.title}
+          </h2>
+          <div className="text-sm text-gray-500">
+            Started at: {new Date(currentMeeting.scheduledTime).toLocaleTimeString()}
           </div>
         </div>
-      )}
-    </div>
-  );
+        
+        <VideoCall 
+          meetingId={currentMeeting.id} 
+          meetingLink={currentMeeting.meetingLink}
+          isHost={true}
+          onEndMeeting={handleEndMeeting}
+        />
+        
+        <div className="mt-4 text-sm text-gray-500">
+          <p>Share meeting link with your mentees: <span className="font-medium text-indigo-600">{currentMeeting.meetingLink}</span></p>
+        </div>
+      </div>
+    );
+  };
 
   const renderOverview = () => (
     <div className="space-y-6">
@@ -339,7 +262,7 @@ const MentorDashboard = () => {
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <svg className="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
               <div className="ml-5 w-0 flex-1">
@@ -360,7 +283,7 @@ const MentorDashboard = () => {
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <svg className="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <div className="ml-5 w-0 flex-1">
@@ -381,7 +304,7 @@ const MentorDashboard = () => {
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <svg className="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
               <div className="ml-5 w-0 flex-1">
@@ -389,6 +312,27 @@ const MentorDashboard = () => {
                   <dt className="text-sm font-medium text-gray-500 truncate">Upcoming Sessions</dt>
                   <dd className="flex items-baseline">
                     <div className="text-2xl font-semibold text-gray-900">{stats.upcomingSessions}</div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Average Rating */}
+        <div className="bg-white overflow-hidden shadow rounded-lg">
+          <div className="p-5">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <svg className="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                </svg>
+              </div>
+              <div className="ml-5 w-0 flex-1">
+                <dl>
+                  <dt className="text-sm font-medium text-gray-500 truncate">Average Rating</dt>
+                  <dd className="flex items-baseline">
+                    <div className="text-2xl font-semibold text-gray-900">{stats.averageRating.toFixed(1)}</div>
                   </dd>
                 </dl>
               </div>
@@ -422,7 +366,7 @@ const MentorDashboard = () => {
                     </div>
                     <div className="flex items-center">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        session.status === 'Confirmed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                        session.status === 'SCHEDULED' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
                       }`}>
                         {session.status}
                       </span>
@@ -511,4 +455,4 @@ const MentorDashboard = () => {
   );
 };
 
-export default MentorDashboard; 
+export default MentorDashboard;

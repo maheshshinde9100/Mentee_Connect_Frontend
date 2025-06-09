@@ -18,7 +18,7 @@ const MeetingScheduler = ({ onStartNewMeeting }) => {
     try {
       setLoading(true);
       const response = await meetingService.getMentorMeetings(user.id);
-      setMeetings(response.data);
+      setMeetings(response.meetings || []);
     } catch (err) {
       setError('Failed to fetch meetings');
       console.error('Error fetching meetings:', err);
@@ -79,7 +79,7 @@ const MeetingScheduler = ({ onStartNewMeeting }) => {
           </p>
         </div>
         <div className="border-t border-gray-200">
-          {meetings.length === 0 ? (
+          {!meetings || meetings.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               No meetings scheduled
             </div>
@@ -98,7 +98,7 @@ const MeetingScheduler = ({ onStartNewMeeting }) => {
                         {new Date(meeting.scheduledTime).toLocaleString()}
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-4">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                         meeting.status === 'SCHEDULED' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
                       }`}>

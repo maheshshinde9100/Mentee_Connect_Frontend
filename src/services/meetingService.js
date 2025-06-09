@@ -1,80 +1,49 @@
 import api from './api';
 
-// Meeting service for handling video calls
+// Meeting service for handling meetings and video calls
 export const meetingService = {
-  // Start a new meeting
-  startMeeting: async (mentorId, meetingData) => {
+  // Create a new meeting
+  createMeeting: async (meetingData) => {
     try {
-      const response = await api.post(`/api/mentors/${mentorId}/meetings/start`, meetingData);
-      return response;
+      console.log('Creating meeting with data:', meetingData);
+      const response = await api.post('http://localhost:8080/api/meetings', {
+        title: meetingData.title,
+        description: meetingData.description,
+        scheduledTime: meetingData.scheduledTime,
+        mentorId: meetingData.mentorId,
+        selectedMentees: meetingData.selectedMentees,
+        duration: meetingData.duration
+      });
+      console.log('Meeting created successfully:', response.data);
+      return response.data;
     } catch (error) {
-      console.error('Error starting meeting:', error);
+      console.error('Error creating meeting:', error.response?.data || error);
       throw error;
     }
   },
-  
-  // End an active meeting
-  endMeeting: async (mentorId, meetingId) => {
-    try {
-      const response = await api.put(`/api/mentors/${mentorId}/meetings/${meetingId}/end`);
-      return response;
-    } catch (error) {
-      console.error('Error ending meeting:', error);
-      throw error;
-    }
-  },
-  
-  // Get all meetings for a mentor
+
+  // Get mentor's meetings
   getMentorMeetings: async (mentorId) => {
     try {
-      const response = await api.get(`/api/mentors/${mentorId}/meetings`);
-      return response;
+      console.log('Fetching meetings for mentor:', mentorId);
+      const response = await api.get(`http://localhost:8080/api/meetings/mentor/${mentorId}`);
+      console.log('Mentor meetings fetched:', response.data);
+      return response.data;
     } catch (error) {
-      console.error('Error fetching mentor meetings:', error);
-      throw error;
-    }
-  },
-  
-  // Get active meeting for a mentor
-  getActiveMeeting: async (mentorId) => {
-    try {
-      const response = await api.get(`/api/mentors/${mentorId}/meetings/active`);
-      return response;
-    } catch (error) {
-      console.error('Error fetching active meeting:', error);
-      throw error;
-    }
-  },
-  
-  // Get all meetings for a student
-  getStudentMeetings: async (studentId) => {
-    try {
-      const response = await api.get(`/api/students/${studentId}/meetings`);
-      return response;
-    } catch (error) {
-      console.error('Error fetching student meetings:', error);
+      console.error('Error fetching mentor meetings:', error.response?.data || error);
       throw error;
     }
   },
 
-  // Join a meeting as a student
-  joinMeeting: async (studentId, meetingId) => {
+  // Get mentee's meetings
+  getMenteeMeetings: async (menteeId) => {
     try {
-      const response = await api.post(`/api/students/${studentId}/meetings/${meetingId}/join`);
-      return response;
+      console.log('Fetching meetings for mentee:', menteeId);
+      const response = await api.get(`http://localhost:8080/api/meetings/mentee/${menteeId}`);
+      console.log('Mentee meetings fetched:', response.data);
+      return response.data;
     } catch (error) {
-      console.error('Error joining meeting:', error);
-      throw error;
-    }
-  },
-
-  // Leave a meeting as a student
-  leaveMeeting: async (studentId, meetingId) => {
-    try {
-      const response = await api.post(`/api/students/${studentId}/meetings/${meetingId}/leave`);
-      return response;
-    } catch (error) {
-      console.error('Error leaving meeting:', error);
+      console.error('Error fetching mentee meetings:', error.response?.data || error);
       throw error;
     }
   },
@@ -82,75 +51,107 @@ export const meetingService = {
   // Get meeting details
   getMeetingDetails: async (meetingId) => {
     try {
-      const response = await api.get(`/api/meetings/${meetingId}`);
-      return response;
+      console.log('Fetching details for meeting:', meetingId);
+      const response = await api.get(`http://localhost:8080/api/meetings/${meetingId}`);
+      console.log('Meeting details fetched:', response.data);
+      return response.data;
     } catch (error) {
-      console.error('Error fetching meeting details:', error);
+      console.error('Error fetching meeting details:', error.response?.data || error);
       throw error;
     }
   },
 
-  // Get meeting participants
-  getMeetingParticipants: async (meetingId) => {
+  // Update meeting status
+  updateMeetingStatus: async (meetingId, status) => {
     try {
-      const response = await api.get(`/api/meetings/${meetingId}/participants`);
-      return response;
+      console.log('Updating meeting status:', { meetingId, status });
+      const response = await api.put(`http://localhost:8080/api/meetings/${meetingId}/status`, { status });
+      console.log('Meeting status updated:', response.data);
+      return response.data;
     } catch (error) {
-      console.error('Error fetching meeting participants:', error);
+      console.error('Error updating meeting status:', error.response?.data || error);
       throw error;
     }
   },
-  
-  // Get all meetings (for admin)
-  getAllMeetings: async () => {
+
+  // Delete meeting
+  deleteMeeting: async (meetingId) => {
     try {
-      console.log('Fetching all meetings for admin');
-      
-      // For demo, simulate meetings data
-      const mockMeetings = [
-        {
-          id: 'meeting-1',
-          mentorId: 'mentor1',
-          mentorName: 'John Doe',
-          title: 'Weekly Check-in',
-          description: 'Regular weekly session to discuss progress',
-          startTime: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-          endTime: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000 + 60 * 60 * 1000).toISOString(),
-          meetingLink: 'https://meet.google.com/abc-defg-hij',
-          attendees: ['Student A', 'Student B', 'Student C'],
-          status: 'ended'
-        },
-        {
-          id: 'meeting-2',
-          mentorId: 'mentor1',
-          mentorName: 'John Doe',
-          title: 'Project Review',
-          description: 'Review project progress and provide feedback',
-          startTime: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-          endTime: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 90 * 60 * 1000).toISOString(),
-          meetingLink: 'https://meet.google.com/xyz-uvwx-yz',
-          attendees: ['Student A', 'Student C'],
-          status: 'ended'
-        },
-        {
-          id: 'meeting-3',
-          mentorId: 'mentor2',
-          mentorName: 'Jane Smith',
-          title: 'Upcoming Group Session',
-          description: 'Group discussion on upcoming project deadlines',
-          startTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-          meetingLink: 'https://meet.google.com/lmn-opqr-stu',
-          status: 'scheduled'
-        }
-      ];
-      
-      // In a real implementation, this would be an actual API call:
-      // const response = await api.get(`/api/admin/meetings`);
-      // return response;
-      
-      return { data: mockMeetings };
+      console.log('Deleting meeting:', meetingId);
+      const response = await api.delete(`http://localhost:8080/api/meetings/${meetingId}`);
+      console.log('Meeting deleted:', response.data);
+      return response.data;
     } catch (error) {
-      console.error('Error fetching all meetings:', error);
+      console.error('Error deleting meeting:', error.response?.data || error);
+      throw error;
+    }
+  },
+
+  // Initialize video call
+  initializeVideoCall: async (meetingId, mentorId) => {
+    try {
+      const response = await api.post('http://localhost:8080/api/video-calls', {
+        meetingId,
+        mentorId
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error initializing video call:', error);
+      throw error;
+    }
+  },
+
+  // Join video call
+  joinVideoCall: async (roomId, participantId, participantName, participantRole) => {
+    try {
+      const response = await api.post('http://localhost:8080/api/video-calls/join', {
+        roomId,
+        participantId,
+        participantName,
+        participantRole
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error joining video call:', error);
+      throw error;
+    }
+  },
+
+  // Leave video call
+  leaveVideoCall: async (roomId, participantId) => {
+    try {
+      const response = await api.post('http://localhost:8080/api/video-calls/leave', {
+        roomId,
+        participantId
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error leaving video call:', error);
+      throw error;
+    }
+  },
+
+  // End video call
+  endVideoCall: async (roomId, mentorId) => {
+    try {
+      const response = await api.post('http://localhost:8080/api/video-calls/end', {
+        roomId,
+        mentorId
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error ending video call:', error);
+      throw error;
+    }
+  },
+
+  // Get active calls
+  getActiveCalls: async () => {
+    try {
+      const response = await api.get('http://localhost:8080/api/video-calls/active');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching active calls:', error);
       throw error;
     }
   }

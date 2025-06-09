@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import PrivateRoute from './components/PrivateRoute';
 import Login from './pages/authentication/Login';
 import Register from './pages/authentication/Register';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -39,6 +40,8 @@ import TaskForm from './pages/mentor/TaskForm';
 import AttendanceForm from './pages/mentor/AttendanceForm';
 import Updates from './pages/mentor/Updates';
 import ShareUpdate from './pages/mentor/ShareUpdate';
+import MeetingView from './components/MeetingView';
+import './App.css';
 
 function App() {
   return (
@@ -328,6 +331,18 @@ function App() {
               <ProtectedRoute allowedRoles={['STUDENT', 'MENTEE']}>
                 <DashboardLayout>
                   <SkillsManagement />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Meeting Routes */}
+          <Route
+            path="/meeting/:meetingId"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN', 'MENTOR', 'STUDENT', 'MENTEE']}>
+                <DashboardLayout>
+                  <MeetingView />
                 </DashboardLayout>
               </ProtectedRoute>
             }

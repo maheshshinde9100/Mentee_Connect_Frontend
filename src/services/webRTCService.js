@@ -1,255 +1,176 @@
-import { io } from 'socket.io-client';
+import axios from 'axios';
+
+const API_URL = 'http://localhost:8080/api';
 
 class WebRTCService {
   constructor() {
-    this.socket = null;
-    this.peerConnections = {};
     this.localStream = null;
-    this.onParticipantJoinedCallback = null;
-    this.onParticipantLeftCallback = null;
-    this.onStreamAddedCallback = null;
-    this.connectionState = 'disconnected';
+    this.peerConnection = null;
+    this.roomId = null;
+    this.userId = null;
+    this.mediaConstraints = {
+      audio: true,
+      video: {
+        width: { min: 640, ideal: 1280, max: 1920 },
+        height: { min: 480, ideal: 720, max: 1080 }
+      }
+    };
+    this.callbacks = {
+      onStreamAdded: null,
+      onStreamRemoved: null,
+      onError: null
+    };
   }
 
-  async initialize(meetingId, userId, isHost) {
+  setCallbacks(callbacks) {
+    this.callbacks = { ...this.callbacks, ...callbacks };
+  }
+
+  getAuthHeader() {
+    const token = localStorage.getItem('token');
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  }
+
+  async requestPermissions() {
     try {
-      console.log('Initializing WebRTC service...', { meetingId, userId, isHost });
-      
-      // Connect to signaling server with timeout and reconnection options
-      const socketUrl = process.env.REACT_APP_SOCKET_SERVER || 'http://localhost:3001';
-      console.log('Connecting to socket server:', socketUrl);
-      
-      this.socket = io(socketUrl, {
-        query: { meetingId, userId, isHost },
-        timeout: 10000,
-        reconnection: true,
-        reconnectionAttempts: 3,
-        reconnectionDelay: 1000
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
       });
+      // Stop the stream immediately after getting permissions
+      stream.getTracks().forEach(track => track.stop());
+      return true;
+    } catch (error) {
+      console.error('Error requesting permissions:', error);
+      return false;
+    }
+  }
 
-      // Return a promise that resolves when connection is established or rejects on error
-      await new Promise((resolve, reject) => {
-        this.socket.on('connect', () => {
-          console.log('Socket connected successfully');
-          this.connectionState = 'connected';
-          resolve();
-        });
-
-        this.socket.on('connect_error', (error) => {
-          console.error('Socket connection error:', error);
-          this.connectionState = 'error';
-          reject(new Error('Failed to connect to signaling server'));
-        });
-
-        // Set a connection timeout
-        setTimeout(() => {
-          if (this.connectionState !== 'connected') {
-            reject(new Error('Connection timeout'));
-          }
-        }, 10000);
-      });
-
-      // Set up socket event listeners
-      this.setupSocketListeners();
-
-      // Get local media stream with error handling
-      try {
-        console.log('Requesting media permissions...');
+  async initialize(meetingId, userId, userName, role) {
+    try {
+      console.log('Initializing video call...', { meetingId, userId, userName, role });
+      
+      // Get local media stream
         this.localStream = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: true
         });
-        console.log('Media permissions granted');
-      } catch (mediaError) {
-        console.error('Media access error:', mediaError);
-        throw new Error('Failed to access camera/microphone. Please check permissions.');
-      }
+      
+      // Initialize video call through API
+      const response = await axios.post(`${API_URL}/video-calls`, {
+        meetingId,
+        mentorId: userId
+      }, {
+        headers: this.getAuthHeader()
+      });
 
-      return this.localStream;
+      console.log('Video call initialized:', response.data);
+      this.roomId = response.data.roomId;
+      this.userId = userId;
+      
+      return response.data;
     } catch (error) {
-      console.error('WebRTC initialization error:', error);
-      this.connectionState = 'error';
+      console.error('Error initializing video call:', error);
+      // Clean up if initialization fails
+      if (this.localStream) {
+        this.localStream.getTracks().forEach(track => track.stop());
+        this.localStream = null;
+      }
       throw error;
     }
   }
 
-  setupSocketListeners() {
-    // New participant joined
-    this.socket.on('participant-joined', async ({ participantId }) => {
-      try {
-        console.log('New participant joined:', participantId);
-        
-        // Create new RTCPeerConnection with more STUN/TURN servers
-        const peerConnection = new RTCPeerConnection({
-          iceServers: [
-            { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' },
-            { urls: 'stun:stun2.l.google.com:19302' },
-            { urls: 'stun:stun3.l.google.com:19302' },
-            { urls: 'stun:stun4.l.google.com:19302' }
-          ]
-        });
-
-        // Monitor peer connection state
-        peerConnection.onconnectionstatechange = () => {
-          console.log(`Peer connection state (${participantId}):`, peerConnection.connectionState);
-        };
-
-        peerConnection.oniceconnectionstatechange = () => {
-          console.log(`ICE connection state (${participantId}):`, peerConnection.iceConnectionState);
-        };
-
-        // Add local stream tracks to peer connection
-        this.localStream.getTracks().forEach(track => {
-          peerConnection.addTrack(track, this.localStream);
-        });
-
-        // Store peer connection
-        this.peerConnections[participantId] = peerConnection;
-
-        // Handle ICE candidates
-        peerConnection.onicecandidate = (event) => {
-          if (event.candidate) {
-            console.log('Sending ICE candidate to:', participantId);
-            this.socket.emit('ice-candidate', {
-              candidate: event.candidate,
-              targetId: participantId
-            });
-          }
-        };
-
-        // Handle remote stream added
-        peerConnection.ontrack = (event) => {
-          console.log('Remote track received from:', participantId);
-          if (this.onStreamAddedCallback) {
-            this.onStreamAddedCallback(participantId, event.streams[0]);
-          }
-        };
-
-        // Create and send offer if host
-        if (this.socket.isHost) {
-          console.log('Creating offer for:', participantId);
-          const offer = await peerConnection.createOffer();
-          await peerConnection.setLocalDescription(offer);
-          this.socket.emit('offer', {
-            offer,
-            targetId: participantId
-          });
-        }
-
-        // Notify callback
-        if (this.onParticipantJoinedCallback) {
-          this.onParticipantJoinedCallback(participantId);
-        }
-      } catch (error) {
-        console.error('Error handling new participant:', error);
-      }
-    });
-
-    // Handle received offer
-    this.socket.on('offer', async ({ offer, senderId }) => {
-      try {
-        console.log('Received offer from:', senderId);
-        const peerConnection = this.peerConnections[senderId];
-        await peerConnection.setRemoteDescription(offer);
-        const answer = await peerConnection.createAnswer();
-        await peerConnection.setLocalDescription(answer);
-        this.socket.emit('answer', {
-          answer,
-          targetId: senderId
-        });
-      } catch (error) {
-        console.error('Error handling offer:', error);
-      }
-    });
-
-    // Handle received answer
-    this.socket.on('answer', async ({ answer, senderId }) => {
-      try {
-        console.log('Received answer from:', senderId);
-        const peerConnection = this.peerConnections[senderId];
-        await peerConnection.setRemoteDescription(answer);
-      } catch (error) {
-        console.error('Error handling answer:', error);
-      }
-    });
-
-    // Handle received ICE candidate
-    this.socket.on('ice-candidate', async ({ candidate, senderId }) => {
-      try {
-        console.log('Received ICE candidate from:', senderId);
-        const peerConnection = this.peerConnections[senderId];
-        await peerConnection.addIceCandidate(candidate);
-      } catch (error) {
-        console.error('Error handling ICE candidate:', error);
-      }
-    });
-
-    // Handle participant left
-    this.socket.on('participant-left', ({ participantId }) => {
-      console.log('Participant left:', participantId);
-      if (this.peerConnections[participantId]) {
-        this.peerConnections[participantId].close();
-        delete this.peerConnections[participantId];
-      }
-
-      if (this.onParticipantLeftCallback) {
-        this.onParticipantLeftCallback(participantId);
-      }
-    });
-
-    // Handle disconnection
-    this.socket.on('disconnect', (reason) => {
-      console.log('Socket disconnected:', reason);
-      this.connectionState = 'disconnected';
-    });
+  getLocalStream() {
+    return this.localStream;
   }
 
-  // Set callbacks
-  setCallbacks(callbacks) {
-    const {
-      onParticipantJoined,
-      onParticipantLeft,
-      onStreamAdded
-    } = callbacks;
-
-    this.onParticipantJoinedCallback = onParticipantJoined;
-    this.onParticipantLeftCallback = onParticipantLeft;
-    this.onStreamAddedCallback = onStreamAdded;
-  }
-
-  // Toggle local audio
-  toggleAudio(enabled) {
-    if (this.localStream) {
-      this.localStream.getAudioTracks().forEach(track => {
-        track.enabled = enabled;
+  async joinCall(roomId, userId, userName, role) {
+    try {
+      const response = await axios.post(`${API_URL}/video-calls/join`, {
+        roomId,
+        participantId: userId,
+        participantName: userName,
+        participantRole: role
+      }, {
+        headers: this.getAuthHeader()
       });
+      return response.data;
+      } catch (error) {
+      console.error('Error joining call:', error);
+      throw error;
     }
   }
 
-  // Toggle local video
-  toggleVideo(enabled) {
-    if (this.localStream) {
-      this.localStream.getVideoTracks().forEach(track => {
-        track.enabled = enabled;
+  async leaveCall(roomId, userId) {
+    try {
+      console.log('Leaving video call...', { roomId, userId });
+      
+      // Stop all tracks
+      if (this.localStream) {
+        this.localStream.getTracks().forEach(track => track.stop());
+        this.localStream = null;
+      }
+
+      // Close peer connection if exists
+      if (this.peerConnection) {
+        this.peerConnection.close();
+        this.peerConnection = null;
+      }
+
+      // Notify server
+      const response = await axios.post(`${API_URL}/video-calls/leave`, {
+        roomId,
+        participantId: userId
+      }, {
+        headers: this.getAuthHeader()
       });
+
+      console.log('Left video call:', response.data);
+      this.roomId = null;
+      this.userId = null;
+      
+      return response.data;
+    } catch (error) {
+      console.error('Error leaving call:', error);
+      // Still clean up local resources even if server call fails
+      if (this.localStream) {
+        this.localStream.getTracks().forEach(track => track.stop());
+        this.localStream = null;
+      }
+      if (this.peerConnection) {
+        this.peerConnection.close();
+        this.peerConnection = null;
+      }
+      this.roomId = null;
+      this.userId = null;
+      throw error;
     }
   }
 
-  // Leave meeting
-  leaveMeeting() {
-    // Stop local stream
-    if (this.localStream) {
-      this.localStream.getTracks().forEach(track => track.stop());
+  async endCall(roomId, userId) {
+    try {
+      const response = await axios.post(`${API_URL}/video-calls/end`, {
+        roomId,
+        mentorId: userId
+      }, {
+        headers: this.getAuthHeader()
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error ending call:', error);
+      throw error;
     }
+  }
 
-    // Close all peer connections
-    Object.values(this.peerConnections).forEach(pc => pc.close());
-    this.peerConnections = {};
-
-    // Disconnect socket
-    if (this.socket) {
-      this.socket.disconnect();
+  async getActiveCalls() {
+    try {
+      const response = await axios.get(`${API_URL}/video-calls/active`, {
+        headers: this.getAuthHeader()
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error getting active calls:', error);
+      throw error;
     }
   }
 }
