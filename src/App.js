@@ -25,11 +25,13 @@ import DashboardLayout from './components/layout/DashboardLayout';
 import Profile from './pages/profile/Profile';
 import LandingPage from './pages/LandingPage';
 import TestComponent from './components/TestComponent';
+import CertificateManagement from './components/CertificateManagement';
 
 // Student Pages
 import StudentDashboard from './pages/student/StudentDashboard';
 import MentorDetails from './pages/student/MentorDetails';
 import SkillsManagement from './pages/student/SkillsManagement';
+import JoinMeeting from './pages/student/JoinMeeting';
 
 import About from './pages/common/About';
 import Contact from './pages/common/Contact';
@@ -331,6 +333,26 @@ function App() {
               <ProtectedRoute allowedRoles={['STUDENT', 'MENTEE']}>
                 <DashboardLayout>
                   <SkillsManagement />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/join-meeting"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT', 'MENTEE']}>
+                <DashboardLayout>
+                  <JoinMeeting />
+                </DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/certificates"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT', 'MENTEE']}>
+                <DashboardLayout>
+                  <CertificateManagement />
                 </DashboardLayout>
               </ProtectedRoute>
             }

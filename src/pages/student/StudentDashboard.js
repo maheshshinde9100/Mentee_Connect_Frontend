@@ -283,6 +283,45 @@ const StudentDashboard = () => {
         </div>
       </div>
 
+      {/* Join Meeting by Link */}
+      <div className="px-4 sm:px-6 md:px-8 mb-6">
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-lg font-semibold mb-4">Join Meeting by Link</h2>
+          <div className="max-w-xl">
+            <div className="flex gap-4">
+              <input
+                type="text"
+                placeholder="Paste meeting link here"
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                onChange={(e) => {
+                  const link = e.target.value;
+                  if (link.includes('/meeting/')) {
+                    const meetingId = link.split('/meeting/')[1];
+                    handleJoinMeeting({ id: meetingId, title: 'Meeting via Link' });
+                  }
+                }}
+              />
+              <button
+                onClick={() => {
+                  const link = document.querySelector('input[type="text"]').value;
+                  if (link.includes('/meeting/')) {
+                    const meetingId = link.split('/meeting/')[1];
+                    handleJoinMeeting({ id: meetingId, title: 'Meeting via Link' });
+                  }
+                }}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+              >
+                <VideoCameraIcon className="h-5 w-5 mr-2" />
+                Join Meeting
+              </button>
+            </div>
+            <p className="mt-2 text-sm text-gray-500">
+              Paste the meeting link provided by your mentor to join the meeting
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Certificate Management */}
       <div className="px-4 sm:px-6 md:px-8">
         <CertificateManagement />

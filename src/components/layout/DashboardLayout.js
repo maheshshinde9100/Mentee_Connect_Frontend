@@ -18,6 +18,7 @@ import {
   DocumentTextIcon,
   BuildingLibraryIcon,
   EnvelopeIcon,
+  VideoCameraIcon,
 } from '@heroicons/react/24/outline';
 import NotificationIcon from './NotificationIcon';
 import { notificationService } from '../../services/notificationService';
@@ -163,6 +164,18 @@ const DashboardLayout = ({ children }) => {
       href: '/student/mentors',
       icon: UserGroupIcon,
       description: 'Browse available mentors',
+    },
+    {
+      name: 'Join Meeting',
+      href: '/student/join-meeting',
+      icon: VideoCameraIcon,
+      description: 'Join a meeting with your mentor',
+    },
+    {
+      name: 'Certificates',
+      href: '/student/certificates',
+      icon: DocumentTextIcon,
+      description: 'View and manage your certificates',
     },
   ];
 
