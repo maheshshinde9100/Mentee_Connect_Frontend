@@ -1,27 +1,94 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import axios from 'axios';
 
 const MentorProfile = () => {
-  const { user } = useAuth();
-  const [stats, setStats] = useState({
-    totalMentees: 0,
-    completedSessions: 0,
-    averageRating: 0,
-  });
+  const [profile, setProfile] = useState(null);
+  const [formData, setFormData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [editMode, setEditMode] = useState(false);
 
-  // In a real application, fetch these stats from your backend
   useEffect(() => {
-    // Mock data - replace with actual API call
-    setStats({
-      totalMentees: 12,
-      completedSessions: 48,
-      averageRating: 4.8,
-    });
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get('http://localhost:8080/api/mentors/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = res.data;
+        setProfile(data);
+        setFormData({
+          firstName: data.firstName || '',
+          lastName: data.lastName || '',
+          email: data.email || '',
+          phoneNumber: data.phoneNumber || '',
+          mentorId: data.mentorId || '',
+          department: data.department || '',
+          specialization: data.specialization || '',
+          designation: data.designation || '',
+          yearsOfExperience: data.yearsOfExperience || 0,
+        });
+      } catch (err) {
+        console.error('Failed to fetch mentor profile:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
   }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === 'yearsOfExperience' ? parseInt(value, 10) || 0 : value,
+    }));
+  };
+
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(
+        `http://localhost:8080/api/mentors/${profile.id}`,
+        {
+          ...profile,
+          ...formData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setProfile((prev) => ({ ...prev, ...formData }));
+      setEditMode(false);
+    } catch (err) {
+      console.error('Failed to update mentor profile:', err);
+    }
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (!profile) return <p>Unable to load profile.</p>;
+
+  const fields = [
+    { label: 'First Name', key: 'firstName' },
+    { label: 'Last Name', key: 'lastName' },
+    { label: 'Email', key: 'email' },
+    { label: 'Phone Number', key: 'phoneNumber' },
+    { label: 'Mentor ID', key: 'mentorId' },
+    { label: 'Department', key: 'department' },
+    { label: 'Specialization', key: 'specialization' },
+    { label: 'Designation', key: 'designation' },
+    { label: 'Years of Experience', key: 'yearsOfExperience', type: 'number' },
+    { label: 'Role', key: 'role', readonly: true },
+  ];
 
   return (
     <div className="space-y-6">
-      {/* Profile Header */}
+      {/* Profile Card */}
       <div className="bg-white shadow rounded-lg overflow-hidden">
         <div className="px-4 py-5 sm:px-6 bg-gray-50">
           <h3 className="text-lg leading-6 font-medium text-gray-900">Mentor Profile</h3>
@@ -29,80 +96,63 @@ const MentorProfile = () => {
         </div>
         <div className="border-t border-gray-200">
           <dl>
-            <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">Full name</dt>
-              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                {user?.firstName} {user?.lastName}
-              </dd>
-            </div>
-            <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">Email address</dt>
-              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user?.email}</dd>
-            </div>
-            <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">Department</dt>
-              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{user?.department}</dd>
-            </div>
-            <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">Expertise</dt>
-              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                <div className="flex flex-wrap gap-2">
-                  {user?.expertise?.map((skill, index) => (
-                    <span
-                      key={index}
-                      className="px-2 py-1 text-xs font-medium bg-indigo-100 text-indigo-800 rounded-full"
-                    >
-                      {skill}
-                    </span>
-                  )) || 'Not specified'}
-                </div>
-              </dd>
-            </div>
+            {fields.map(({ label, key, readonly, type = 'text' }) => (
+              <div
+                key={key}
+                className={`${
+                  key === 'email' || key === 'mentorId' ? 'bg-gray-50' : 'bg-white'
+                } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}
+              >
+                <dt className="text-sm font-medium text-gray-500">{label}</dt>
+                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                  {editMode && !readonly ? (
+                    <input
+                      type={type}
+                      name={key}
+                      value={formData[key] || ''}
+                      onChange={handleChange}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm sm:text-sm px-3 py-1"
+                    />
+                  ) : key === 'role' ? (
+                    profile.role
+                  ) : (
+                    formData[key]
+                  )}
+                </dd>
+              </div>
+            ))}
           </dl>
-        </div>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-        <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <dt className="text-sm font-medium text-gray-500 truncate">Total Mentees</dt>
-            <dd className="mt-1 text-3xl font-semibold text-gray-900">{stats.totalMentees}</dd>
-          </div>
-        </div>
-
-        <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <dt className="text-sm font-medium text-gray-500 truncate">Sessions Completed</dt>
-            <dd className="mt-1 text-3xl font-semibold text-gray-900">{stats.completedSessions}</dd>
-          </div>
-        </div>
-
-        <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <dt className="text-sm font-medium text-gray-500 truncate">Average Rating</dt>
-            <dd className="mt-1 text-3xl font-semibold text-gray-900">{stats.averageRating}/5.0</dd>
-          </div>
         </div>
       </div>
 
       {/* Action Buttons */}
       <div className="flex justify-end space-x-4">
-        <button
-          type="button"
-          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          View Schedule
-        </button>
-        <button
-          type="button"
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          Edit Profile
-        </button>
+        {editMode ? (
+          <>
+            <button
+              onClick={() => setEditMode(false)}
+              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium bg-white hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSave}
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700"
+            >
+              Save Changes
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() => setEditMode(true)}
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+          >
+            Edit Profile
+          </button>
+        )}
       </div>
     </div>
   );
 };
 
-export default MentorProfile; 
+export default MentorProfile;
