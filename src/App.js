@@ -37,12 +37,12 @@ import About from './pages/common/About';
 import Contact from './pages/common/Contact';
 
 import MyMentees from './pages/mentor/MyMentees';
+import MeetingRoom from './pages/videocall/MeetingRoom';
 import MenteeDetail from './pages/mentor/MenteeDetail';
 import TaskForm from './pages/mentor/TaskForm';
 import AttendanceForm from './pages/mentor/AttendanceForm';
 import Updates from './pages/mentor/Updates';
 import ShareUpdate from './pages/mentor/ShareUpdate';
-import MeetingView from './components/MeetingView';
 import './App.css';
 
 function App() {
@@ -358,14 +358,12 @@ function App() {
             }
           />
 
-          {/* Meeting Routes */}
+          {/* Video Call Routes */}
           <Route
-            path="/meeting/:meetingId"
+            path="/meeting/room/:roomId"
             element={
               <ProtectedRoute allowedRoles={['ADMIN', 'MENTOR', 'STUDENT', 'MENTEE']}>
-                <DashboardLayout>
-                  <MeetingView />
-                </DashboardLayout>
+                <MeetingRoom />
               </ProtectedRoute>
             }
           />

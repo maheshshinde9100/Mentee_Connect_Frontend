@@ -13,7 +13,7 @@ import {
 } from '@heroicons/react/24/outline';
 import meetingService from '../../services/meetingService';
 import studentService from '../../services/studentService';
-import VideoCall from '../../components/VideoCall';
+
 import CertificateManagement from '../../components/CertificateManagement';
 
 const StudentDashboard = () => {
@@ -67,13 +67,16 @@ const StudentDashboard = () => {
       const studentId = user?.id;
       const response = await meetingService.getStudentMeetings(studentId);
       
-      const active = response.data.filter(
+      // Handle different response formats and ensure data is an array
+      const meetings = response?.data || response || [];
+      const active = Array.isArray(meetings) ? meetings.filter(
         meeting => meeting.status === 'active' || meeting.status === 'scheduled'
-      );
+      ) : [];
       
       setActiveMeetings(active);
     } catch (error) {
       console.error('Error fetching active meetings:', error);
+      setActiveMeetings([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
@@ -111,11 +114,17 @@ const StudentDashboard = () => {
             <p className="text-sm text-gray-600 mt-1">{currentMeeting.description}</p>
           </div>
           
-          <VideoCall
-            meetingId={currentMeeting.id}
-            meetingLink={currentMeeting.meetingLink}
-            isHost={false}
-          />
+          <div className="text-center py-8">
+            <p className="text-gray-600 mb-4">
+              To join this meeting, please use the dedicated meeting page.
+            </p>
+            <button
+              onClick={() => window.location.href = '/student/join-meeting'}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              Go to Join Meeting
+            </button>
+          </div>
         </div>
       </div>
     );

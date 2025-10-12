@@ -463,7 +463,6 @@ import TaskManagement from './TaskManagement';
 import MentorMeetings from './MentorMeetings';
 import { meetingService } from '../../services/meetingService';
 import { mentorService } from '../../services/mentorService';
-import VideoCall from '../../components/VideoCall';
 import MyMentees from './MyMentees';
 
 const MentorDashboard = () => {
@@ -662,54 +661,7 @@ const MentorDashboard = () => {
     }
   };
 
-  const renderVideoCall = () => {
-    if (!currentMeeting) {
-      return (
-        <div className="text-center py-12">
-          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-          </svg>
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No active meeting</h3>
-          <p className="mt-1 text-sm text-gray-500">Start a new video call with your mentees.</p>
-          <div className="mt-6">
-            <button
-              onClick={handleStartNewMeeting}
-              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              <svg className="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              Start New Meeting
-            </button>
-          </div>
-        </div>
-      );
-    }
 
-    return (
-      <div>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-medium text-gray-900">
-            Active Meeting: {currentMeeting.title}
-          </h2>
-          <div className="text-sm text-gray-500">
-            Started at: {new Date(currentMeeting.scheduledTime).toLocaleTimeString()}
-          </div>
-        </div>
-        
-        <VideoCall 
-          meetingId={currentMeeting.id} 
-          meetingLink={currentMeeting.meetingLink}
-          isHost={true}
-          onEndMeeting={handleEndMeeting}
-        />
-        
-        <div className="mt-4 text-sm text-gray-500">
-          <p>Share meeting link with your mentees: <span className="font-medium text-indigo-600">{currentMeeting.meetingLink}</span></p>
-        </div>
-      </div>
-    );
-  };
 
   const renderOverview = () => (
     <div className="space-y-6">
