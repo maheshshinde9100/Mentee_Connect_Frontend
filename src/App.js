@@ -1,7 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import PrivateRoute from './components/PrivateRoute';
 import Login from './pages/authentication/Login';
 import Register from './pages/authentication/Register';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -24,7 +23,6 @@ import NotFound from './pages/NotFound';
 import DashboardLayout from './components/layout/DashboardLayout';
 import Profile from './pages/profile/Profile';
 import LandingPage from './pages/LandingPage';
-import TestComponent from './components/TestComponent';
 import CertificateManagement from './components/CertificateManagement';
 
 // Student Pages

@@ -115,10 +115,12 @@ export const verifyAuth = async () => {
   }
 };
 
-export default {
+const authUtils = {
   debugAuthState,
   checkAuthStatus,
   resetAuth,
   fixProxyAuth,
   verifyAuth
-}; 
+};
+
+export default authUtils;
