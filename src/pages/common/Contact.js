@@ -15,19 +15,19 @@ const contactInfo = {
   const socialProfiles = [
     {
       name: 'LinkedIn',
-      url: 'https://www.linkedin.com/in/mahesh-shinde-0a666b23b',
+      url: 'https://www.linkedin.com/in/maheshshinde9100',
       icon: '/linkedin.svg',
       color: 'bg-blue-50 text-blue-700 hover:bg-blue-100',
     },
     {
       name: 'GitHub',
-      url: 'https://github.com/coder-mahi',
+      url: 'https://github.com/maheshshinde9100',
       icon: '/github.svg',
       color: 'bg-gray-50 text-gray-700 hover:bg-gray-100',
     },
     {
       name: 'Portfolio',
-      url: 'https://shindemaheshportfolio.netlify.app',
+      url: 'https://maheshshinde-dev.vercel.app',
       icon: '/portfolio.svg',
       color: 'bg-purple-50 text-purple-700 hover:bg-purple-100',
     },

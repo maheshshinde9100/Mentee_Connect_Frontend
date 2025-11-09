@@ -25,7 +25,8 @@ class WebSocketService {
 
     this.connectionPromise = new Promise((resolve, reject) => {
       try {
-        const socket = new SockJS('http://localhost:8080/api/ws');
+        const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+        const socket = new SockJS(baseUrl+'/api/ws');
         this.stompClient = Stomp.over(() => socket);
         
         // Disable debug logging in production

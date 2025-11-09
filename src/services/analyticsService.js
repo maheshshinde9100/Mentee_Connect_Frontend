@@ -1,6 +1,7 @@
 import axios from 'axios';
+const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080';
 
-const API_BASE_URL = 'http://localhost:8080/api/admin/analytics';
+const API_BASE_URL = baseUrl+'/api/admin/analytics'; 
 
 // Create axios instance with default config
 const apiClient = axios.create({

@@ -15,7 +15,7 @@ const debugToken = () => {
 };
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080',  // Direct connection to backend server
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080',
   headers: {
     'Content-Type': 'application/json'
   }

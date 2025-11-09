@@ -25,3 +25,10 @@ yarn-error.log*
 
 server.js
 /server
+.env
+.vercel
+BULK_UPLOAD_IMPLEMENTATION.md
+BULK_UPLOAD_QUICK_REFERENCE.md
+DEPLOYMENT_GUIDE.md
+.env.local.example
+.env.production

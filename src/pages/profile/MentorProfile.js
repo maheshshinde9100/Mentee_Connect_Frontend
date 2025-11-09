@@ -6,12 +6,12 @@ const MentorProfile = () => {
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
-
+const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080';
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:8080/api/mentors/me', {
+        const res = await axios.get(baseUrl+'/api/mentors/me', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -52,7 +52,7 @@ const MentorProfile = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `http://localhost:8080/api/mentors/${profile.id}`,
+        baseUrl+`/api/mentors/${profile.id}`,
         {
           ...profile,
           ...formData,

@@ -36,11 +36,11 @@ const About = () => {
   const skills = [
     { 
       category: 'Frontend', 
-      items: ['HTML', 'CSS', 'JavaScript', 'Tailwind CSS','React.js', 'UI/UX Design'] 
+      items: ['HTML', 'CSS', 'JavaScript', 'Tailwind CSS','React.js', 'Next.js'] 
     },
     { 
       category: 'Backend', 
-      items: ['Java', 'Spring Boot','Hibernate','Spring Security', 'Node.js (basics)'] 
+      items: ['Java', 'Spring Boot','Hibernate','Spring Security','Microservices','Spring Cloud', 'ExpressJs'] 
     },
     { 
       category: 'Android Development', 
@@ -48,14 +48,14 @@ const About = () => {
     },
     { 
       category: 'Others', 
-      items: ['C++', 'Python (basics)', 'Git & GitHub', 'SQL', 'MongoDB','Firebase'] 
+      items: ['C++', 'Git & GitHub', 'SQL', 'MongoDB','Firebase','AppWrite','Apache Kafka','Redis'] 
     },
   ];
 
   const links = [
     {
       name: 'Portfolio',
-      url: 'https://shindemaheshportfolio.netlify.app/',
+      url: 'https://maheshshinde-dev.vercel.app',
     },
     {
       name: 'Resume',
@@ -63,11 +63,11 @@ const About = () => {
     },
     {
       name: 'LinkedIn',
-      url: 'https://www.linkedin.com/in/mahesh-shinde-0a666b23b',
+      url: 'https://www.linkedin.com/in/maheshshinde9100',
     },
     {
       name: 'GitHub',
-      url: 'https://github.com/coder-mahi',
+      url: 'https://github.com/maheshshinde9100',
     },
     {
       name: 'HackerRank',

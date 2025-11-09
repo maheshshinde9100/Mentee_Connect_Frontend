@@ -6,7 +6,7 @@ const JoinMeetingDebug = ({ roomId }) => {
   const { user } = useAuth();
   const [debugInfo, setDebugInfo] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080';
   const testApiEndpoints = async () => {
     setLoading(true);
     const results = {};
@@ -21,7 +21,7 @@ const JoinMeetingDebug = ({ roomId }) => {
     
     for (const endpoint of endpoints) {
       try {
-        const response = await fetch(`http://localhost:8080${endpoint}`, {
+        const response = await fetch(baseUrl+endpoint, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json'

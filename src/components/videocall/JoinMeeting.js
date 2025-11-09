@@ -4,6 +4,7 @@ import webSocketService from '../../services/websocketService';
 import { useAuth } from '../../contexts/AuthContext';
 import { VideoCameraIcon, ClockIcon } from '@heroicons/react/24/outline';
 import JoinMeetingDebug from './JoinMeetingDebug';
+import MentorAssignmentHelper from './MentorAssignmentHelper';
 
 const JoinMeeting = ({ onJoinSuccess, onJoinError }) => {
   const { user } = useAuth();
@@ -119,6 +120,11 @@ const JoinMeeting = ({ onJoinSuccess, onJoinError }) => {
       
       if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
+        
+        // Handle specific error cases with better user guidance
+        if (errorMessage.includes('assigned mentor')) {
+          errorMessage = `${errorMessage}\n\nTo fix this:\n1. Ask your admin to assign you to this mentor\n2. Or use a student account that is already assigned to this mentor`;
+        }
       } else if (error.response?.data?.error) {
         errorMessage = error.response.data.error;
       } else if (error.response?.status === 400) {
@@ -178,7 +184,18 @@ const JoinMeeting = ({ onJoinSuccess, onJoinError }) => {
 
       {error && (
         <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-red-700">{error}</p>
+          <p className="text-red-700 whitespace-pre-line">{error}</p>
+          
+          {/* Show assignment helper if it's a mentor assignment error */}
+          {error.includes('assigned mentor') && meetingDetails && (
+            <MentorAssignmentHelper 
+              mentorId={meetingDetails.mentorId}
+              onAssignmentComplete={() => {
+                setError(null);
+                // Optionally retry the join request
+              }}
+            />
+          )}
         </div>
       )}
 

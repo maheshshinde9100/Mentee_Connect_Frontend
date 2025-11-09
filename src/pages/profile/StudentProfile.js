@@ -6,12 +6,13 @@ const StudentProfile = () => {
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
+  const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080';
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:8080/api/profile/me', {
+        const response = await axios.get(baseUrl+'/api/profile/me', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -65,7 +66,7 @@ const StudentProfile = () => {
     };
 
     try {
-      await axios.put('http://localhost:8080/api/profile/me', updatedData, {
+      await axios.put(baseUrl+'/api/profile/me', updatedData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

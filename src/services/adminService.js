@@ -230,7 +230,21 @@ export const adminService = {
   assignStudentsToBatch: (batchId, studentIds) => 
     api.post(`/api/admin/batches/assign-students`, { batchId, studentIds }),
   updateBatch: (batchId, batchData) =>
-    api.put(`/api/admin/batches/${batchId}`, batchData)
+    api.put(`/api/admin/batches/${batchId}`, batchData),
+
+  // Bulk Upload Operations
+  bulkUploadMentors: (formData) => 
+    api.post('/api/admin/mentors/bulk-upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }),
+  bulkUploadMentees: (formData) => 
+    api.post('/api/admin/students/bulk-upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
 };
 
-export default adminService; 
+export default adminService;
