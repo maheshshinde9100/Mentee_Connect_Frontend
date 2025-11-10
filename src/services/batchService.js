@@ -55,13 +55,6 @@ const processMentorsResponse = (response) => {
     // Case 3: Paginated response (Spring Data format)
     else if (response.data.content && Array.isArray(response.data.content)) {
       mentorsArray = response.data.content;
-      
-      // Pagination info
-      if (response.data.totalElements !== undefined) {
-          currentPage: response.data.number,
-          pageSize: response.data.size
-        });
-      }
     } 
     // Case 4: Object with mentor properties (single mentor)
     else if (typeof response.data === 'object') {
@@ -76,8 +69,6 @@ const processMentorsResponse = (response) => {
         if (arrayProperties.length > 0) {
           const [key, value] = arrayProperties[0];
           mentorsArray = value;
-        } else {
-          console.warn('Could not find mentor array in response');
         }
       }
     }
@@ -145,7 +136,6 @@ export const batchService = {
       
       return { data: batchesArray };
     } catch (error) {
-      console.error('Error in getAllBatches:', error.response?.status, error.message);
       throw error;
     }
   },
@@ -156,7 +146,6 @@ export const batchService = {
       const response = await api.post(`/api/admin/batches`, batchData);
       return response;
     } catch (error) {
-      console.error('Error in createBatch:', error.response?.status, error.message);
       throw error;
     }
   },
@@ -222,7 +211,6 @@ export const batchService = {
       }
     } catch (error) {
       // Error occurred
-    }
       throw error;
     }
   },
@@ -275,14 +263,6 @@ export const batchService = {
         throw firstError;
       }
     } catch (error) {
-      console.error(`Error in getBatchStudents(${batchId}):`, error.response?.status, error.message);
-      if (error.response) {
-        console.error('Error response:', {
-          status: error.response.status,
-          statusText: error.response.statusText,
-          data: error.response.data
-        });
-      }
       throw error;
     }
   },
@@ -300,9 +280,6 @@ export const batchService = {
         let mentorsArray = processMentorsResponse(response);
         return { data: mentorsArray };
       } catch (firstError) {
-        // Log first attempt error
-        console.error(`First batch mentors fetch attempt failed for ID ${batchId}:`, firstError);
-        
         // If this was a 401 error, try to fix token and retry
         if (firstError.response?.status === 401) {
           // Try to fix token format
@@ -330,7 +307,6 @@ export const batchService = {
               let mentorsArray = processMentorsResponse(retryResponse);
               return { data: mentorsArray };
             } catch (retryError) {
-              console.error('Retry also failed:', retryError);
               throw retryError;
             }
           }
@@ -340,14 +316,6 @@ export const batchService = {
         throw firstError;
       }
     } catch (error) {
-      console.error(`Error in getBatchMentors(${batchId}):`, error.response?.status, error.message);
-      if (error.response) {
-        console.error('Error response:', {
-          status: error.response.status,
-          statusText: error.response.statusText,
-          data: error.response.data
-        });
-      }
       throw error;
     }
   },
@@ -375,10 +343,6 @@ export const batchService = {
       const response = await api.put(`/api/admin/batches/${batchId}`, batchData);
       return response;
     } catch (error) {
-      console.error('Error in assignStudentsToBatch:', error.response?.status, error.message);
-      if (error.response) {
-        console.error('Error response data:', error.response.data);
-      }
       throw error;
     }
   },
@@ -386,7 +350,6 @@ export const batchService = {
   // Assign mentors to a batch
   assignMentorsToBatch: async (batchId, mentorIds) => {
     try {
-      
       // First get current batch data
       const batchResponse = await api.get(`/api/admin/batches/${batchId}`);
       const batchData = batchResponse.data;
@@ -403,17 +366,10 @@ export const batchService = {
         }
       });
       
-      console.log('Updating batch with updated mentors:', batchData);
-      
       // Use PUT to update the batch with new mentors list
       const response = await api.put(`/api/admin/batches/${batchId}`, batchData);
-      console.log('Mentors assigned successfully:', response.data);
       return response;
     } catch (error) {
-      console.error('Error in assignMentorsToBatch:', error.response?.status, error.message);
-      if (error.response) {
-        console.error('Error response data:', error.response.data);
-      }
       throw error;
     }
   },
@@ -421,13 +377,9 @@ export const batchService = {
   // Delete a batch
   deleteBatch: async (batchId) => {
     try {
-      console.log(`Deleting batch with ID: ${batchId}`);
-      
       const response = await api.delete(`/api/admin/batches/${batchId}`);
-      console.log('Batch deleted successfully');
       return response;
     } catch (error) {
-      console.error(`Error in deleteBatch(${batchId}):`, error.response?.status, error.message);
       throw error;
     }
   },
@@ -435,13 +387,9 @@ export const batchService = {
   // Update a batch
   updateBatch: async (batchId, batchData) => {
     try {
-      console.log(`Updating batch ${batchId} with data:`, batchData);
-      
       const response = await api.put(`/api/admin/batches/${batchId}`, batchData);
-      console.log('Batch updated successfully');
       return response;
     } catch (error) {
-      console.error(`Error in updateBatch(${batchId}):`, error.response?.status, error.message);
       throw error;
     }
   },
@@ -449,8 +397,6 @@ export const batchService = {
   // Remove a student from a batch
   removeStudentFromBatch: async (batchId, studentId) => {
     try {
-      console.log(`Removing student ${studentId} from batch ${batchId}`);
-      
       // First get current batch data
       const batchResponse = await api.get(`/api/admin/batches/${batchId}`);
       const batchData = batchResponse.data;
@@ -463,17 +409,10 @@ export const batchService = {
         batchData.studentsAssigned = [];
       }
       
-      console.log('Updating batch with student removed:', batchData);
-      
       // Use PUT to update the batch
       const response = await api.put(`/api/admin/batches/${batchId}`, batchData);
-      console.log('Student removed successfully:', response.data);
       return response;
     } catch (error) {
-      console.error(`Error in removeStudentFromBatch(${batchId}, ${studentId}):`, error.response?.status, error.message);
-      if (error.response) {
-        console.error('Error response data:', error.response.data);
-      }
       throw error;
     }
   },
@@ -481,8 +420,6 @@ export const batchService = {
   // Remove a mentor from a batch
   removeMentorFromBatch: async (batchId, mentorId) => {
     try {
-      console.log(`Removing mentor ${mentorId} from batch ${batchId}`);
-      
       // First get current batch data
       const batchResponse = await api.get(`/api/admin/batches/${batchId}`);
       const batchData = batchResponse.data;
@@ -495,17 +432,10 @@ export const batchService = {
         batchData.mentorsAssigned = [];
       }
       
-      console.log('Updating batch with mentor removed:', batchData);
-      
       // Use PUT to update the batch
       const response = await api.put(`/api/admin/batches/${batchId}`, batchData);
-      console.log('Mentor removed successfully:', response.data);
       return response;
     } catch (error) {
-      console.error(`Error in removeMentorFromBatch(${batchId}, ${mentorId}):`, error.response?.status, error.message);
-      if (error.response) {
-        console.error('Error response data:', error.response.data);
-      }
       throw error;
     }
   }
