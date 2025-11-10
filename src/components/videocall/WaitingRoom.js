@@ -18,7 +18,6 @@ const WaitingRoom = ({ roomId, onParticipantApproved, onParticipantRejected }) =
         setWaitingParticipants(participants);
       } catch (error) {
         setError('Failed to fetch waiting participants');
-        console.error('Error fetching waiting participants:', error);
       } finally {
         setLoading(false);
       }
@@ -29,7 +28,6 @@ const WaitingRoom = ({ roomId, onParticipantApproved, onParticipantRejected }) =
         // Check if already subscribed to avoid duplicates
         const destination = `/topic/meeting/${roomId}/join-requests`;
         if (webSocketService.subscriptions.has(destination)) {
-          console.log('Already subscribed to:', destination);
           return;
         }
 
@@ -55,7 +53,7 @@ const WaitingRoom = ({ roomId, onParticipantApproved, onParticipantRejected }) =
           }
         });
       } catch (error) {
-        console.error('Failed to setup WebSocket for waiting room:', error);
+        // WebSocket setup failed
       }
     };
 
@@ -85,7 +83,6 @@ const WaitingRoom = ({ roomId, onParticipantApproved, onParticipantRejected }) =
       }
     } catch (error) {
       setError('Failed to approve participant');
-      console.error('Error approving participant:', error);
     } finally {
       setProcessingParticipants(prev => {
         const newSet = new Set(prev);
@@ -111,7 +108,6 @@ const WaitingRoom = ({ roomId, onParticipantApproved, onParticipantRejected }) =
       }
     } catch (error) {
       setError('Failed to reject participant');
-      console.error('Error rejecting participant:', error);
     } finally {
       setProcessingParticipants(prev => {
         const newSet = new Set(prev);

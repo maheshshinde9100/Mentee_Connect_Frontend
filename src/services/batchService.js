@@ -46,24 +46,18 @@ const processMentorsResponse = (response) => {
   if (response.data) {
     // Case 1: Direct array
     if (Array.isArray(response.data)) {
-      console.log('Response data is a direct array of mentors');
       mentorsArray = response.data;
     } 
     // Case 2: Nested mentors array
     else if (response.data.mentors && Array.isArray(response.data.mentors)) {
-      console.log('Found mentors array in response.data.mentors');
       mentorsArray = response.data.mentors;
     } 
     // Case 3: Paginated response (Spring Data format)
     else if (response.data.content && Array.isArray(response.data.content)) {
-      console.log('Found paginated mentors in content array');
       mentorsArray = response.data.content;
       
-      // Log pagination info
+      // Pagination info
       if (response.data.totalElements !== undefined) {
-        console.log('Pagination info:', {
-          totalElements: response.data.totalElements,
-          totalPages: response.data.totalPages,
           currentPage: response.data.number,
           pageSize: response.data.size
         });
@@ -73,7 +67,6 @@ const processMentorsResponse = (response) => {
     else if (typeof response.data === 'object') {
       // If it has mentor-like properties, it might be a single mentor
       if (response.data.firstName || response.data.email) {
-        console.log('Found single mentor object');
         mentorsArray = [response.data];
       } else {
         // Try to find mentor arrays in the object
@@ -82,7 +75,6 @@ const processMentorsResponse = (response) => {
         
         if (arrayProperties.length > 0) {
           const [key, value] = arrayProperties[0];
-          console.log(`Found array in response.data.${key}`);
           mentorsArray = value;
         } else {
           console.warn('Could not find mentor array in response');
@@ -106,15 +98,11 @@ export const batchService = {
   // Get all batches
   getAllBatches: async () => {
     try {
-      console.log('Fetching all batches...');
-      
       const response = await api.get(`/api/admin/batches?size=100`);
-      console.log('Batches API response:', response.data);
       
       // Handle paginated response format
       // If response has a content array (Spring Data pagination format), use that
       if (response.data && response.data.content && Array.isArray(response.data.content)) {
-        console.log('Found paginated response with content array:', response.data.content);
         return { 
           data: response.data.content,
           pagination: {
@@ -155,7 +143,6 @@ export const batchService = {
         }
       }
       
-      console.log('Processed batches array in service:', batchesArray);
       return { data: batchesArray };
     } catch (error) {
       console.error('Error in getAllBatches:', error.response?.status, error.message);
@@ -166,10 +153,7 @@ export const batchService = {
   // Create a new batch
   createBatch: async (batchData) => {
     try {
-      console.log('Creating batch with data:', batchData);
-      
       const response = await api.post(`/api/admin/batches`, batchData);
-      console.log('Batch created successfully:', response.data);
       return response;
     } catch (error) {
       console.error('Error in createBatch:', error.response?.status, error.message);
@@ -180,20 +164,11 @@ export const batchService = {
   // Get a specific batch by ID
   getBatchById: async (batchId) => {
     try {
-      console.log(`Fetching batch with ID: ${batchId}`);
-      
-      // Check token status
       const token = localStorage.getItem('token');
-      console.log('Current token status for batch fetch:', { 
-        exists: !!token, 
-        length: token ? token.length : 0,
-        preview: token ? token.substring(0, 15) + '...' : 'none' 
-      });
       
       // First attempt
       try {
         const response = await api.get(`/api/admin/batches/${batchId}`);
-        console.log('Batch fetched successfully:', response.data);
         
         // Ensure we handle both id and _id properties
         if (response.data && !response.data.id && response.data._id) {
@@ -202,30 +177,23 @@ export const batchService = {
         
         return response;
       } catch (firstError) {
-        // Log first attempt error
-        console.error(`First batch fetch attempt failed for ID ${batchId}:`, firstError);
-        
         // If this was a 401 error, try to fix token and retry
         if (firstError.response?.status === 401) {
-          console.log('Authentication error on first attempt, trying to fix token...');
-          
           // Try to fix token format
           if (token) {
             // Ensure clean token format (no Bearer prefix)
             if (token.startsWith('Bearer ')) {
               const cleanToken = token.replace('Bearer ', '');
               localStorage.setItem('token', cleanToken);
-              console.log('Fixed token format by removing Bearer prefix');
             }
             
             // Alternatively, add Bearer prefix if missing (for completeness)
             if (!token.startsWith('Bearer ') && token) {
-              console.log('Ensuring Authorization header has Bearer prefix');
+              // Ensure Bearer prefix
             }
             
             // Retry with new axios instance to avoid interceptors
             try {
-              console.log('Retrying batch fetch with fresh request...');
               
               // Create a one-time request config
               const retryConfig = {
@@ -236,7 +204,6 @@ export const batchService = {
               };
               
               const retryResponse = await api.get(`/api/admin/batches/${batchId}`, retryConfig);
-              console.log('Retry successful after token fix:', retryResponse.data);
               
               // Ensure id property
               if (retryResponse.data && !retryResponse.data.id && retryResponse.data._id) {
@@ -245,7 +212,6 @@ export const batchService = {
               
               return retryResponse;
             } catch (retryError) {
-              console.error('Retry also failed:', retryError);
               throw retryError;
             }
           }
@@ -255,14 +221,8 @@ export const batchService = {
         throw firstError;
       }
     } catch (error) {
-      console.error(`Error in getBatchById(${batchId}):`, error.response?.status, error.message);
-      if (error.response) {
-        console.error('Error response:', {
-          status: error.response.status,
-          statusText: error.response.statusText,
-          data: error.response.data
-        });
-      }
+      // Error occurred
+    }
       throw error;
     }
   },
@@ -270,46 +230,28 @@ export const batchService = {
   // Get students in a batch
   getBatchStudents: async (batchId) => {
     try {
-      console.log(`Fetching students for batch ID: ${batchId}`);
-      
-      // Check token status
       const token = localStorage.getItem('token');
-      console.log('Current token status for batch students fetch:', { 
-        exists: !!token, 
-        length: token ? token.length : 0,
-        preview: token ? token.substring(0, 15) + '...' : 'none' 
-      });
       
       // First attempt
       try {
         const response = await api.get(`/api/admin/batches/${batchId}/students?size=100`);
-        console.log('Batch students API response:', response.data);
         
         // Process the response (rest of the function)
         let studentsArray = processStudentsResponse(response);
-        console.log('Processed students array:', studentsArray);
         return { data: studentsArray };
       } catch (firstError) {
-        // Log first attempt error
-        console.error(`First batch students fetch attempt failed for ID ${batchId}:`, firstError);
-        
         // If this was a 401 error, try to fix token and retry
         if (firstError.response?.status === 401) {
-          console.log('Authentication error on first attempt, trying to fix token...');
-          
           // Try to fix token format
           if (token) {
             // Ensure clean token format (no Bearer prefix)
             if (token.startsWith('Bearer ')) {
               const cleanToken = token.replace('Bearer ', '');
               localStorage.setItem('token', cleanToken);
-              console.log('Fixed token format by removing Bearer prefix');
             }
             
             // Retry with fresh request
             try {
-              console.log('Retrying batch students fetch with fresh request...');
-              
               // Create a one-time request config
               const retryConfig = {
                 headers: {
@@ -319,14 +261,11 @@ export const batchService = {
               };
               
               const retryResponse = await api.get(`/api/admin/batches/${batchId}/students?size=100`, retryConfig);
-              console.log('Retry successful after token fix:', retryResponse.data);
               
               // Process the response
               let studentsArray = processStudentsResponse(retryResponse);
-              console.log('Processed students array after retry:', studentsArray);
               return { data: studentsArray };
             } catch (retryError) {
-              console.error('Retry also failed:', retryError);
               throw retryError;
             }
           }
@@ -351,24 +290,14 @@ export const batchService = {
   // Get mentors in a batch
   getBatchMentors: async (batchId) => {
     try {
-      console.log(`Fetching mentors for batch ID: ${batchId}`);
-      
-      // Check token status
       const token = localStorage.getItem('token');
-      console.log('Current token status for batch mentors fetch:', { 
-        exists: !!token, 
-        length: token ? token.length : 0,
-        preview: token ? token.substring(0, 15) + '...' : 'none' 
-      });
       
       // First attempt
       try {
         const response = await api.get(`/api/admin/batches/${batchId}/mentors?size=100`);
-        console.log('Batch mentors API response:', response.data);
         
         // Process the response (rest of the function)
         let mentorsArray = processMentorsResponse(response);
-        console.log('Processed mentors array:', mentorsArray);
         return { data: mentorsArray };
       } catch (firstError) {
         // Log first attempt error
@@ -376,20 +305,16 @@ export const batchService = {
         
         // If this was a 401 error, try to fix token and retry
         if (firstError.response?.status === 401) {
-          console.log('Authentication error on first attempt, trying to fix token...');
-          
           // Try to fix token format
           if (token) {
             // Ensure clean token format (no Bearer prefix)
             if (token.startsWith('Bearer ')) {
               const cleanToken = token.replace('Bearer ', '');
               localStorage.setItem('token', cleanToken);
-              console.log('Fixed token format by removing Bearer prefix');
             }
             
             // Retry with fresh request
             try {
-              console.log('Retrying batch mentors fetch with fresh request...');
               
               // Create a one-time request config
               const retryConfig = {
@@ -400,11 +325,9 @@ export const batchService = {
               };
               
               const retryResponse = await api.get(`/api/admin/batches/${batchId}/mentors?size=100`, retryConfig);
-              console.log('Retry successful after token fix:', retryResponse.data);
               
               // Process the response
               let mentorsArray = processMentorsResponse(retryResponse);
-              console.log('Processed mentors array after retry:', mentorsArray);
               return { data: mentorsArray };
             } catch (retryError) {
               console.error('Retry also failed:', retryError);
@@ -432,8 +355,6 @@ export const batchService = {
   // Assign students to a batch
   assignStudentsToBatch: async (batchId, studentIds) => {
     try {
-      console.log(`Assigning students ${JSON.stringify(studentIds)} to batch ${batchId}`);
-      
       // First get current batch data
       const batchResponse = await api.get(`/api/admin/batches/${batchId}`);
       const batchData = batchResponse.data;
@@ -450,11 +371,8 @@ export const batchService = {
         }
       });
       
-      console.log('Updating batch with updated students:', batchData);
-      
       // Use PUT to update the batch with new students list
       const response = await api.put(`/api/admin/batches/${batchId}`, batchData);
-      console.log('Students assigned successfully:', response.data);
       return response;
     } catch (error) {
       console.error('Error in assignStudentsToBatch:', error.response?.status, error.message);
@@ -468,7 +386,6 @@ export const batchService = {
   // Assign mentors to a batch
   assignMentorsToBatch: async (batchId, mentorIds) => {
     try {
-      console.log(`Assigning mentors ${JSON.stringify(mentorIds)} to batch ${batchId}`);
       
       // First get current batch data
       const batchResponse = await api.get(`/api/admin/batches/${batchId}`);

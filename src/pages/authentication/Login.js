@@ -29,12 +29,7 @@ const Login = () => {
     setDebug('');
 
     try {
-      console.log('Login attempt for:', formData.email);
       const response = await authService.login(formData);
-      console.log('Login response received:', {
-        hasToken: !!response.data.token,
-        tokenLength: response.data.token ? response.data.token.length : 0
-      });
       
       const { token, email, roles, id } = response.data;
       
@@ -46,7 +41,6 @@ const Login = () => {
       // Store refresh token if provided
       if (response.data.refreshToken) {
         localStorage.setItem('refreshToken', response.data.refreshToken);
-        console.log('Refresh token stored');
       }
 
       const userData = {
@@ -55,12 +49,6 @@ const Login = () => {
         role: roles[0].replace('ROLE_', ''), // Convert 'ROLE_ADMIN' to 'ADMIN'
         roles
       };
-      
-      console.log('Calling login with userData:', {
-        id: userData.id,
-        role: userData.role,
-        tokenStart: token.substring(0, 15) + '...'
-      });
       
       await login(userData, token);
       
@@ -71,13 +59,10 @@ const Login = () => {
         console.error('Token was not stored in localStorage');
         // Try storing it again
         localStorage.setItem('token', token);
-      } else {
-        console.log('Token successfully stored:', storedToken.substring(0, 15) + '...');
       }
 
       // Redirect based on user role
       const redirectPath = `/${userData.role.toLowerCase()}/dashboard`;
-      console.log('Redirecting to:', redirectPath);
       navigate(redirectPath);
     } catch (err) {
       console.error('Login error:', err);

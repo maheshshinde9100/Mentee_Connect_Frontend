@@ -28,13 +28,13 @@ const NotificationIcon = () => {
       const response = await notificationService.getUnreadCount();
       if (response && response.data) {
         setUnreadCount(response.data.count || 0);
-        console.log('Fetched unread count:', response.data);
+        
       } else {
-        console.warn('No data returned from notification service');
+        
         setUnreadCount(0);
       }
     } catch (error) {
-      console.error('Failed to fetch unread count:', error);
+      
       // Set to 0 on error to prevent displaying incorrect counts
       setUnreadCount(0);
     } finally {

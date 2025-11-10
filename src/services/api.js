@@ -3,14 +3,6 @@ import axios from 'axios';
 // Create a debug function to help troubleshoot token issues
 const debugToken = () => {
   const token = localStorage.getItem('token');
-  const user = localStorage.getItem('user');
-  console.log('Token check:', {
-    hasToken: !!token,
-    tokenLength: token ? token.length : 0,
-    tokenStart: token ? token.substring(0, 15) + '...' : 'none',
-    hasUser: !!user,
-    userRole: user ? JSON.parse(user).role : 'none'
-  });
   return !!token;
 };
 
@@ -28,15 +20,6 @@ api.interceptors.request.use(
     if (token) {
       // Ensure there's a proper Authorization header with Bearer token format
       config.headers.Authorization = `Bearer ${token}`;
-
-      // Log requests to admin endpoints for debugging
-      if (config.url?.includes('/api/admin/')) {
-        console.log(`Sending authenticated request to: ${config.url}`);
-        console.log(`Auth header: Bearer ${token.substring(0, 15)}...`);
-      }
-    } else {
-      console.warn(`Request to ${config.url} has no auth token available`);
-      debugToken(); // Call debug function to get more info
     }
     return config;
   },
@@ -49,14 +32,6 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    // Log all API errors for debugging
-    console.error('API Error intercepted:', {
-      url: error.config?.url,
-      method: error.config?.method,
-      status: error.response?.status,
-      message: error.message
-    });
-
     // Additional error debugging for batch operations
     if (error.config?.url.includes('/api/admin/batches')) {
       console.log('Batch operation error detected, detailed diagnostics:');
@@ -85,14 +60,13 @@ api.interceptors.response.use(
           }
 
           // Retry with current token
-          console.log('Retrying batch operation with corrected token format');
           const config = { ...error.config };
           const retryToken = localStorage.getItem('token');
           config.headers.Authorization = `Bearer ${retryToken}`;
           try {
             return await axios(config);
           } catch (retryError) {
-            console.error('Retry failed:', retryError);
+            // Retry failed
           }
         }
       }
@@ -101,12 +75,10 @@ api.interceptors.response.use(
       const refreshToken = localStorage.getItem('refreshToken');
       if (refreshToken) {
         try {
-          console.log('Attempting to refresh token...');
           const response = await api.post('/api/auth/refresh-token', { refreshToken });
           const { token } = response.data;
 
           // Store the new token
-          console.log('Token refreshed successfully');
           localStorage.setItem('token', token);
 
           // Retry the original request
@@ -114,13 +86,8 @@ api.interceptors.response.use(
           config.headers.Authorization = `Bearer ${token}`;
           return api(config);
         } catch (refreshError) {
-          console.error('Token refresh failed:', refreshError);
-          // Do NOT clear token here - this is likely the issue
-          console.warn('Token refresh failed, but keeping existing token for now');
+          // Token refresh failed, keeping existing token
         }
-      } else {
-        console.warn('No refresh token available, but keeping existing token');
-        // Do NOT remove the token here - that's causing the problem
       }
     }
 

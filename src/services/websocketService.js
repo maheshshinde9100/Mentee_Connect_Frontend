@@ -30,10 +30,8 @@ class WebSocketService {
         this.stompClient = Stomp.over(() => socket);
         
         // Disable debug logging in production
-        this.stompClient.debug = (str) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.log('STOMP: ' + str);
-          }
+        this.stompClient.debug = () => {
+          // Debug disabled
         };
 
         const token = localStorage.getItem('token');
@@ -42,7 +40,6 @@ class WebSocketService {
         this.stompClient.connect(
           headers,
           (frame) => {
-            console.log('WebSocket connected: ' + frame);
             this.connected = true;
             this.reconnectAttempts = 0;
             this.connectionPromise = null; // Clear promise
@@ -69,7 +66,6 @@ class WebSocketService {
   handleReconnect() {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
-      console.log(`Attempting to reconnect... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
       
       setTimeout(() => {
         this.connect().catch(() => {
@@ -90,7 +86,6 @@ class WebSocketService {
       this.subscriptions.clear();
       
       this.stompClient.disconnect(() => {
-        console.log('WebSocket disconnected');
         this.connected = false;
       });
     }
@@ -116,7 +111,6 @@ class WebSocketService {
     try {
       const subscription = this.stompClient.subscribe(destination, callback, headers);
       this.subscriptions.set(destination, subscription);
-      console.log('Subscribed to:', destination);
       return subscription;
     } catch (error) {
       console.error('Error subscribing to:', destination, error);
@@ -129,7 +123,6 @@ class WebSocketService {
     if (subscription) {
       subscription.unsubscribe();
       this.subscriptions.delete(destination);
-      console.log('Unsubscribed from:', destination);
     }
   }
 

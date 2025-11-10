@@ -113,10 +113,10 @@ const MeetingRoom = () => {
                     <WaitingRoom
                         roomId={roomId}
                         onParticipantApproved={(participantId) => {
-                            console.log('Participant approved:', participantId);
+                            // Participant approved
                         }}
                         onParticipantRejected={(participantId) => {
-                            console.log('Participant rejected:', participantId);
+                            // Participant rejected
                         }}
                     />
                 </div>

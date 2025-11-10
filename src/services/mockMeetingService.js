@@ -4,8 +4,6 @@ import webSocketService from './websocketService';
 export const mockMeetingService = {
   // Mock join meeting - simulates backend behavior
   joinMeeting: async (joinData) => {
-    console.log('MOCK: Join meeting request received:', joinData);
-    
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
@@ -18,8 +16,6 @@ export const mockMeetingService = {
         roomId: joinData.roomId,
         timestamp: new Date().toISOString()
       };
-      
-      console.log('MOCK: Sending WebSocket notification to mentor:', mockMessage);
       
       // Try to send via WebSocket if connected
       if (webSocketService.isConnected()) {
@@ -36,8 +32,6 @@ export const mockMeetingService = {
 
   // Mock approve participant
   approveParticipant: async (roomId, participantId) => {
-    console.log('MOCK: Approving participant:', { roomId, participantId });
-    
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 500));
     
@@ -49,8 +43,6 @@ export const mockMeetingService = {
         meetingTitle: 'Test Meeting',
         message: 'You have been approved to join the meeting'
       };
-      
-      console.log('MOCK: Sending approval notification to student:', mockApprovalMessage);
       
       // Try to send via WebSocket if connected
       if (webSocketService.isConnected()) {
@@ -67,8 +59,6 @@ export const mockMeetingService = {
 
 // Function to enable mock mode
 export const enableMockMode = () => {
-  console.log('🔧 MOCK MODE ENABLED - Using mock meeting service');
-  
   // Override the real service methods
   const { videoCallService } = require('./meetingService');
   

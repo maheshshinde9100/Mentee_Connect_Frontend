@@ -32,3 +32,4 @@ BULK_UPLOAD_QUICK_REFERENCE.md
 DEPLOYMENT_GUIDE.md
 .env.local.example
 .env.production
+CONSOLE_CLEANUP_COMPLETE.md

@@ -38,9 +38,7 @@ export const videoCallService = {
   // Join meeting
   joinMeeting: async (joinData) => {
     try {
-      console.log('Sending join meeting request:', joinData);
       const response = await api.post('/api/video-calls/join', joinData);
-      console.log('Join meeting response:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error joining meeting:', error);

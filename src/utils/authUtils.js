@@ -8,30 +8,6 @@
  */
 export const debugAuthState = () => {
   const token = localStorage.getItem('token');
-  const user = localStorage.getItem('user');
-  const refreshToken = localStorage.getItem('refreshToken');
-  
-  console.log('==== Auth Debug Information ====');
-  console.log('Token present:', !!token);
-  if (token) {
-    console.log('Token length:', token.length);
-    console.log('Token preview:', token.substring(0, 15) + '...');
-  }
-  
-  console.log('User data present:', !!user);
-  if (user) {
-    try {
-      const userData = JSON.parse(user);
-      console.log('User role:', userData.role);
-      console.log('User ID:', userData.id);
-    } catch (e) {
-      console.error('Failed to parse user data:', e);
-    }
-  }
-  
-  console.log('Refresh token present:', !!refreshToken);
-  console.log('================================');
-  
   return !!token;
 };
 
@@ -56,11 +32,9 @@ export const checkAuthStatus = () => {
  * @returns {void}
  */
 export const resetAuth = () => {
-  console.log('Resetting authentication state...');
   localStorage.removeItem('token');
   localStorage.removeItem('refreshToken');
   localStorage.removeItem('user');
-  console.log('Auth state reset complete');
 };
 
 /**
@@ -73,7 +47,6 @@ export const fixProxyAuth = () => {
   
   // Check if the token is missing "Bearer " prefix that might be needed by the proxy
   if (token && !token.startsWith('Bearer ') && !token.includes(' ')) {
-    console.log('Fixing token format for proxy compatibility');
     // Some proxies might need explicit "Bearer " prefix
     localStorage.setItem('token', token);
     return true;
@@ -88,7 +61,6 @@ export const fixProxyAuth = () => {
 export const verifyAuth = async () => {
   const token = localStorage.getItem('token');
   if (!token) {
-    console.error('No token to verify');
     return { success: false, message: 'No token found' };
   }
   
@@ -110,7 +82,6 @@ export const verifyAuth = async () => {
       };
     }
   } catch (error) {
-    console.error('Auth verification error:', error);
     return { success: false, message: error.message };
   }
 };

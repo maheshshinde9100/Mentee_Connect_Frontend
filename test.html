@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafePilot - Distance Monitor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .status-card {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .distance-display {
+            font-size: 4em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 20px 0;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .status-safe { background: #2ecc71; color: white; }
+        .status-warning { background: #f39c12; color: white; }
+        .status-danger { background: #e74c3c; color: white; }
+        .status-clear { background: #3498db; color: white; }
+
+        .data-section {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-refresh { background: #3498db; color: white; }
+        .btn-test { background: #9b59b6; color: white; }
+
+        .logs {
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
+        }
+
+        .log-entry {
+            padding: 8px;
+            border-bottom: 1px solid #f1f1f1;
+            font-family: monospace;
+        }
+
+        .log-time {
+            color: #7f8c8d;
+            margin-right: 10px;
+        }
+
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .connected { background: #2ecc71; color: white; }
+        .disconnected { background: #e74c3c; color: white; }
+
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="connection-status disconnected" id="connectionStatus">Disconnected</div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🚗 SafePilot</h1>
+            <div class="subtitle">Real-time Vehicle Distance Monitoring</div>
+        </div>
+
+        <div class="instructions">
+            <h3>🚨 Important Setup Required:</h3>
+            <p>Due to CORS restrictions, you need to run this from a local server:</p>
+            <p><strong>Option 1:</strong> Open terminal in this folder and run: <code>python -m http.server 8000</code></p>
+            <p><strong>Option 2:</strong> Use Live Server in VS Code</p>
+            <p>Then open: <code>http://localhost:8000</code></p>
+        </div>
+
+        <div class="status-card">
+            <h2>Front Vehicle Distance</h2>
+            <div class="distance-display" id="distanceValue">--</div>
+            <div class="status-indicator status-clear" id="statusIndicator">Waiting for data...</div>
+        </div>
+
+        <div class="data-section">
+            <h3>📊 Live Data</h3>
+            <div class="controls">
+                <button class="btn-refresh" onclick="fetchData()">🔄 Refresh Data</button>
+                <button class="btn-test" onclick="testConnection()">🧪 Test Connection</button>
+            </div>
+            
+            <div class="logs" id="logs">
+                <div class="log-entry"><span class="log-time" id="currentTime">[00:00:00]</span> System initialized</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Appwrite Configuration
+        const config = {
+            endpoint: "https://nyc.cloud.appwrite.io/v1",
+            projectId: "68b1d6ac00053046645e",
+            databaseId: "68cd33d400372c210ee2",
+            collectionId: "sensors",
+            apiKey: "standard_8835f1f850d538719c85461e2c378963f7a55ea349469c525ecc5766160d2f7382760279ffcdc93808109adf8ee8ad3bae4811fb933efade8248d87298d6e6be9a0bb5c9c3da67ee25f2d3ed4671cf0f9050c370ed0c17bf9318f5f31c1ac7be2dbfceddcb40890c01a5e652daaade91ea8fa59636d3d1dfa9dccd8566c068cc"
+        };
+
+        // CORS Proxy - using a free public proxy for testing
+        const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
+        
+        let isConnected = false;
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = `[${now.toLocaleTimeString()}]`;
+        }
+
+        function logMessage(message) {
+            const logs = document.getElementById('logs');
+            const time = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `<span class="log-time">[${time}]</span> ${message}`;
+            logs.appendChild(logEntry);
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        function updateStatus(distance, status) {
+            const distanceElement = document.getElementById('distanceValue');
+            const statusElement = document.getElementById('statusIndicator');
+            
+            if (distance === null || distance === undefined) {
+                distanceElement.textContent = '--';
+                statusElement.textContent = 'No Data';
+                statusElement.className = 'status-indicator status-clear';
+                return;
+            }
+            
+            distanceElement.textContent = distance === 0 ? 'No Object' : `${distance} cm`;
+            
+            // Update status indicator
+            statusElement.textContent = getStatusText(status);
+            statusElement.className = 'status-indicator ' + getStatusClass(status);
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'no_object': '🔄 No Object Detected',
+                'danger': '🚨 DANGER - Too Close!',
+                'warning': '⚠️ Warning - Close Distance',
+                'safe': '✅ Safe Distance',
+                'clear': '🟢 Clear Path Ahead'
+            };
+            return statusMap[status] || 'Unknown Status';
+        }
+
+        function getStatusClass(status) {
+            const classMap = {
+                'no_object': 'status-clear',
+                'danger': 'status-danger',
+                'warning': 'status-warning',
+                'safe': 'status-safe',
+                'clear': 'status-clear'
+            };
+            return classMap[status] || 'status-clear';
+        }
+
+        async function fetchData() {
+            try {
+                logMessage('Fetching latest sensor data...');
+                
+                // Using direct fetch with CORS proxy
+                const url = `${CORS_PROXY}${config.endpoint}/databases/${config.databaseId}/collections/${config.collectionId}/documents?limit=1&orderField=timestamp&orderType=DESC`;
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'X-Appwrite-Project': config.projectId,
+                        'X-Appwrite-Key': config.apiKey,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.documents && data.documents.length > 0) {
+                    const latest = data.documents[0];
+                    updateStatus(latest.data.distance, latest.data.status);
+                    logMessage(`✅ Data received: ${latest.data.distance}cm - ${latest.data.status}`);
+                    updateConnectionStatus(true);
+                } else {
+                    logMessage('ℹ️ No data available yet. Make sure ESP8266 is running.');
+                    updateStatus(null, 'clear');
+                }
+                
+            } catch (error) {
+                logMessage(`❌ Error fetching data: ${error.message}`);
+                updateConnectionStatus(false);
+                
+                // Show demo data if real data fails
+                showDemoData();
+            }
+        }
+
+        async function testConnection() {
+            try {
+                logMessage('Testing Appwrite connection...');
+                
+                const response = await fetch(`${CORS_PROXY}${config.endpoint}/account`, {
+                    headers: {
+                        'X-Appwrite-Project': config.projectId,
+                        'X-Appwrite-Key': config.apiKey
+                    }
+                });
+
+                if (response.ok) {
+                    logMessage('✅ Appwrite connection successful!');
+                    updateConnectionStatus(true);
+                } else {
+                    throw new Error(`Connection failed with status: ${response.status}`);
+                }
+                
+            } catch (error) {
+                logMessage(`❌ Connection test failed: ${error.message}`);
+                updateConnectionStatus(false);
+            }
+        }
+
+        function updateConnectionStatus(connected) {
+            const statusElement = document.getElementById('connectionStatus');
+            isConnected = connected;
+            
+            if (connected) {
+                statusElement.textContent = 'Connected';
+                statusElement.className = 'connection-status connected';
+            } else {
+                statusElement.textContent = 'Disconnected';
+                statusElement.className = 'connection-status disconnected';
+            }
+        }
+
+        // Demo data for testing
+        function showDemoData() {
+            const demoDistance = Math.floor(Math.random() * 150) + 10;
+            let demoStatus;
+            
+            if (demoDistance < 20) demoStatus = 'danger';
+            else if (demoDistance < 50) demoStatus = 'warning';
+            else if (demoDistance < 100) demoStatus = 'safe';
+            else demoStatus = 'clear';
+            
+            updateStatus(demoDistance, demoStatus);
+            logMessage('📊 Showing demo data (real connection failed)');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            logMessage('SafePilot Dashboard Started');
+            updateTime();
+            
+            // Update time every second
+            setInterval(updateTime, 1000);
+            
+            // Test connection on startup
+            setTimeout(testConnection, 1000);
+            
+            // Auto-refresh every 5 seconds
+            setInterval(fetchData, 5000);
+            
+            // Initial data fetch
+            setTimeout(fetchData, 2000);
+        });
+    </script>
+</body>
+</html>

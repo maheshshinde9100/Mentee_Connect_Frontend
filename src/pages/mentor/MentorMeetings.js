@@ -74,10 +74,10 @@ const MentorMeetings = () => {
           <JoinRequestNotification
             roomId={currentMeeting.roomId}
             onApprove={(participantId) => {
-              console.log('Participant approved via notification:', participantId);
+              // Participant approved
             }}
             onReject={(participantId) => {
-              console.log('Participant rejected via notification:', participantId);
+              // Participant rejected
             }}
           />
         )}
@@ -121,11 +121,9 @@ const MentorMeetings = () => {
             <WaitingRoom
               roomId={currentMeeting.roomId}
               onParticipantApproved={(participantId) => {
-                console.log('Participant approved:', participantId);
                 // Optionally show success notification
               }}
               onParticipantRejected={(participantId) => {
-                console.log('Participant rejected:', participantId);
                 // Optionally show rejection notification
               }}
             />

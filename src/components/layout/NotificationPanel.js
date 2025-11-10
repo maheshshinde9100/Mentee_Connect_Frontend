@@ -44,13 +44,13 @@ const NotificationPanel = ({ isOpen, onClose, embedded = false }) => {
       const response = await notificationService.getUserNotifications();
       if (response && response.data) {
         setNotifications(response.data);
-        console.log('Fetched notifications:', response.data);
+        
       } else {
-        console.warn('No data returned from notification service');
+        
         setNotifications([]);
       }
     } catch (error) {
-      console.error('Failed to fetch notifications:', error);
+      
       setNotifications([]);
     } finally {
       setLoading(false);

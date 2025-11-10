@@ -558,7 +558,6 @@ const MentorDashboard = () => {
   const handleStartNewMeeting = async () => {
     try {
       setLoading(true);
-      console.log('Starting new instant meeting...');
       
       // Create meeting data
       const meetingData = {
@@ -571,9 +570,7 @@ const MentorDashboard = () => {
         status: 'IN_PROGRESS' // Set status directly in creation
       };
 
-      console.log('Creating meeting with data:', meetingData);
       const response = await meetingService.createMeeting(meetingData);
-      console.log('Meeting created successfully:', response);
 
       // Set current meeting and show video call
       setCurrentMeeting(response);
