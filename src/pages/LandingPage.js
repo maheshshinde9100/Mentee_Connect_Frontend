@@ -14,17 +14,15 @@
 // <MenteeConnectLogo variant="minimal" showText={false} />
 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { User, Users, Shield, MessageSquare, Calendar, Target, Bell, Video, TrendingUp, CheckCircle, Github, Linkedin, Mail, MapPin, Menu, X, MessageCircle  } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+
 // Mock components for demonstration
 const Link = ({ to, children, className }) => (
   <a href={to} className={className}>{children}</a>
 );
-
-const useAuth = () => ({
-  isAuthenticated: false,
-  user: { role: 'student' }
-});
 
 const MenteeConnectLogo = ({ size = "md", animate = false, variant = "default", showText = true }) => {
   const sizes = {
@@ -56,6 +54,15 @@ const MenteeConnectLogo = ({ size = "md", animate = false, variant = "default", 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
+
+  // Auto-redirect logged-in users to their dashboard
+  useEffect(() => {
+    if (isAuthenticated && user && user.role) {
+      const dashboardPath = `/${user.role.toLowerCase()}/dashboard`;
+      navigate(dashboardPath, { replace: true });
+    }
+  }, [isAuthenticated, user, navigate]);
 
   const devInfo = {
     name: 'Mahesh Shinde',

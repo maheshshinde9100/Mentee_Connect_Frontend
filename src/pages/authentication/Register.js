@@ -165,7 +165,7 @@
 
 // export default Register; 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { authService } from '../../services/authService';
@@ -181,7 +181,15 @@ const Register = () => {
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, isAuthenticated, user } = useAuth();
+
+  // Auto-redirect if already logged in
+  useEffect(() => {
+    if (isAuthenticated && user && user.role) {
+      const dashboardPath = `/${user.role.toLowerCase()}/dashboard`;
+      navigate(dashboardPath, { replace: true });
+    }
+  }, [isAuthenticated, user, navigate]);
 
   const handleChange = (e) => {
     setFormData({
