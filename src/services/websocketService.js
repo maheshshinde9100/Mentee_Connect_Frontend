@@ -180,6 +180,23 @@ class WebSocketService {
     }
   }
 
+  async subscribeToMeetingStart(userId, callback) {
+    const destination = `/queue/user/${userId}/meeting-start`;
+    try {
+      return await this.subscribe(destination, (message) => {
+        try {
+          const data = JSON.parse(message.body);
+          callback(data);
+        } catch (error) {
+          console.error('Error parsing meeting start message:', error);
+        }
+      });
+    } catch (error) {
+      console.error('Failed to subscribe to meeting start notifications:', error);
+      throw error;
+    }
+  }
+
   sendJoinRequest(roomId, participantData) {
     const destination = `/app/meeting/${roomId}/join-request`;
     return this.send(destination, participantData);

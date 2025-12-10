@@ -222,7 +222,6 @@ export const adminService = {
   // Analytics
   getMentorEngagement: () => api.get('/api/admin/analytics/mentor-engagement'),
   getStudentProgress: () => api.get('/api/admin/analytics/student-progress'),
-  getMeetingMetrics: () => api.get('/api/admin/analytics/meeting-metrics'),
 
   // Batch Operations
   assignMentorToBatch: (batchId, mentorIds) => 

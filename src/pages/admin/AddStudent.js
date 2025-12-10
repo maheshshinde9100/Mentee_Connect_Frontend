@@ -44,7 +44,7 @@ const AddStudent = ({ onStudentAdded }) => {
         cgpa: parseFloat(formData.cgpa)
       };
 
-      const response = await adminService.createAdminStudent(studentData);
+      const response = await adminService.createStudent(studentData);
       
       if (response.data) {
         setSuccess('Student created successfully!');

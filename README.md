@@ -154,7 +154,7 @@ spring:
 - Dashboard → Manage Users → Create Batches → Assign Mentors → Generate Reports
 
 ### Mentor
-- View Mentees → Update Progress → Add Notes/Resources → Mark Attendance → Host Video Calls
+- View Mentees → Update Progress → Add Notes/Resources → Mark Attendance
 
 ### Student
 - View Mentor → Track Goals → View Updates → Edit Profile
@@ -165,7 +165,6 @@ spring:
 
 - [ ] Email & Push Notifications
 - [ ] OAuth2 Login (Google, GitHub)
-- [ ] Video Call Integration
 - [ ] Calendar Sync for meets
 - [ ] Redis for caching, Kafka for messaging
 - [ ] CI/CD Deployment pipeline

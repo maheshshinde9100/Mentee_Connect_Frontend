@@ -106,12 +106,6 @@ const Communication = () => {
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Video Meetings</h3>
-              <p className="text-gray-600">
-                Schedule and conduct video meetings with screen sharing support
-              </p>
-            </div>
           </div>
 
           {/* Timeline */}
@@ -127,11 +121,6 @@ const Communication = () => {
                 <div className="text-indigo-600 font-semibold">Phase 2</div>
                 <div className="text-sm text-gray-600">Group Chat</div>
                 <div className="text-xs text-gray-500">Coming in 1 month</div>
-              </div>
-              <div className="text-center">
-                <div className="text-indigo-600 font-semibold">Phase 3</div>
-                <div className="text-sm text-gray-600">Video Calls</div>
-                <div className="text-xs text-gray-500">Coming in 2 months</div>
               </div>
             </div>
           </div>

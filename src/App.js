@@ -1,12 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { CallProvider, useCall } from './context/CallContext';
+import CallWindow from './components/call/CallWindow';
+import IncomingCallModal from './components/call/IncomingCallModal';
 import Login from './pages/authentication/Login';
 import Register from './pages/authentication/Register';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import MentorDashboard from './pages/mentor/MentorDashboard';
 import TaskManagement from './pages/mentor/TaskManagement';
-import MeetingScheduler from './pages/mentor/MeetingScheduler';
 import Analytics from './pages/admin/Analytics';
 import UserManagement from './pages/admin/UserManagement';
 import Users from './pages/admin/Users';
@@ -17,7 +19,7 @@ import MentorAllocation from './pages/admin/MentorAllocation';
 import Communication from './pages/admin/Communication';
 import SendNotification from './pages/admin/SendNotification';
 import NotificationManagement from './pages/admin/NotificationManagement';
-import MeetingHistory from './pages/admin/MeetingHistory';
+import ManageMentorsMentees from './pages/admin/ManageMentorsMentees';
 import Notifications from './pages/user/Notifications';
 import NotFound from './pages/NotFound';
 import DashboardLayout from './components/layout/DashboardLayout';
@@ -29,13 +31,11 @@ import CertificateManagement from './components/CertificateManagement';
 import StudentDashboard from './pages/student/StudentDashboard';
 import MentorDetails from './pages/student/MentorDetails';
 import SkillsManagement from './pages/student/SkillsManagement';
-import JoinMeeting from './pages/student/JoinMeeting';
 
 import About from './pages/common/About';
 import Contact from './pages/common/Contact';
 
 import MyMentees from './pages/mentor/MyMentees';
-import MeetingRoom from './pages/videocall/MeetingRoom';
 import MenteeDetail from './pages/mentor/MenteeDetail';
 import TaskForm from './pages/mentor/TaskForm';
 import AttendanceForm from './pages/mentor/AttendanceForm';
@@ -44,10 +44,39 @@ import ShareUpdate from './pages/mentor/ShareUpdate';
 import './App.css';
 
 function App() {
+  const CallOverlay = () => {
+    const { incoming, activeRoom, minimized, localStream, remoteStreams, acceptCall, rejectCall, endCall, setMinimized } = useCall() || {};
+    return (
+      <>
+        <IncomingCallModal incoming={incoming} onAccept={acceptCall} onReject={rejectCall} />
+        {activeRoom && (
+          <CallWindow
+            localStream={localStream}
+            remoteStreams={remoteStreams}
+            onEnd={endCall}
+            minimized={minimized}
+            onToggleSize={() => setMinimized(!minimized)}
+          />
+        )}
+      </>
+    );
+  };
+
+  const CallProviderWrapper = ({ children }) => {
+    const { user } = useAuth();
+    return (
+      <CallProvider user={user}>
+        {children}
+        <CallOverlay />
+      </CallProvider>
+    );
+  };
+
   return (
     <Router>
       <AuthProvider>
-        <Routes>
+        <CallProviderWrapper>
+          <Routes>
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -150,11 +179,11 @@ function App() {
             }
           />
           <Route
-            path="/admin/meeting-history"
+            path="/admin/manage-mentors-mentees"
             element={
               <ProtectedRoute allowedRoles={['ADMIN']}>
                 <DashboardLayout>
-                  <MeetingHistory />
+                  <ManageMentorsMentees />
                 </DashboardLayout>
               </ProtectedRoute>
             }
@@ -211,17 +240,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/mentor/meetings"
-            element={
-              <ProtectedRoute allowedRoles={['MENTOR']}>
-                <DashboardLayout>
-                  <MeetingScheduler />
-                </DashboardLayout>
-              </ProtectedRoute>
-            }
-          />
-          
+         
           {/* New Mentor Routes */}
           <Route
             path="/mentor/mentees"
@@ -336,16 +355,6 @@ function App() {
             }
           />
           <Route
-            path="/student/join-meeting"
-            element={
-              <ProtectedRoute allowedRoles={['STUDENT', 'MENTEE']}>
-                <DashboardLayout>
-                  <JoinMeeting />
-                </DashboardLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/student/certificates"
             element={
               <ProtectedRoute allowedRoles={['STUDENT', 'MENTEE']}>
@@ -356,22 +365,13 @@ function App() {
             }
           />
 
-          {/* Video Call Routes */}
-          <Route
-            path="/meeting/room/:roomId"
-            element={
-              <ProtectedRoute allowedRoles={['ADMIN', 'MENTOR', 'STUDENT', 'MENTEE']}>
-                <MeetingRoom />
-              </ProtectedRoute>
-            }
-          />
-
           {/* Default Route - Landing Page */}
           <Route path="/" element={<LandingPage />} />
           
           {/* 404 Not Found Route - Must be last */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </CallProviderWrapper>
       </AuthProvider>
     </Router>
   );

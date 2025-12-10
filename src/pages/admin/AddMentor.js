@@ -36,7 +36,7 @@ const AddMentor = ({ onMentorAdded }) => {
     setSuccess('');
 
     try {
-      await adminService.createAdminMentor(formData);
+      await adminService.createMentor(formData);
       setSuccess('Mentor created successfully!');
       setFormData({
         username: '',

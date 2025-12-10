@@ -20,10 +20,6 @@ export const studentService = {
   deleteCertificate: (certificateId) => api.delete(`/api/students/me/certificates/${certificateId}`),
   getCertificateFile: (filename) => api.get(`/api/certificates/${filename}`),
   
-  // Meeting Management
-  getMyMeetings: (id) => api.get(`/api/students/${id}/meetings`),
-  getUpcomingMeetings: () => api.get('/api/students/meetings/upcoming'),
-  
   // Progress Management
   updateProgress: (id, progressData) => 
     api.put(`/api/students/${id}/progress`, progressData),
@@ -33,10 +29,6 @@ export const studentService = {
   assignMentor: (studentId, mentorId) => 
     api.put(`/api/students/${studentId}/mentor/${mentorId}`),
   
-  // Meeting Operations
-  getMeetingById: (id) => api.get(`/api/meetings/${id}`),
-  getMeetingsByRange: (startDate, endDate) => 
-    api.get(`/api/meetings/range?start=${startDate}&end=${endDate}`)
 };
 
 export default studentService; 

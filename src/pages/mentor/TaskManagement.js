@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { mentorService } from '../../services/mentorService';
+import { useAuth } from '../../contexts/AuthContext';
 
 const TaskManagement = () => {
+  const { user } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState({
     title: '',
@@ -13,15 +15,18 @@ const TaskManagement = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchTasks();
-    fetchAssignedStudents();
-  }, []);
+    if (user?.id) {
+      fetchTasks();
+      fetchAssignedStudents();
+    }
+  }, [user?.id]);
 
   const fetchTasks = async () => {
+    if (!user?.id) return;
     try {
       setLoading(true);
-      const response = await mentorService.getTasks();
-      setTasks(response.data);
+      const response = await mentorService.getAssignedTasks(user.id);
+      setTasks(response.data || []);
     } catch (error) {
       console.error('Error fetching tasks:', error);
     } finally {
@@ -30,9 +35,10 @@ const TaskManagement = () => {
   };
 
   const fetchAssignedStudents = async () => {
+    if (!user?.id) return;
     try {
-      const response = await mentorService.getAssignedStudents();
-      setAssignedStudents(response.data);
+      const response = await mentorService.getMyStudents(user.id);
+      setAssignedStudents(response.data || []);
     } catch (error) {
       console.error('Error fetching students:', error);
     }
@@ -40,9 +46,10 @@ const TaskManagement = () => {
 
   const handleCreateTask = async (e) => {
     e.preventDefault();
+    if (!user?.id) return;
     try {
       setLoading(true);
-      await mentorService.createTask(newTask);
+      await mentorService.assignTask(user.id, newTask);
       setNewTask({ title: '', description: '', dueDate: '', assignedTo: [] });
       fetchTasks();
     } catch (error) {
@@ -199,12 +206,12 @@ const TaskManagement = () => {
                 </div>
                 <div className="mt-2">
                   <div className="flex space-x-2">
-                    {task.assignedTo.map((student) => (
+                    {(task.assignedTo || []).map((student) => (
                       <span
-                        key={student.id}
+                        key={student?.id || student}
                         className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
                       >
-                        {student.name}
+                        {student?.name || student?.firstName || student || 'Unknown'}
                       </span>
                     ))}
                   </div>

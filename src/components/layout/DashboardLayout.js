@@ -12,13 +12,11 @@ import {
   UsersIcon,
   AcademicCapIcon,
   UserGroupIcon,
-  CalendarIcon,
   ChatBubbleLeftRightIcon,
   CogIcon,
   DocumentTextIcon,
   BuildingLibraryIcon,
   EnvelopeIcon,
-  VideoCameraIcon,
 } from '@heroicons/react/24/outline';
 import NotificationIcon from './NotificationIcon';
 import { notificationService } from '../../services/notificationService';
@@ -105,6 +103,12 @@ const DashboardLayout = ({ children }) => {
       icon: DocumentTextIcon,
       description: 'Analytics and reporting',
     },
+    {
+      name: 'Add Mentors & Students',
+      href: '/admin/manage-mentors-mentees',
+      icon: UsersIcon,
+      description: 'Create mentors and students',
+    },
   ];
 
   const mentorNavigation = [
@@ -125,12 +129,6 @@ const DashboardLayout = ({ children }) => {
       href: '/mentor/tasks',
       icon: DocumentTextIcon,
       description: 'Manage tasks and goals',
-    },
-    {
-      name: 'Meetings',
-      href: '/mentor/meetings',
-      icon: CalendarIcon,
-      description: 'Schedule and conduct meetings',
     },
     {
       name: 'Attendance',
@@ -164,12 +162,6 @@ const DashboardLayout = ({ children }) => {
       href: '/student/mentors',
       icon: UserGroupIcon,
       description: 'Browse available mentors',
-    },
-    {
-      name: 'Join Meeting',
-      href: '/student/join-meeting',
-      icon: VideoCameraIcon,
-      description: 'Join a meeting with your mentor',
     },
     {
       name: 'Certificates',

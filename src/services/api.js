@@ -1,11 +1,5 @@
 import axios from 'axios';
 
-// Create a debug function to help troubleshoot token issues
-const debugToken = () => {
-  const token = localStorage.getItem('token');
-  return !!token;
-};
-
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080',
   headers: {
@@ -32,46 +26,9 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    // Additional error debugging for batch operations
-    if (error.config?.url.includes('/api/admin/batches')) {
-      console.log('Batch operation error detected, detailed diagnostics:');
-      debugToken();
-      console.log('Request headers:', error.config.headers);
-      console.log('Request data:', error.config.data);
-    }
-
-    // Only handle 401 errors for non-login endpoints
     if (error.response?.status === 401 &&
       !error.config.url.includes('/api/auth/login') &&
       !error.config.url.includes('/api/auth/refresh-token')) {
-
-      console.log('Handling 401 Unauthorized error - will not redirect to login');
-      debugToken(); // Debug token in case of 401
-
-      // Check if token needs format fixing for batch operations specifically
-      if (error.config?.url.includes('/api/admin/batches')) {
-        const token = localStorage.getItem('token');
-        if (token) {
-          // Fix token format if needed - ensure format is correct without 'Bearer ' prefix in storage
-          if (token.startsWith('Bearer ')) {
-            const cleanToken = token.replace('Bearer ', '');
-            console.log('Correcting token storage format by removing Bearer prefix');
-            localStorage.setItem('token', cleanToken);
-          }
-
-          // Retry with current token
-          const config = { ...error.config };
-          const retryToken = localStorage.getItem('token');
-          config.headers.Authorization = `Bearer ${retryToken}`;
-          try {
-            return await axios(config);
-          } catch (retryError) {
-            // Retry failed
-          }
-        }
-      }
-
-      // Try refreshing token but never redirect
       const refreshToken = localStorage.getItem('refreshToken');
       if (refreshToken) {
         try {
@@ -86,12 +43,10 @@ api.interceptors.response.use(
           config.headers.Authorization = `Bearer ${token}`;
           return api(config);
         } catch (refreshError) {
-          // Token refresh failed, keeping existing token
         }
       }
     }
 
-    // Always pass through the error to be handled by the component
     return Promise.reject(error);
   }
 );
@@ -118,11 +73,7 @@ export const studentService = {
   getCurrentStudent: () => api.get('/students/me'),
   getStudentsByMentor: (mentorId) => api.get(`/students/mentor/${mentorId}`),
   updateStudentProgress: (id, progressData) => api.put(`/students/${id}/progress`, progressData),
-  getStudentMeetings: (id) => api.get(`/students/${id}/meetings`),
-  getMeetingDetails: (meetingId) => api.get(`/students/meetings/${meetingId}`),
-  requestMeetingChanges: (meetingId, changes) => api.post(`/students/meetings/${meetingId}/request-changes`, changes),
   getMyMentor: () => api.get('/students/my-mentor'),
-  getUpcomingMeetings: () => api.get('/students/meetings/upcoming'),
   getProgressReports: () => api.get('/students/progress-reports')
 };
 
@@ -135,7 +86,6 @@ export const mentorService = {
   getMentorById: (id) => api.get(`/mentors/${id}`),
   getCurrentMentor: () => api.get('/mentors/me'),
   getMentorStudents: (id) => api.get(`/mentors/${id}/students`),
-  getMentorMeetings: (id) => api.get(`/mentors/${id}/meetings`),
   checkMentorSlots: (id) => api.get(`/mentors/${id}/slots`)
 };
 
@@ -249,13 +199,7 @@ export const adminService = {
   // Analytics
   getMentorEngagement: () => api.get('/api/admin/analytics/mentor-engagement'),
   getStudentProgress: () => api.get('/api/admin/analytics/student-progress'),
-  getMeetingMetrics: () => api.get('/api/admin/analytics/meeting-metrics')
-};
-
-// Meeting Services
-export const meetingService = {
-  getAllMeetings: () => api.get('/meetings'),
-  getMeetingsByMentor: (mentorId) => api.get(`/meetings/mentor/${mentorId}`)
+  // Meeting metrics removed with video call feature cleanup
 };
 
 export default api; 

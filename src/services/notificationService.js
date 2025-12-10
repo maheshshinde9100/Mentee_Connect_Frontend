@@ -13,11 +13,6 @@ export const notificationService = {
   // Get unread notification count
   getUnreadCount: () => api.get('/api/notifications/unread'),
 
-  // Auth test endpoint
-  authTest: () => api.get('/api/notifications/auth-test'),
-
-  // Auth status endpoint
-  authStatus: () => api.get('/api/notifications/auth-status'),
 
   // For backward compatibility, keeping these methods but using the available endpoints
   markAllAsRead: async () => {

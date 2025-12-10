@@ -16,7 +16,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Users, Shield, MessageSquare, Calendar, Target, Bell, Video, TrendingUp, CheckCircle, Github, Linkedin, Mail, MapPin, Menu, X, MessageCircle  } from 'lucide-react';
+import { User, Users, Shield, MessageSquare, Calendar, Target, Bell, TrendingUp, CheckCircle, Github, Linkedin, Mail, MapPin, Menu, X, MessageCircle  } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 // Mock components for demonstration
@@ -83,11 +83,6 @@ const LandingPage = () => {
       icon: <MessageSquare className="h-8 w-8 text-indigo-600" />,
     },
     {
-      title: 'Video Call Integration',
-      description: 'Built-in video calling for seamless virtual mentoring sessions.',
-      icon: <Video className="h-8 w-8 text-purple-600" />,
-    },
-    {
       title: 'Progress Tracking',
       description: 'Comprehensive analytics and progress monitoring for mentees.',
       icon: <TrendingUp className="h-8 w-8 text-indigo-600" />,
@@ -123,7 +118,6 @@ const LandingPage = () => {
         'Assign tasks and goals',
         'Real-time communication',
         'Track mentee progress',
-        'Schedule meetings',
         'Manage offline attendance'
       ]
     },
@@ -133,7 +127,6 @@ const LandingPage = () => {
       features: [
         'View assigned tasks',
         'Chat with mentors',
-        'Attend virtual sessions',
         'Track personal progress',
         'Access learning resources'
       ]

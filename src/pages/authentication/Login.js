@@ -10,7 +10,6 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [debug, setDebug] = useState('');
 
   const navigate = useNavigate();
   const { login, isAuthenticated, user } = useAuth();
@@ -34,7 +33,6 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    setDebug('');
 
     try {
       const response = await authService.login(formData);
@@ -63,7 +61,6 @@ const Login = () => {
       // Verify token was stored correctly
       const storedToken = localStorage.getItem('token');
       if (!storedToken) {
-        setDebug('WARNING: Token was not stored in localStorage after login');
         console.error('Token was not stored in localStorage');
         // Try storing it again
         localStorage.setItem('token', token);
@@ -135,19 +132,6 @@ const Login = () => {
                   </div>
                 </div>
                 <span className="text-sm">{error}</span>
-              </div>
-            </div>
-          )}
-          
-          {debug && (
-            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 text-yellow-800 p-4 rounded-xl mb-6 backdrop-blur-sm">
-              <div className="flex items-center">
-                <div className="w-5 h-5 bg-yellow-500 rounded-full mr-3 flex-shrink-0">
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">⚠</span>
-                  </div>
-                </div>
-                <span className="text-sm">{debug}</span>
               </div>
             </div>
           )}

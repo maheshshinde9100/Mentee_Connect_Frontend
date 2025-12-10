@@ -1,0 +1,73 @@
+import React, { useMemo } from 'react';
+
+const VideoTile = ({ label, stream }) => {
+  const videoRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+    } else if (videoRef.current && !stream) {
+      videoRef.current.srcObject = null;
+    }
+  }, [stream]);
+
+  return (
+    <div className="bg-black rounded-lg overflow-hidden relative min-h-[200px]">
+      <video
+        ref={videoRef}
+        className="w-full h-full object-cover"
+        autoPlay
+        playsInline
+        muted={label === 'You'}
+      />
+      {!stream && (
+        <div className="absolute inset-0 flex items-center justify-center text-white text-sm">
+          No video
+        </div>
+      )}
+      <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs px-2 py-1">{label}</div>
+    </div>
+  );
+};
+
+const CallWindow = ({ localStream, remoteStreams, onEnd, minimized, onToggleSize }) => {
+  const remoteList = useMemo(() => Object.entries(remoteStreams || {}), [remoteStreams]);
+
+  return (
+    <div
+      className={`fixed ${minimized ? 'bottom-4 right-4 w-64 h-40' : 'inset-0'} z-40 bg-gray-900/80 backdrop-blur`}
+    >
+      <div className={`bg-white shadow-lg ${minimized ? 'rounded-lg h-full' : 'h-full'} flex flex-col`}>
+        <div className="flex items-center justify-between px-4 py-2 border-b">
+          <div className="font-semibold text-gray-800">Live Call</div>
+          <div className="space-x-2">
+            <button
+              onClick={onToggleSize}
+              className="text-xs px-2 py-1 rounded border border-gray-300 hover:bg-gray-100"
+            >
+              {minimized ? 'Maximize' : 'Minimize'}
+            </button>
+            <button
+              onClick={onEnd}
+              className="text-xs px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700"
+            >
+              End
+            </button>
+          </div>
+        </div>
+        <div className="p-4 grid gap-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 overflow-auto flex-1">
+          <VideoTile label="You" stream={localStream} />
+          {remoteList.length === 0 && (
+            <div className="text-gray-500 text-sm flex items-center">Waiting for participants...</div>
+          )}
+          {remoteList.map(([id, stream]) => (
+            <VideoTile key={id} label={`Participant ${id}`} stream={stream} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CallWindow;
+

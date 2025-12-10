@@ -11,10 +11,6 @@ export const mentorService = {
   getStudentDetails: (mentorId, studentId) => api.get(`/api/mentors/${mentorId}/students/${studentId}`),
   updateStudentInfo: (mentorId, studentId, studentData) => api.put(`/api/mentors/${mentorId}/students/${studentId}/update`, studentData),
   
-  // Meeting Management
-  getMyMeetings: (id) => api.get(`/api/mentors/${id}/meetings`),
-  getAvailableSlots: (id) => api.get(`/api/mentors/${id}/slots`),
-  
   // Task Management
   assignTask: (mentorId, taskData) => api.post(`/api/mentors/${mentorId}/tasks`, taskData),
   getAssignedTasks: (mentorId) => api.get(`/api/mentors/${mentorId}/tasks`),
