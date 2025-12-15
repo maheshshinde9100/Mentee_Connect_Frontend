@@ -9,16 +9,16 @@ const NotFound = () => {
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center items-center px-4">
       <div className="max-w-lg w-full text-center">
         {/* 404 Text */}
-        <h1 className="text-9xl font-bold text-indigo-600 animate-bounce">404</h1>
+        <h1 className="text-9xl font-bold text-indigo-600 dark:text-indigo-400 animate-bounce">404</h1>
         
         {/* Main Message */}
-        <h2 className="mt-8 text-3xl font-bold text-gray-900 sm:text-4xl">Page not found</h2>
-        <p className="mt-4 text-lg text-gray-600">
+        <h2 className="mt-8 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">Page not found</h2>
+        <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
           Sorry, we couldn't find the page you're looking for. The URL might be incorrect, or the page may have been moved or deleted.
         </p>
 
         {/* MenteeConnect Logo/Text */}
-        <div className="mt-6 text-xl font-semibold text-indigo-600">
+        <div className="mt-6 text-xl font-semibold text-indigo-600 dark:text-indigo-400">
           MenteeConnect
         </div>
 
@@ -37,14 +37,14 @@ const NotFound = () => {
         <div className="mt-8 space-x-4">
           <button
             onClick={() => navigate('/admin/dashboard')}
-            className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+            className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500"
           >
             Go to Dashboard
           </button>
           <span className="text-gray-400">|</span>
           <button
             onClick={() => navigate('/contact')}
-            className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+            className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500"
           >
             Contact Support
           </button>

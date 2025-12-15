@@ -48,7 +48,7 @@ const Users = () => {
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900 mb-4">User Management</h1>
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">User Management</h1>
         
         {/* Search and Filter Section */}
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -74,26 +74,26 @@ const Users = () => {
         </div>
 
         {/* Users Table */}
-        <div className="overflow-x-auto bg-white shadow-md rounded-lg">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="overflow-x-auto bg-white dark:bg-slate-800 shadow-md rounded-lg">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+            <thead className="bg-gray-50 dark:bg-slate-900/50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Email</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Role</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Department</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
               {filteredUsers.map((user) => (
                 <tr key={user.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">{user.email}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{user.email}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -102,7 +102,7 @@ const Users = () => {
                       {user.role}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {user.department}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -115,13 +115,13 @@ const Users = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
                       onClick={() => handleEdit(user)}
-                      className="text-indigo-600 hover:text-indigo-900 mr-4"
+                      className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 mr-4"
                     >
                       <FiEdit2 className="inline-block h-5 w-5" />
                     </button>
                     <button
                       onClick={() => handleDelete(user.id)}
-                      className="text-red-600 hover:text-red-900"
+                      className="text-red-600 dark:text-red-400 hover:text-red-900"
                     >
                       <FiTrash2 className="inline-block h-5 w-5" />
                     </button>
@@ -136,19 +136,19 @@ const Users = () => {
       {/* Edit Modal */}
       {isEditModalOpen && editingUser && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-slate-800">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-medium">Edit User</h3>
               <button
                 onClick={() => setIsEditModalOpen(false)}
-                className="text-gray-400 hover:text-gray-500"
+                className="text-gray-400 hover:text-gray-500 dark:text-gray-400"
               >
                 ×
               </button>
             </div>
             <form onSubmit={handleUpdate}>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Name
                 </label>
                 <input
@@ -160,7 +160,7 @@ const Users = () => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Email
                 </label>
                 <input
@@ -172,7 +172,7 @@ const Users = () => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Department
                 </label>
                 <select
@@ -187,7 +187,7 @@ const Users = () => {
                 </select>
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Status
                 </label>
                 <select
@@ -203,7 +203,7 @@ const Users = () => {
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 rounded-md hover:bg-gray-200"
                 >
                   Cancel
                 </button>

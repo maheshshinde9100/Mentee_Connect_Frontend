@@ -84,13 +84,13 @@ const StudentDashboard = () => {
     <div className="py-6">
       {/* Student Info Header */}
       <div className="px-4 sm:px-6 md:px-8 mb-6">
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                 {profile?.firstName} {profile?.lastName}
               </h1>
-              <div className="mt-1 flex items-center space-x-4 text-gray-600">
+              <div className="mt-1 flex items-center space-x-4 text-gray-600 dark:text-gray-400">
                 <div className="flex items-center">
                   <AcademicCapIcon className="h-5 w-5 mr-2" />
                   <span>{profile?.course}</span>
@@ -115,7 +115,7 @@ const StudentDashboard = () => {
           {statsCards.map((card) => (
             <div
               key={card.title}
-              className="bg-white overflow-hidden shadow rounded-lg"
+              className="bg-white dark:bg-slate-800 overflow-hidden shadow rounded-lg"
             >
               <div className="p-5">
                 <div className="flex items-center">
@@ -124,11 +124,11 @@ const StudentDashboard = () => {
                   </div>
                   <div className="ml-5 w-0 flex-1">
                     <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
+                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
                         {card.title}
                       </dt>
                       <dd>
-                        <div className="text-lg font-medium text-gray-900">
+                        <div className="text-lg font-medium text-gray-900 dark:text-white">
                           {card.value}
                         </div>
                       </dd>
@@ -144,27 +144,27 @@ const StudentDashboard = () => {
       {/* Mentor Information */}
       {mentor && (
         <div className="px-4 sm:px-6 md:px-8 mb-6">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
             <h2 className="text-lg font-semibold mb-4">Mentor Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   <span className="font-medium">Name:</span> {mentor.firstName} {mentor.lastName}
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   <span className="font-medium">Email:</span> {mentor.email}
                 </p>
                 {mentor.phoneNumber && (
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     <span className="font-medium">Phone:</span> {mentor.phoneNumber}
                   </p>
                 )}
               </div>
               <div>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   <span className="font-medium">Department:</span> {mentor.department}
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   <span className="font-medium">Specialization:</span> {mentor.specialization}
                 </p>
               </div>

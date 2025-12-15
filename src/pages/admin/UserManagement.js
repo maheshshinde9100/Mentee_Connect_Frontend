@@ -95,7 +95,7 @@ const UserManagement = () => {
   };
 
   const getRoleColor = (role) => {
-    if (!role) return 'bg-gray-100 text-gray-800';
+    if (!role) return 'bg-gray-100 text-gray-800 dark:text-gray-100';
     switch (role) {
       case 'ROLE_ADMIN':
         return 'bg-purple-100 text-purple-800';
@@ -104,7 +104,7 @@ const UserManagement = () => {
       case 'ROLE_STUDENT':
         return 'bg-blue-100 text-blue-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-800 dark:text-gray-100';
     }
   };
 
@@ -127,17 +127,17 @@ const UserManagement = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-gray-50 dark:bg-slate-900/50 min-h-screen">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-        <p className="mt-2 text-sm text-gray-600">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">User Management</h1>
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
           Manage and monitor all users in the system
         </p>
       </div>
 
       {/* Success Message */}
       {successMessage && (
-        <div className="mb-4 rounded-md bg-green-50 p-4 text-green-700 flex items-center justify-between">
+        <div className="mb-4 rounded-md bg-green-50 dark:bg-green-900/20 p-4 text-green-700 flex items-center justify-between">
           <div className="flex items-center">
             <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -149,7 +149,7 @@ const UserManagement = () => {
 
       {/* Search Bar */}
       <div className="mb-6">
-        <div className="max-w-xl bg-white rounded-lg shadow-sm flex items-center p-2">
+        <div className="max-w-xl bg-white dark:bg-slate-800 rounded-lg shadow-sm flex items-center p-2">
           <input
             type="text"
             value={searchQuery}
@@ -169,7 +169,7 @@ const UserManagement = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="mb-4 rounded-md bg-red-50 p-4 text-red-700 flex items-center">
+        <div className="mb-4 rounded-md bg-red-50 dark:bg-red-900/20 p-4 text-red-700 flex items-center">
           <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
           </svg>
@@ -178,18 +178,18 @@ const UserManagement = () => {
       )}
 
       {/* Users Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow overflow-hidden">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+          <thead className="bg-gray-50 dark:bg-slate-900/50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Email</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Phone</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Role</th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Actions</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Name</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Email</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Phone</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Role</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
+          <tbody className="divide-y divide-gray-200 dark:divide-slate-700 bg-white dark:bg-slate-800">
             {loading ? (
               <tr>
                 <td colSpan="5" className="px-6 py-4 text-center">
@@ -204,13 +204,13 @@ const UserManagement = () => {
               </tr>
             ) : users.length === 0 ? (
               <tr>
-                <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                <td colSpan="5" className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                   No users found
                 </td>
               </tr>
             ) : (
               users.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50 transition-colors duration-200">
+                <tr key={user.id} className="hover:bg-gray-50 dark:bg-slate-900/50 transition-colors duration-200">
                   <td className="whitespace-nowrap px-6 py-4">
                     {editingUser?.id === user.id ? (
                       <div className="flex gap-2">
@@ -218,19 +218,19 @@ const UserManagement = () => {
                           type="text"
                           value={editingUser.firstName}
                           onChange={(e) => handleInputChange('firstName', e.target.value)}
-                          className="w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="w-24 rounded-md border-gray-300 dark:border-slate-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                           placeholder="First Name"
                         />
                         <input
                           type="text"
                           value={editingUser.lastName}
                           onChange={(e) => handleInputChange('lastName', e.target.value)}
-                          className="w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="w-24 rounded-md border-gray-300 dark:border-slate-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                           placeholder="Last Name"
                         />
                       </div>
                     ) : (
-                      <div className="font-medium text-gray-900">{`${user.firstName} ${user.lastName}`}</div>
+                      <div className="font-medium text-gray-900 dark:text-white">{`${user.firstName} ${user.lastName}`}</div>
                     )}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
@@ -239,10 +239,10 @@ const UserManagement = () => {
                         type="email"
                         value={editingUser.email}
                         onChange={(e) => handleInputChange('email', e.target.value)}
-                        className="w-40 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        className="w-40 rounded-md border-gray-300 dark:border-slate-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                       />
                     ) : (
-                      <div className="text-gray-600">{user.email}</div>
+                      <div className="text-gray-600 dark:text-gray-400">{user.email}</div>
                     )}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
@@ -251,10 +251,10 @@ const UserManagement = () => {
                         type="text"
                         value={editingUser.phoneNumber}
                         onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-                        className="w-32 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        className="w-32 rounded-md border-gray-300 dark:border-slate-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                       />
                     ) : (
-                      <div className="text-gray-600">{user.phoneNumber || '-'}</div>
+                      <div className="text-gray-600 dark:text-gray-400">{user.phoneNumber || '-'}</div>
                     )}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
@@ -276,7 +276,7 @@ const UserManagement = () => {
                         </button>
                         <button
                           onClick={() => setEditingUser(null)}
-                          className="inline-flex items-center px-3 py-1 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                          className="inline-flex items-center px-3 py-1 border border-gray-300 dark:border-slate-600 text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
                           <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />

@@ -205,17 +205,17 @@ const ShareUpdate = () => {
             onClick={() => navigate('/mentor/updates')}
             className="mr-4 p-2 rounded-full hover:bg-gray-100"
           >
-            <svg className="h-5 w-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <svg className="h-5 w-5 text-gray-600 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
             </svg>
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             {updateId ? 'Edit Update' : 'Share New Update'}
           </h1>
         </div>
 
         {error && (
-          <div className="mb-6 bg-red-50 p-4 rounded-md">
+          <div className="mb-6 bg-red-50 dark:bg-red-900/20 p-4 rounded-md">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -230,7 +230,7 @@ const ShareUpdate = () => {
         )}
 
         {success && (
-          <div className="mb-6 bg-green-50 p-4 rounded-md">
+          <div className="mb-6 bg-green-50 dark:bg-green-900/20 p-4 rounded-md">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg className="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -244,10 +244,10 @@ const ShareUpdate = () => {
           </div>
         )}
 
-        <div className="bg-white shadow rounded-lg overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 shadow rounded-lg overflow-hidden">
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Title <span className="text-red-500">*</span>
               </label>
               <input
@@ -256,13 +256,13 @@ const ShareUpdate = () => {
                 id="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 required
               />
             </div>
 
             <div>
-              <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="content" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Content <span className="text-red-500">*</span>
               </label>
               <textarea
@@ -271,17 +271,17 @@ const ShareUpdate = () => {
                 rows={6}
                 value={formData.content}
                 onChange={handleInputChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 required
               />
-              <p className="mt-2 text-xs text-gray-500">
+              <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                 You can use Markdown syntax for formatting.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="resourceType" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="resourceType" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Resource Type
                 </label>
                 <select
@@ -289,7 +289,7 @@ const ShareUpdate = () => {
                   name="resourceType"
                   value={formData.resourceType}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 >
                   <option value="GITHUB">GitHub</option>
                   <option value="ARTICLE">Article</option>
@@ -301,7 +301,7 @@ const ShareUpdate = () => {
               </div>
 
               <div>
-                <label htmlFor="attachmentUrls" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="attachmentUrls" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Resource Links
                 </label>
                 <input
@@ -311,12 +311,12 @@ const ShareUpdate = () => {
                   value={formData.attachmentUrls.join(', ')}
                   onChange={handleAttachmentChange}
                   placeholder="Enter URLs separated by commas"
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
               </div>
             </div>
 
-            <div className="border-t border-gray-200 pt-6">
+            <div className="border-t border-gray-200 dark:border-slate-700 pt-6">
               <div className="flex items-center mb-4">
                 <input
                   id="isImportant"
@@ -324,9 +324,9 @@ const ShareUpdate = () => {
                   type="checkbox"
                   checked={formData.isImportant}
                   onChange={handleInputChange}
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-indigo-600 dark:text-indigo-400 focus:ring-indigo-500 border-gray-300 dark:border-slate-600 rounded"
                 />
-                <label htmlFor="isImportant" className="ml-2 text-sm text-gray-700">
+                <label htmlFor="isImportant" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                   Mark as important
                 </label>
               </div>
@@ -338,9 +338,9 @@ const ShareUpdate = () => {
                   type="checkbox"
                   checked={formData.isPublic}
                   onChange={handleInputChange}
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-indigo-600 dark:text-indigo-400 focus:ring-indigo-500 border-gray-300 dark:border-slate-600 rounded"
                 />
-                <label htmlFor="isPublic" className="ml-2 text-sm text-gray-700">
+                <label htmlFor="isPublic" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                   Share with all my mentees
                 </label>
               </div>
@@ -348,16 +348,16 @@ const ShareUpdate = () => {
               {!formData.isPublic && (
                 <div>
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-sm font-medium text-gray-700">Select specific mentees</h3>
+                    <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Select specific mentees</h3>
                     <div className="flex items-center">
                       <input
                         id="select-all"
                         type="checkbox"
                         checked={selectedMentees.length === mentees.length && mentees.length > 0}
                         onChange={handleSelectAllMentees}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-indigo-600 dark:text-indigo-400 focus:ring-indigo-500 border-gray-300 dark:border-slate-600 rounded"
                       />
-                      <label htmlFor="select-all" className="ml-2 text-xs text-gray-500">
+                      <label htmlFor="select-all" className="ml-2 text-xs text-gray-500 dark:text-gray-400">
                         Select All
                       </label>
                     </div>
@@ -371,9 +371,9 @@ const ShareUpdate = () => {
                           type="checkbox"
                           checked={selectedMentees.includes(mentee.id)}
                           onChange={(e) => handleMenteeSelect(e, mentee.id)}
-                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                          className="h-4 w-4 text-indigo-600 dark:text-indigo-400 focus:ring-indigo-500 border-gray-300 dark:border-slate-600 rounded"
                         />
-                        <label htmlFor={`mentee-${mentee.id}`} className="ml-2 text-sm text-gray-700">
+                        <label htmlFor={`mentee-${mentee.id}`} className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                           {mentee.firstName} {mentee.lastName}
                         </label>
                       </div>
@@ -387,7 +387,7 @@ const ShareUpdate = () => {
               <button
                 type="button"
                 onClick={() => navigate('/mentor/updates')}
-                className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 Cancel
               </button>

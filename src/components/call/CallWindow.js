@@ -37,13 +37,13 @@ const CallWindow = ({ localStream, remoteStreams, onEnd, minimized, onToggleSize
     <div
       className={`fixed ${minimized ? 'bottom-4 right-4 w-64 h-40' : 'inset-0'} z-40 bg-gray-900/80 backdrop-blur`}
     >
-      <div className={`bg-white shadow-lg ${minimized ? 'rounded-lg h-full' : 'h-full'} flex flex-col`}>
+      <div className={`bg-white dark:bg-slate-800 shadow-lg ${minimized ? 'rounded-lg h-full' : 'h-full'} flex flex-col`}>
         <div className="flex items-center justify-between px-4 py-2 border-b">
-          <div className="font-semibold text-gray-800">Live Call</div>
+          <div className="font-semibold text-gray-800 dark:text-gray-100">Live Call</div>
           <div className="space-x-2">
             <button
               onClick={onToggleSize}
-              className="text-xs px-2 py-1 rounded border border-gray-300 hover:bg-gray-100"
+              className="text-xs px-2 py-1 rounded border border-gray-300 dark:border-slate-600 hover:bg-gray-100"
             >
               {minimized ? 'Maximize' : 'Minimize'}
             </button>
@@ -58,7 +58,7 @@ const CallWindow = ({ localStream, remoteStreams, onEnd, minimized, onToggleSize
         <div className="p-4 grid gap-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 overflow-auto flex-1">
           <VideoTile label="You" stream={localStream} />
           {remoteList.length === 0 && (
-            <div className="text-gray-500 text-sm flex items-center">Waiting for participants...</div>
+            <div className="text-gray-500 dark:text-gray-400 text-sm flex items-center">Waiting for participants...</div>
           )}
           {remoteList.map(([id, stream]) => (
             <VideoTile key={id} label={`Participant ${id}`} stream={stream} />

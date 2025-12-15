@@ -31,7 +31,7 @@ const MentorDetails = () => {
 
   if (!mentor) {
     return (
-      <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+      <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 p-4">
         <div className="flex">
           <div className="flex-shrink-0">
             <svg className="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -49,43 +49,43 @@ const MentorDetails = () => {
   }
 
   return (
-    <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+    <div className="bg-white dark:bg-slate-800 shadow overflow-hidden sm:rounded-lg">
       <div className="px-4 py-5 sm:px-6">
-        <h3 className="text-lg leading-6 font-medium text-gray-900">Mentor Information</h3>
-        <p className="mt-1 max-w-2xl text-sm text-gray-500">Details about your assigned mentor.</p>
+        <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Mentor Information</h3>
+        <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">Details about your assigned mentor.</p>
       </div>
-      <div className="border-t border-gray-200">
+      <div className="border-t border-gray-200 dark:border-slate-700">
         <dl>
-          <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-500">Full name</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{mentor.name}</dd>
+          <div className="bg-gray-50 dark:bg-slate-900/50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Full name</dt>
+            <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{mentor.name}</dd>
           </div>
-          <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-500">Email address</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{mentor.email}</dd>
+          <div className="bg-white dark:bg-slate-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Email address</dt>
+            <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{mentor.email}</dd>
           </div>
-          <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-500">Expertise</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+          <div className="bg-gray-50 dark:bg-slate-900/50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Expertise</dt>
+            <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
               {mentor.expertise?.join(', ') || 'Not specified'}
             </dd>
           </div>
-          <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-500">Experience</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+          <div className="bg-white dark:bg-slate-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Experience</dt>
+            <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
               {mentor.experience || 'Not specified'}
             </dd>
           </div>
-          <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-500">Office hours</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+          <div className="bg-gray-50 dark:bg-slate-900/50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Office hours</dt>
+            <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
               {mentor.officeHours || 'Not specified'}
             </dd>
           </div>
-          <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-500">Contact information</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-              <ul className="border border-gray-200 rounded-md divide-y divide-gray-200">
+          <div className="bg-white dark:bg-slate-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Contact information</dt>
+            <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+              <ul className="border border-gray-200 dark:border-slate-700 rounded-md divide-y divide-gray-200 dark:divide-slate-700">
                 {mentor.contactMethods?.map((contact, index) => (
                   <li key={index} className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
                     <div className="w-0 flex-1 flex items-center">

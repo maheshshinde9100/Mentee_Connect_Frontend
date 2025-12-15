@@ -91,35 +91,35 @@ const CertificateManagement = () => {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
       <h2 className="text-xl font-semibold mb-4">Certificate Management</h2>
       
       {/* Upload Form */}
       <form onSubmit={handleUpload} className="mb-6 p-4 border rounded-lg">
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Upload Certificate
           </label>
           <input
             type="file"
             onChange={handleFileChange}
-            className="block w-full text-sm text-gray-500
+            className="block w-full text-sm text-gray-500 dark:text-gray-400
               file:mr-4 file:py-2 file:px-4
               file:rounded-md file:border-0
               file:text-sm file:font-semibold
-              file:bg-blue-50 file:text-blue-700
+              file:bg-blue-50 dark:bg-blue-900/20 file:text-blue-700
               hover:file:bg-blue-100"
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Description
           </label>
           <input
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            className="mt-1 block w-full rounded-md border-gray-300 dark:border-slate-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
             placeholder="Enter certificate description"
           />
         </div>
@@ -145,8 +145,8 @@ const CertificateManagement = () => {
             <div className="flex items-center space-x-4">
               <DocumentIcon className="h-8 w-8 text-gray-400" />
               <div>
-                <h3 className="text-sm font-medium text-gray-900">{cert.certificateName}</h3>
-                <p className="text-sm text-gray-500">{cert.description}</p>
+                <h3 className="text-sm font-medium text-gray-900 dark:text-white">{cert.certificateName}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{cert.description}</p>
                 <p className="text-xs text-gray-400">
                   Uploaded: {new Date(cert.uploadDate).toLocaleDateString()}
                 </p>
@@ -162,14 +162,14 @@ const CertificateManagement = () => {
             <div className="flex space-x-2">
               <button
                 onClick={() => handleDownload(cert.certificateUrl)}
-                className="p-2 text-gray-600 hover:text-blue-600"
+                className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:text-blue-400"
                 title="Download"
               >
                 <ArrowDownTrayIcon className="h-5 w-5" />
               </button>
               <button
                 onClick={() => handleDelete(cert.id)}
-                className="p-2 text-gray-600 hover:text-red-600"
+                className="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:text-red-400"
                 title="Delete"
               >
                 <TrashIcon className="h-5 w-5" />

@@ -83,13 +83,13 @@ const AddStudent = ({ onStudentAdded }) => {
       <h2 className="text-2xl font-bold mb-6">Add New Student</h2>
 
       {error && (
-        <div className="bg-red-50 text-red-800 p-4 rounded-md mb-4">
+        <div className="bg-red-50 dark:bg-red-900/20 text-red-800 p-4 rounded-md mb-4">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="bg-green-50 text-green-800 p-4 rounded-md mb-4">
+        <div className="bg-green-50 dark:bg-green-900/20 text-green-800 p-4 rounded-md mb-4">
           {success}
         </div>
       )}
@@ -98,7 +98,7 @@ const AddStudent = ({ onStudentAdded }) => {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           {/* Basic Information */}
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Username
             </label>
             <input
@@ -108,12 +108,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.username}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Email
             </label>
             <input
@@ -123,12 +123,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.email}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Password
             </label>
             <input
@@ -138,12 +138,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.password}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               First Name
             </label>
             <input
@@ -153,12 +153,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.firstName}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Last Name
             </label>
             <input
@@ -168,12 +168,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.lastName}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Phone Number
             </label>
             <input
@@ -183,13 +183,13 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.phoneNumber}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           {/* Academic Information */}
           <div>
-            <label htmlFor="studentId" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="studentId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Student ID
             </label>
             <input
@@ -199,12 +199,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.studentId}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="course" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="course" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Course
             </label>
             <input
@@ -214,12 +214,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.course}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="batch" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="batch" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Batch
             </label>
             <input
@@ -229,12 +229,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.batch}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="semester" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="semester" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Semester
             </label>
             <input
@@ -246,12 +246,12 @@ const AddStudent = ({ onStudentAdded }) => {
               max="8"
               value={formData.semester}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="department" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="department" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Department
             </label>
             <input
@@ -261,12 +261,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.department}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="dob" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="dob" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Date of Birth
             </label>
             <input
@@ -276,12 +276,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.dob}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="attendance" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="attendance" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Attendance (%)
             </label>
             <input
@@ -294,12 +294,12 @@ const AddStudent = ({ onStudentAdded }) => {
               step="0.01"
               value={formData.attendance}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="cgpa" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="cgpa" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               CGPA
             </label>
             <input
@@ -312,7 +312,7 @@ const AddStudent = ({ onStudentAdded }) => {
               step="0.01"
               value={formData.cgpa}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
         </div>

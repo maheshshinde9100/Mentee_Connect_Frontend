@@ -53,7 +53,7 @@ const Analytics = () => {
   if (error) {
     return (
       <div className="p-6">
-        <div className="rounded-md bg-red-50 p-4 text-red-700">
+        <div className="rounded-md bg-red-50 dark:bg-red-900/20 p-4 text-red-700">
           {error}
         </div>
       </div>
@@ -93,8 +93,8 @@ const Analytics = () => {
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900">Analytics Dashboard</h1>
-        <p className="mt-2 text-sm text-gray-600">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Analytics Dashboard</h1>
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
           Overview of mentorship program metrics and performance indicators
         </p>
       </div>
@@ -104,7 +104,7 @@ const Analytics = () => {
         <select
           value={selectedTimeframe}
           onChange={(e) => setSelectedTimeframe(e.target.value)}
-          className="mt-1 block w-48 rounded-md border-gray-300 pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="mt-1 block w-48 rounded-md border-gray-300 dark:border-slate-600 pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         >
           <option value="7days">Last 7 Days</option>
           <option value="1month">Last Month</option>
@@ -116,29 +116,29 @@ const Analytics = () => {
 
       {/* Metrics Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-sm font-medium text-gray-600">Total Users</h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">{userCounts.totalUsers}</p>
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
+          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Users</h3>
+          <p className="mt-2 text-3xl font-semibold text-gray-900 dark:text-white">{userCounts.totalUsers}</p>
         </div>
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-sm font-medium text-gray-600">Active Users</h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">{userCounts.activeUsers}</p>
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
+          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Users</h3>
+          <p className="mt-2 text-3xl font-semibold text-gray-900 dark:text-white">{userCounts.activeUsers}</p>
         </div>
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-sm font-medium text-gray-600">Total Mentors</h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">{userCounts.totalMentors}</p>
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
+          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Mentors</h3>
+          <p className="mt-2 text-3xl font-semibold text-gray-900 dark:text-white">{userCounts.totalMentors}</p>
         </div>
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-sm font-medium text-gray-600">Total Students</h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">{userCounts.totalStudents}</p>
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
+          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Students</h3>
+          <p className="mt-2 text-3xl font-semibold text-gray-900 dark:text-white">{userCounts.totalStudents}</p>
         </div>
       </div>
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* User Distribution */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">User Distribution</h2>
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
+          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">User Distribution</h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -161,8 +161,8 @@ const Analytics = () => {
         </div>
 
         {/* Department Distribution */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Department Distribution</h2>
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
+          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Department Distribution</h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={departmentData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -177,8 +177,8 @@ const Analytics = () => {
         </div>
 
         {/* Students per Semester */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Students per Semester</h2>
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
+          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Students per Semester</h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={semesterData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -191,8 +191,8 @@ const Analytics = () => {
         </div>
 
         {/* Mentor Experience Distribution */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Mentor Experience</h2>
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
+          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Mentor Experience</h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -217,19 +217,19 @@ const Analytics = () => {
 
       {/* Top Performing Mentors */}
       <div className="mt-8">
-        <div className="bg-white rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-medium text-gray-900">Top Performing Mentors</h2>
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
+            <h2 className="text-lg font-medium text-gray-900 dark:text-white">Top Performing Mentors</h2>
           </div>
-          <div className="divide-y divide-gray-200">
+          <div className="divide-y divide-gray-200 dark:divide-slate-700">
             {mentorStats.topPerformingMentors.map((mentor) => (
               <div key={mentor.mentorId} className="px-6 py-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-sm font-medium text-gray-900">{mentor.mentorName}</h3>
-                    <p className="text-sm text-gray-500">ID: {mentor.mentorId}</p>
+                    <h3 className="text-sm font-medium text-gray-900 dark:text-white">{mentor.mentorName}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">ID: {mentor.mentorId}</p>
                   </div>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
                     <p>Students: {mentor.studentCount}</p>
                     <p>Avg. CGPA: {mentor.averageStudentCgpa.toFixed(2)}</p>
                     <p>Attendance: {(mentor.averageStudentAttendance * 100).toFixed(1)}%</p>

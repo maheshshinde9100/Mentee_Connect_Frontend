@@ -1,11 +1,11 @@
 import React from 'react';
 
-const MenteeConnectLogo = ({ 
-  size = 'md', 
-  showText = true, 
+const MenteeConnectLogo = ({
+  size = 'md',
+  showText = true,
   className = '',
   animate = false,
-  variant = 'default' // 'default', 'white', 'minimal'
+  variant = 'default' // 'default', 'white', 'minimal', 'sidebar'
 }) => {
   // Size configurations
   const sizeConfig = {
@@ -40,10 +40,17 @@ const MenteeConnectLogo = ({
       text: 'text-white',
       dot: 'bg-pink-400',
       brandText: 'text-indigo-600'
+    },
+    sidebar: {
+      container: 'bg-white/10 backdrop-blur-sm border border-white/20',
+      inner: 'bg-gradient-to-r from-indigo-500 to-purple-500',
+      text: 'text-white',
+      dot: 'bg-green-400',
+      brandText: 'text-white tracking-wide'
     }
   };
 
-  const colors = variants[variant];
+  const colors = variants[variant] || variants.default;
 
   return (
     <div className={`flex items-center ${className}`}>
@@ -93,7 +100,7 @@ const LogoExamples = () => {
   return (
     <div className="p-8 space-y-8 bg-gray-50">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">MenteeConnect Logo Variations</h2>
-      
+
       {/* Default with different sizes */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-gray-700">Sizes</h3>
@@ -113,6 +120,7 @@ const LogoExamples = () => {
           <MenteeConnectLogo variant="default" animate />
           <MenteeConnectLogo variant="white" animate />
           <MenteeConnectLogo variant="minimal" animate />
+          <MenteeConnectLogo variant="sidebar" animate />
         </div>
       </div>
 
@@ -137,7 +145,7 @@ const LogoExamples = () => {
             <MenteeConnectLogo variant="white" />
           </div>
           <div className="bg-gray-800 p-6 rounded-lg shadow">
-            <MenteeConnectLogo variant="white" />
+            <MenteeConnectLogo variant="sidebar" />
           </div>
         </div>
       </div>

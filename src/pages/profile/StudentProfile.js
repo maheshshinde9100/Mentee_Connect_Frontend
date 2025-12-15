@@ -85,12 +85,12 @@ const StudentProfile = () => {
   return (
     <div className="space-y-6">
       {/* Profile Header */}
-      <div className="bg-white shadow rounded-lg overflow-hidden">
-        <div className="px-4 py-5 sm:px-6 bg-gray-50">
-          <h3 className="text-lg leading-6 font-medium text-gray-900">Student Profile</h3>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500">Personal details and academic info.</p>
+      <div className="bg-white dark:bg-slate-800 shadow rounded-lg overflow-hidden">
+        <div className="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-slate-900/50">
+          <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Student Profile</h3>
+          <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">Personal details and academic info.</p>
         </div>
-        <div className="border-t border-gray-200">
+        <div className="border-t border-gray-200 dark:border-slate-700">
           <dl>
             {[
               { label: 'First Name', key: 'firstName' },
@@ -104,17 +104,17 @@ const StudentProfile = () => {
               { label: 'Role', key: 'role', readonly: true },
             ].map(({ label, key, readonly }) => (
               <div key={key} className={`${
-                key === 'course' || key === 'semester' ? 'bg-white' : 'bg-gray-50'
+                key === 'course' || key === 'semester' ? 'bg-white dark:bg-slate-800' : 'bg-gray-50 dark:bg-slate-900/50'
               } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
-                <dt className="text-sm font-medium text-gray-500">{label}</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</dt>
+                <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
                   {editMode && !readonly ? (
                     <input
                       type="text"
                       name={key}
                       value={formData[key] || ''}
                       onChange={handleChange}
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm sm:text-sm px-3 py-1"
+                      className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm sm:text-sm px-3 py-1"
                     />
                   ) : key === 'role' ? (
                     profile.role
@@ -134,7 +134,7 @@ const StudentProfile = () => {
           <>
             <button
               onClick={() => setEditMode(false)}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:bg-slate-900/50"
             >
               Cancel
             </button>
@@ -149,7 +149,7 @@ const StudentProfile = () => {
           <>
             <button
               type="button"
-              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:bg-slate-900/50"
             >
               View Schedule
             </button>

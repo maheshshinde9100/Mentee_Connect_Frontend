@@ -74,11 +74,11 @@ const TaskManagement = () => {
   return (
     <div className="space-y-6">
       {/* Create Task Form */}
-      <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
+      <div className="bg-white dark:bg-slate-800 shadow px-4 py-5 sm:rounded-lg sm:p-6">
         <div className="md:grid md:grid-cols-3 md:gap-6">
           <div className="md:col-span-1">
-            <h3 className="text-lg font-medium leading-6 text-gray-900">Create New Task</h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white">Create New Task</h3>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               Assign tasks to your mentees and track their progress.
             </p>
           </div>
@@ -86,7 +86,7 @@ const TaskManagement = () => {
             <form onSubmit={handleCreateTask}>
               <div className="grid grid-cols-6 gap-6">
                 <div className="col-span-6 sm:col-span-4">
-                  <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Task Title
                   </label>
                   <input
@@ -96,12 +96,12 @@ const TaskManagement = () => {
                     required
                     value={newTask.title}
                     onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                    className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 dark:border-slate-600 rounded-md"
                   />
                 </div>
 
                 <div className="col-span-6">
-                  <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Description
                   </label>
                   <textarea
@@ -111,12 +111,12 @@ const TaskManagement = () => {
                     required
                     value={newTask.description}
                     onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                    className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 dark:border-slate-600 rounded-md"
                   />
                 </div>
 
                 <div className="col-span-6 sm:col-span-3">
-                  <label htmlFor="due-date" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="due-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Due Date
                   </label>
                   <input
@@ -126,13 +126,13 @@ const TaskManagement = () => {
                     required
                     value={newTask.dueDate}
                     onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
-                    className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 dark:border-slate-600 rounded-md"
                   />
                 </div>
 
                 <div className="col-span-6">
-                  <label className="block text-sm font-medium text-gray-700">Assign To</label>
-                  <div className="mt-1 border border-gray-300 rounded-md max-h-48 overflow-y-auto">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Assign To</label>
+                  <div className="mt-1 border border-gray-300 dark:border-slate-600 rounded-md max-h-48 overflow-y-auto">
                     {assignedStudents.map((student) => (
                       <div key={student.id} className="relative flex items-start p-3">
                         <div className="flex items-center h-5">
@@ -152,12 +152,12 @@ const TaskManagement = () => {
                                 });
                               }
                             }}
-                            className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                            className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 dark:text-indigo-400 border-gray-300 dark:border-slate-600 rounded"
                           />
                         </div>
                         <div className="ml-3 text-sm">
-                          <label className="font-medium text-gray-700">{student.name}</label>
-                          <p className="text-gray-500">{student.email}</p>
+                          <label className="font-medium text-gray-700 dark:text-gray-300">{student.name}</label>
+                          <p className="text-gray-500 dark:text-gray-400">{student.email}</p>
                         </div>
                       </div>
                     ))}
@@ -179,24 +179,24 @@ const TaskManagement = () => {
       </div>
 
       {/* Task List */}
-      <div className="bg-white shadow overflow-hidden sm:rounded-md">
-        <ul className="divide-y divide-gray-200">
+      <div className="bg-white dark:bg-slate-800 shadow overflow-hidden sm:rounded-md">
+        <ul className="divide-y divide-gray-200 dark:divide-slate-700">
           {tasks.map((task) => (
             <li key={task.id}>
               <div className="px-4 py-4 sm:px-6">
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-medium text-indigo-600 truncate">{task.title}</h4>
-                    <p className="mt-1 text-sm text-gray-500">{task.description}</p>
+                    <h4 className="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">{task.title}</h4>
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{task.description}</p>
                   </div>
                   <div className="ml-4 flex-shrink-0 flex space-x-4">
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       Due: {new Date(task.dueDate).toLocaleDateString()}
                     </p>
                     <select
                       value={task.status}
                       onChange={(e) => handleUpdateTaskStatus(task.id, e.target.value)}
-                      className="text-sm text-gray-500 border-gray-300 rounded-md"
+                      className="text-sm text-gray-500 dark:text-gray-400 border-gray-300 dark:border-slate-600 rounded-md"
                     >
                       <option value="PENDING">Pending</option>
                       <option value="IN_PROGRESS">In Progress</option>

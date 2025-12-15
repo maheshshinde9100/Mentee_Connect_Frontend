@@ -1,7 +1,7 @@
 import React from 'react';
-import { 
-  AcademicCapIcon, 
-  BriefcaseIcon, 
+import {
+  AcademicCapIcon,
+  BriefcaseIcon,
   CodeBracketIcon,
   GlobeAltIcon,
   LinkIcon
@@ -12,7 +12,7 @@ const About = () => {
     name: 'Mahesh Shinde',
     title: 'Full Stack Java & Android Developer',
     bio: 'A passionate and self-driven developer with a strong interest in Android and web development. I enjoy building creative digital solutions and continuously exploring new technologies to enhance my skills.',
-    photo: '/mahesh.png', 
+    photo: '/mahesh.png',
   };
 
   const education = [
@@ -34,21 +34,21 @@ const About = () => {
   ];
 
   const skills = [
-    { 
-      category: 'Frontend', 
-      items: ['HTML', 'CSS', 'JavaScript', 'Tailwind CSS','React.js', 'Next.js'] 
+    {
+      category: 'Frontend',
+      items: ['HTML', 'CSS', 'JavaScript', 'Tailwind CSS', 'React.js', 'Next.js']
     },
-    { 
-      category: 'Backend', 
-      items: ['Java', 'Spring Boot','Hibernate','Spring Security','Microservices','Spring Cloud', 'ExpressJs'] 
+    {
+      category: 'Backend',
+      items: ['Java', 'Spring Boot', 'Hibernate', 'Spring Security', 'Microservices', 'Spring Cloud', 'ExpressJs']
     },
-    { 
-      category: 'Android Development', 
-      items: ['Java', 'XML','Retrofit'] 
+    {
+      category: 'Android Development',
+      items: ['Java', 'XML', 'Retrofit']
     },
-    { 
-      category: 'Others', 
-      items: ['C++', 'Git & GitHub', 'SQL', 'MongoDB','Firebase','AppWrite','Apache Kafka','Redis'] 
+    {
+      category: 'Others',
+      items: ['C++', 'Git & GitHub', 'SQL', 'MongoDB', 'Firebase', 'AppWrite', 'Apache Kafka', 'Redis']
     },
   ];
 
@@ -88,7 +88,7 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-16">
@@ -96,48 +96,48 @@ const About = () => {
             <img
               src={personalInfo.photo}
               alt={personalInfo.name}
-              className="w-32 h-32 rounded-full mx-auto object-cover border-4 border-indigo-600"
+              className="w-32 h-32 rounded-full mx-auto object-cover border-4 border-indigo-600 dark:border-indigo-500"
             />
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">{personalInfo.name}</h1>
-          <p className="text-xl text-indigo-600 mb-4">{personalInfo.title}</p>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">{personalInfo.bio}</p>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{personalInfo.name}</h1>
+          <p className="text-xl text-indigo-600 dark:text-indigo-400 mb-4">{personalInfo.title}</p>
+          <p className="text-lg text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">{personalInfo.bio}</p>
         </div>
 
         {/* Education Section */}
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 mb-8 border border-gray-100 dark:border-slate-700">
           <div className="flex items-center mb-6">
-            <AcademicCapIcon className="h-8 w-8 text-indigo-600 mr-3" />
-            <h2 className="text-2xl font-semibold text-gray-900">Education</h2>
+            <AcademicCapIcon className="h-8 w-8 text-indigo-600 dark:text-indigo-400 mr-3" />
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Education</h2>
           </div>
           <div className="space-y-6">
             {education.map((edu, index) => (
               <div key={index} className="ml-11">
-                <h3 className="text-lg font-medium text-gray-900">{edu.school}</h3>
-                <p className="text-indigo-600">{edu.degree}</p>
-                {edu.score && <p className="text-gray-600">Score: {edu.score}</p>}
-                {edu.status && <p className="text-gray-600">{edu.status}</p>}
-                {index < education.length - 1 && <hr className="my-4" />}
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">{edu.school}</h3>
+                <p className="text-indigo-600 dark:text-indigo-400">{edu.degree}</p>
+                {edu.score && <p className="text-gray-600 dark:text-slate-400">Score: {edu.score}</p>}
+                {edu.status && <p className="text-gray-600 dark:text-slate-400">{edu.status}</p>}
+                {index < education.length - 1 && <hr className="my-4 border-gray-200 dark:border-slate-700" />}
               </div>
             ))}
           </div>
         </div>
 
         {/* Skills Section */}
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 mb-8 border border-gray-100 dark:border-slate-700">
           <div className="flex items-center mb-6">
-            <CodeBracketIcon className="h-8 w-8 text-indigo-600 mr-3" />
-            <h2 className="text-2xl font-semibold text-gray-900">Skills</h2>
+            <CodeBracketIcon className="h-8 w-8 text-indigo-600 dark:text-indigo-400 mr-3" />
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Skills</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {skills.map((skillGroup) => (
               <div key={skillGroup.category}>
-                <h3 className="text-lg font-medium text-gray-900 mb-3">{skillGroup.category}</h3>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-3">{skillGroup.category}</h3>
                 <div className="flex flex-wrap gap-2">
                   {skillGroup.items.map((skill) => (
                     <span
                       key={skill}
-                      className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800"
+                      className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300"
                     >
                       {skill}
                     </span>
@@ -149,10 +149,10 @@ const About = () => {
         </div>
 
         {/* Links Section */}
-        <div className="bg-white rounded-xl shadow-lg p-8">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 border border-gray-100 dark:border-slate-700">
           <div className="flex items-center mb-6">
-            <LinkIcon className="h-8 w-8 text-indigo-600 mr-3" />
-            <h2 className="text-2xl font-semibold text-gray-900">Connect & Profile Links</h2>
+            <LinkIcon className="h-8 w-8 text-indigo-600 dark:text-indigo-400 mr-3" />
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Connect & Profile Links</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {links.map((link) => (
@@ -161,10 +161,10 @@ const About = () => {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 transition-colors duration-200"
+                className="flex items-center p-4 rounded-lg border border-gray-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors duration-200"
               >
-                <GlobeAltIcon className="h-5 w-5 text-indigo-600 mr-2" />
-                <span className="text-gray-700 hover:text-indigo-600">{link.name}</span>
+                <GlobeAltIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400 mr-2" />
+                <span className="text-gray-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400">{link.name}</span>
               </a>
             ))}
           </div>
@@ -174,4 +174,4 @@ const About = () => {
   );
 };
 
-export default About; 
+export default About;

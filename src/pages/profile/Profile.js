@@ -19,15 +19,15 @@ const Profile = () => {
       default:
         return (
           <div className="text-center py-12">
-            <h2 className="text-2xl font-semibold text-gray-900">Profile Not Found</h2>
-            <p className="mt-2 text-gray-600">Please log in to view your profile.</p>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Profile Not Found</h2>
+            <p className="mt-2 text-gray-600 dark:text-gray-400">Please log in to view your profile.</p>
           </div>
         );
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900/50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {renderProfileByRole()}
       </div>

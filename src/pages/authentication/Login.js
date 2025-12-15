@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { authService } from '../../services/authService';
+import { useTheme } from '../../contexts/ThemeContext';
+import { Sun, Moon } from 'lucide-react';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +15,7 @@ const Login = () => {
 
   const navigate = useNavigate();
   const { login, isAuthenticated, user } = useAuth();
+  const { darkMode, toggleTheme } = useTheme();
 
   // Auto-redirect if already logged in
   useEffect(() => {
@@ -92,11 +95,23 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden transition-colors duration-300">
+
+      {/* Dark Mode Toggle */}
+      <div className="absolute top-6 right-6 z-50">
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-full bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 backdrop-blur-sm transition-all shadow-lg border border-white/20 dark:border-slate-700"
+          title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        >
+          {darkMode ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
+        </button>
+      </div>
+
       {/* Background decorative elements */}
-      <div className="absolute top-0 left-0 w-full h-full">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-indigo-300/20 to-purple-300/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-r from-purple-300/20 to-pink-300/20 rounded-full blur-3xl"></div>
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+        <div className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-indigo-300/20 to-purple-300/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-r from-purple-300/20 to-pink-300/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-blue-300/10 to-indigo-300/10 rounded-full blur-2xl"></div>
       </div>
 
@@ -116,15 +131,15 @@ const Login = () => {
         <h2 className="text-center text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
           Welcome Back
         </h2>
-        <p className="text-center text-lg text-gray-600 mb-8">
+        <p className="text-center text-lg text-slate-600 dark:text-slate-400 mb-8">
           Sign in to continue your mentorship journey
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-        <div className="bg-white/80 backdrop-blur-xl py-10 px-6 shadow-2xl sm:rounded-2xl sm:px-12 border border-white/20">
+        <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl py-10 px-6 shadow-2xl sm:rounded-2xl sm:px-12 border border-white/20 dark:border-slate-700 transition-colors duration-300">
           {error && (
-            <div className="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 text-red-800 p-4 rounded-xl mb-6 backdrop-blur-sm">
+            <div className="bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 p-4 rounded-xl mb-6 backdrop-blur-sm">
               <div className="flex items-center">
                 <div className="w-5 h-5 bg-red-500 rounded-full mr-3 flex-shrink-0">
                   <div className="w-full h-full flex items-center justify-center">
@@ -139,7 +154,7 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-6">
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="email" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                   Email Address
                 </label>
                 <div className="relative">
@@ -151,7 +166,7 @@ const Login = () => {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="appearance-none block w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm hover:border-indigo-300"
+                    className="appearance-none block w-full px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-xl shadow-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white backdrop-blur-sm hover:border-indigo-300 dark:hover:border-indigo-500"
                     placeholder="Enter your email"
                   />
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -161,7 +176,7 @@ const Login = () => {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="password" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                   Password
                 </label>
                 <div className="relative">
@@ -173,7 +188,7 @@ const Login = () => {
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    className="appearance-none block w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm hover:border-indigo-300"
+                    className="appearance-none block w-full px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-xl shadow-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white backdrop-blur-sm hover:border-indigo-300 dark:hover:border-indigo-500"
                     placeholder="Enter your password"
                   />
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3">

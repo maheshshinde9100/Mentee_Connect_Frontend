@@ -98,19 +98,19 @@ const NotificationPanel = ({ isOpen, onClose, embedded = false }) => {
       
       <div className="divide-y divide-gray-100">
         {loading ? (
-          <div className="p-4 text-center text-gray-500">Loading notifications...</div>
+          <div className="p-4 text-center text-gray-500 dark:text-gray-400">Loading notifications...</div>
         ) : notifications.length === 0 ? (
-          <div className="p-4 text-center text-gray-500">No notifications</div>
+          <div className="p-4 text-center text-gray-500 dark:text-gray-400">No notifications</div>
         ) : (
           notifications.slice(0, embedded ? 10 : 5).map(notification => (
             <div 
               key={notification.id} 
-              className={`p-3 hover:bg-gray-50 ${!notification.read ? 'bg-blue-50' : ''}`}
+              className={`p-3 hover:bg-gray-50 dark:bg-slate-900/50 ${!notification.read ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1">
-                  <p className="font-medium text-gray-900">{notification.title}</p>
-                  <p className="text-sm text-gray-600 mt-1">{notification.message}</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{notification.title}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{notification.message}</p>
                   <p className="text-xs text-gray-400 mt-1">
                     {formatRelativeTime(notification.createdAt)}
                   </p>
@@ -118,7 +118,7 @@ const NotificationPanel = ({ isOpen, onClose, embedded = false }) => {
                 {!notification.read && (
                   <button
                     onClick={() => handleMarkAsRead(notification.id)}
-                    className="ml-2 text-indigo-600 text-xs hover:text-indigo-800"
+                    className="ml-2 text-indigo-600 dark:text-indigo-400 text-xs hover:text-indigo-800 dark:text-indigo-200"
                   >
                     Mark read
                   </button>
@@ -130,10 +130,10 @@ const NotificationPanel = ({ isOpen, onClose, embedded = false }) => {
       </div>
       
       {!embedded && (
-        <div className="p-3 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
+        <div className="p-3 bg-gray-50 dark:bg-slate-900/50 border-t border-gray-100 flex justify-between items-center">
           <Link 
             to="/notifications"
-            className="text-indigo-600 text-sm hover:text-indigo-800"
+            className="text-indigo-600 dark:text-indigo-400 text-sm hover:text-indigo-800 dark:text-indigo-200"
             onClick={onClose}
           >
             View all notifications
@@ -162,7 +162,7 @@ const NotificationPanel = ({ isOpen, onClose, embedded = false }) => {
   return (
     <div 
       ref={panelRef}
-      className={`absolute ${isDashboard ? 'right-0 top-12' : 'right-0 mt-2'} w-80 bg-white rounded-md shadow-lg overflow-hidden z-20 max-h-96 overflow-y-auto`}
+      className={`absolute ${isDashboard ? 'right-0 top-12' : 'right-0 mt-2'} w-80 bg-white dark:bg-slate-800 rounded-md shadow-lg overflow-hidden z-20 max-h-96 overflow-y-auto`}
     >
       {notificationContent}
     </div>

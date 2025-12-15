@@ -69,13 +69,13 @@ const SendNotification = () => {
         </div>
       )}
       
-      <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
+          <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="title">
             Title
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
             id="title"
             type="text"
             name="title"
@@ -87,11 +87,11 @@ const SendNotification = () => {
         </div>
         
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="message">
+          <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="message">
             Message
           </label>
           <textarea
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
             id="message"
             name="message"
             value={formData.message}
@@ -103,7 +103,7 @@ const SendNotification = () => {
         </div>
         
         <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
+          <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
             Recipients
           </label>
           <div className="flex items-center mb-2">
@@ -155,7 +155,7 @@ const SendNotification = () => {
           <button
             type="button"
             onClick={() => navigate('/admin/dashboard')}
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 dark:text-gray-100 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           >
             Cancel
           </button>

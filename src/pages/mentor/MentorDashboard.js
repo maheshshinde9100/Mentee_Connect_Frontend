@@ -40,26 +40,26 @@ const MentorDashboard = () => {
     <div className="py-6 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Mentor Dashboard</h1>
-          <p className="text-gray-600">Track mentees and manage tasks.</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Mentor Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-400">Track mentees and manage tasks.</p>
         </div>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="bg-white overflow-hidden shadow-sm rounded-lg border border-gray-200">
+          <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-sm rounded-lg border border-gray-200 dark:border-slate-700">
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <svg className="h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="h-6 w-6 text-indigo-600 dark:text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Total mentees</dt>
+                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total mentees</dt>
                     <dd className="flex items-baseline">
-                      <div className="text-2xl font-semibold text-gray-900">
+                      <div className="text-2xl font-semibold text-gray-900 dark:text-white">
                         {loading ? '...' : totalMentees}
                       </div>
                     </dd>
@@ -71,16 +71,16 @@ const MentorDashboard = () => {
         </div>
 
         {error && (
-          <div className="rounded-md bg-red-50 p-4 border border-red-200 text-red-700">
+          <div className="rounded-md bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 text-red-700">
             {error}
           </div>
         )}
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="p-4 sm:p-6 border-b border-gray-200 flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700">
+          <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-slate-700 flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">Start Video Call</h2>
-              <p className="text-sm text-gray-600">Select mentees to invite and start a call.</p>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Start Video Call</h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Select mentees to invite and start a call.</p>
             </div>
             <button
               onClick={() => startCall && startCall(Array.from(selected), 'Mentor Call')}
@@ -91,17 +91,17 @@ const MentorDashboard = () => {
             </button>
           </div>
           <div className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {mentees.length === 0 && <p className="text-sm text-gray-500">No mentees assigned.</p>}
+            {mentees.length === 0 && <p className="text-sm text-gray-500 dark:text-gray-400">No mentees assigned.</p>}
             {mentees.map((m) => (
               <label
                 key={m.id}
                 className={`border rounded-lg p-3 flex items-center space-x-3 cursor-pointer ${
-                  selected.has(m.id) ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200'
+                  selected.has(m.id) ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20' : 'border-gray-200 dark:border-slate-700'
                 }`}
               >
                 <input
                   type="checkbox"
-                  className="h-4 w-4 text-indigo-600"
+                  className="h-4 w-4 text-indigo-600 dark:text-indigo-400"
                   checked={selected.has(m.id)}
                   onChange={() =>
                     setSelected((prev) => {
@@ -113,28 +113,28 @@ const MentorDashboard = () => {
                   }
                 />
                 <div>
-                  <p className="text-sm font-semibold text-gray-900">{m.firstName} {m.lastName}</p>
-                  <p className="text-xs text-gray-500">{m.email}</p>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white">{m.firstName} {m.lastName}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{m.email}</p>
                 </div>
               </label>
             ))}
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="p-4 sm:p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">My Mentees</h2>
-            <p className="text-sm text-gray-600">View and manage your mentee list.</p>
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700">
+          <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-slate-700">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">My Mentees</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">View and manage your mentee list.</p>
           </div>
           <div className="p-4 sm:p-6">
             <MyMentees />
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="p-4 sm:p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Task Management</h2>
-            <p className="text-sm text-gray-600">Assign and track mentee tasks.</p>
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700">
+          <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-slate-700">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Task Management</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Assign and track mentee tasks.</p>
           </div>
           <div className="p-4 sm:p-6">
             <TaskManagement />

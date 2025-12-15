@@ -49,18 +49,18 @@ const SkillsManagement = () => {
       case 'INTERMEDIATE':
         return 'bg-yellow-100 text-yellow-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-800 dark:text-gray-100';
     }
   };
 
   return (
     <div className="space-y-6">
       {/* Add Skill Form */}
-      <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
+      <div className="bg-white dark:bg-slate-800 shadow px-4 py-5 sm:rounded-lg sm:p-6">
         <div className="md:grid md:grid-cols-3 md:gap-6">
           <div className="md:col-span-1">
-            <h3 className="text-lg font-medium leading-6 text-gray-900">Add New Skill</h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white">Add New Skill</h3>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               Add a new skill to your profile to showcase your abilities.
             </p>
           </div>
@@ -68,7 +68,7 @@ const SkillsManagement = () => {
             <form onSubmit={handleAddSkill}>
               <div className="grid grid-cols-6 gap-6">
                 <div className="col-span-6 sm:col-span-4">
-                  <label htmlFor="skill-name" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="skill-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Skill Name
                   </label>
                   <input
@@ -78,12 +78,12 @@ const SkillsManagement = () => {
                     required
                     value={newSkill.name}
                     onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
-                    className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 dark:border-slate-600 rounded-md"
                   />
                 </div>
 
                 <div className="col-span-6 sm:col-span-3">
-                  <label htmlFor="proficiency" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="proficiency" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Proficiency Level
                   </label>
                   <select
@@ -91,7 +91,7 @@ const SkillsManagement = () => {
                     name="proficiency"
                     value={newSkill.proficiency}
                     onChange={(e) => setNewSkill({ ...newSkill, proficiency: e.target.value })}
-                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="mt-1 block w-full py-2 px-3 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   >
                     <option value="BEGINNER">Beginner</option>
                     <option value="INTERMEDIATE">Intermediate</option>
@@ -101,7 +101,7 @@ const SkillsManagement = () => {
                 </div>
 
                 <div className="col-span-6">
-                  <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Description
                   </label>
                   <textarea
@@ -110,7 +110,7 @@ const SkillsManagement = () => {
                     rows={3}
                     value={newSkill.description}
                     onChange={(e) => setNewSkill({ ...newSkill, description: e.target.value })}
-                    className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 dark:border-slate-600 rounded-md"
                     placeholder="Describe your experience with this skill..."
                   />
                 </div>
@@ -130,17 +130,17 @@ const SkillsManagement = () => {
       </div>
 
       {/* Skills List */}
-      <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-        <div className="px-4 py-5 border-b border-gray-200 sm:px-6">
-          <h3 className="text-lg leading-6 font-medium text-gray-900">Your Skills</h3>
+      <div className="bg-white dark:bg-slate-800 shadow overflow-hidden sm:rounded-lg">
+        <div className="px-4 py-5 border-b border-gray-200 dark:border-slate-700 sm:px-6">
+          <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Your Skills</h3>
         </div>
-        <ul className="divide-y divide-gray-200">
+        <ul className="divide-y divide-gray-200 dark:divide-slate-700">
           {skills.map((skill) => (
             <li key={skill.id} className="px-4 py-4">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-medium text-indigo-600 truncate">{skill.name}</h4>
-                  <p className="mt-1 text-sm text-gray-500">{skill.description}</p>
+                  <h4 className="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">{skill.name}</h4>
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{skill.description}</p>
                 </div>
                 <div className="ml-4">
                   <span

@@ -68,13 +68,13 @@ const AddMentor = ({ onMentorAdded }) => {
       <h2 className="text-2xl font-bold mb-6">Add New Mentor</h2>
 
       {error && (
-        <div className="bg-red-50 text-red-800 p-4 rounded-md mb-4">
+        <div className="bg-red-50 dark:bg-red-900/20 text-red-800 p-4 rounded-md mb-4">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="bg-green-50 text-green-800 p-4 rounded-md mb-4">
+        <div className="bg-green-50 dark:bg-green-900/20 text-green-800 p-4 rounded-md mb-4">
           {success}
         </div>
       )}
@@ -83,7 +83,7 @@ const AddMentor = ({ onMentorAdded }) => {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           {/* Basic Information */}
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Username
             </label>
             <input
@@ -93,12 +93,12 @@ const AddMentor = ({ onMentorAdded }) => {
               required
               value={formData.username}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Email
             </label>
             <input
@@ -108,12 +108,12 @@ const AddMentor = ({ onMentorAdded }) => {
               required
               value={formData.email}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Password
             </label>
             <input
@@ -123,12 +123,12 @@ const AddMentor = ({ onMentorAdded }) => {
               required
               value={formData.password}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               First Name
             </label>
             <input
@@ -138,12 +138,12 @@ const AddMentor = ({ onMentorAdded }) => {
               required
               value={formData.firstName}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Last Name
             </label>
             <input
@@ -153,12 +153,12 @@ const AddMentor = ({ onMentorAdded }) => {
               required
               value={formData.lastName}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Phone Number
             </label>
             <input
@@ -168,13 +168,13 @@ const AddMentor = ({ onMentorAdded }) => {
               required
               value={formData.phoneNumber}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           {/* Professional Information */}
           <div>
-            <label htmlFor="mentorId" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="mentorId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Mentor ID
             </label>
             <input
@@ -184,12 +184,12 @@ const AddMentor = ({ onMentorAdded }) => {
               required
               value={formData.mentorId}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="department" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="department" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Department
             </label>
             <input
@@ -199,12 +199,12 @@ const AddMentor = ({ onMentorAdded }) => {
               required
               value={formData.department}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="specialization" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="specialization" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Specialization
             </label>
             <input
@@ -214,12 +214,12 @@ const AddMentor = ({ onMentorAdded }) => {
               required
               value={formData.specialization}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="designation" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="designation" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Designation
             </label>
             <input
@@ -229,12 +229,12 @@ const AddMentor = ({ onMentorAdded }) => {
               required
               value={formData.designation}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="yearsOfExperience" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="yearsOfExperience" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Years of Experience
             </label>
             <input
@@ -245,12 +245,12 @@ const AddMentor = ({ onMentorAdded }) => {
               min="0"
               value={formData.yearsOfExperience}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="maxStudents" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="maxStudents" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Maximum Students
             </label>
             <input
@@ -261,7 +261,7 @@ const AddMentor = ({ onMentorAdded }) => {
               min="1"
               value={formData.maxStudents}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
         </div>

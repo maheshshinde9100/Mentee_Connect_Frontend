@@ -116,8 +116,8 @@ const Updates = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Shared Updates</h1>
-          <p className="mt-1 text-sm text-gray-600">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Shared Updates</h1>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             Manage updates and resources shared with your mentees
           </p>
         </div>
@@ -135,7 +135,7 @@ const Updates = () => {
       </div>
 
       {error && (
-        <div className="mb-6 bg-red-50 p-4 rounded-md">
+        <div className="mb-6 bg-red-50 dark:bg-red-900/20 p-4 rounded-md">
           <div className="flex">
             <div className="flex-shrink-0">
               <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -156,8 +156,8 @@ const Updates = () => {
             onClick={() => setFilterType('all')}
             className={`px-3 py-1 text-sm rounded-full ${
               filterType === 'all' 
-                ? 'bg-indigo-100 text-indigo-800' 
-                : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                ? 'bg-indigo-100 text-indigo-800 dark:text-indigo-200' 
+                : 'bg-gray-100 text-gray-800 dark:text-gray-100 hover:bg-gray-200'
             }`}
           >
             All
@@ -167,7 +167,7 @@ const Updates = () => {
             className={`px-3 py-1 text-sm rounded-full ${
               filterType === 'public' 
                 ? 'bg-green-100 text-green-800' 
-                : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                : 'bg-gray-100 text-gray-800 dark:text-gray-100 hover:bg-gray-200'
             }`}
           >
             Public
@@ -177,7 +177,7 @@ const Updates = () => {
             className={`px-3 py-1 text-sm rounded-full ${
               filterType === 'private' 
                 ? 'bg-yellow-100 text-yellow-800' 
-                : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                : 'bg-gray-100 text-gray-800 dark:text-gray-100 hover:bg-gray-200'
             }`}
           >
             Specific Mentees
@@ -190,19 +190,19 @@ const Updates = () => {
             placeholder="Search updates..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full sm:w-64 px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>
       </div>
 
       {/* Updates List */}
       {filteredUpdates.length === 0 ? (
-        <div className="bg-white shadow rounded-lg p-8 text-center">
+        <div className="bg-white dark:bg-slate-800 shadow rounded-lg p-8 text-center">
           <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2a2 2 0 012-2m14 0a2 2 0 00-2-2H5a2 2 0 00-2 2m14 0h-3m-1-4l-3-3m0 0L8 7m6 0v6" />
           </svg>
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No updates found</h3>
-          <p className="mt-1 text-sm text-gray-500">
+          <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No updates found</h3>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             {searchTerm || filterType !== 'all' ? 'Try adjusting your search or filters.' : 'Get started by creating a new update.'}
           </p>
           {(!searchTerm && filterType === 'all') && (
@@ -220,22 +220,22 @@ const Updates = () => {
           )}
         </div>
       ) : (
-        <div className="bg-white shadow overflow-hidden sm:rounded-md">
-          <ul className="divide-y divide-gray-200">
+        <div className="bg-white dark:bg-slate-800 shadow overflow-hidden sm:rounded-md">
+          <ul className="divide-y divide-gray-200 dark:divide-slate-700">
             {filteredUpdates.map((update) => {
               const updateId = update._id || update.id;
               return (
-                <li key={updateId} className="relative hover:bg-gray-50">
+                <li key={updateId} className="relative hover:bg-gray-50 dark:bg-slate-900/50">
                   <div className="px-4 py-5 sm:px-6">
                     <div className="flex justify-between items-start">
                       <div className="max-w-2xl">
-                        <h3 className="text-lg font-medium text-indigo-600">{update.title || 'Untitled Update'}</h3>
+                        <h3 className="text-lg font-medium text-indigo-600 dark:text-indigo-400">{update.title || 'Untitled Update'}</h3>
                         <div className="mt-2">
-                          <p className="text-sm text-gray-600 line-clamp-2">
+                          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
                             {update.content || 'No content'}
                           </p>
                         </div>
-                        <div className="mt-3 flex items-center text-sm text-gray-500">
+                        <div className="mt-3 flex items-center text-sm text-gray-500 dark:text-gray-400">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                             update.isPublic ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
                           }`}>
@@ -262,7 +262,7 @@ const Updates = () => {
                       <div className="flex space-x-2">
                         <button
                           onClick={() => navigate(`/mentor/updates/edit/${updateId}`)}
-                          className="inline-flex items-center px-2 py-1 text-sm text-indigo-600 hover:text-indigo-900"
+                          className="inline-flex items-center px-2 py-1 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-900"
                         >
                           <svg className="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
@@ -271,7 +271,7 @@ const Updates = () => {
                         </button>
                         <button
                           onClick={() => setDeleteConfirm(updateId)}
-                          className="inline-flex items-center px-2 py-1 text-sm text-red-600 hover:text-red-900"
+                          className="inline-flex items-center px-2 py-1 text-sm text-red-600 dark:text-red-400 hover:text-red-900"
                         >
                           <svg className="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -284,17 +284,17 @@ const Updates = () => {
                     {/* Delete confirmation dialog */}
                     {deleteConfirm === updateId && (
                       <div className="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 rounded-md">
-                        <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
+                        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-xl max-w-sm w-full">
                           <div className="sm:flex sm:items-start">
                             <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                              <svg className="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <svg className="h-6 w-6 text-red-600 dark:text-red-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                               </svg>
                             </div>
                             <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                              <h3 className="text-lg leading-6 font-medium text-gray-900">Delete Update</h3>
+                              <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Delete Update</h3>
                               <div className="mt-2">
-                                <p className="text-sm text-gray-500">
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
                                   Are you sure you want to delete this update? This action cannot be undone.
                                 </p>
                               </div>
@@ -310,7 +310,7 @@ const Updates = () => {
                             </button>
                             <button
                               type="button"
-                              className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                              className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-slate-600 shadow-sm px-4 py-2 bg-white dark:bg-slate-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
                               onClick={() => setDeleteConfirm(null)}
                             >
                               Cancel
