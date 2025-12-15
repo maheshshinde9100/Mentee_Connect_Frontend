@@ -5,7 +5,6 @@ import { CallProvider, useCall } from './context/CallContext';
 import CallWindow from './components/call/CallWindow';
 import IncomingCallModal from './components/call/IncomingCallModal';
 import Login from './pages/authentication/Login';
-import Register from './pages/authentication/Register';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import MentorDashboard from './pages/mentor/MentorDashboard';
 import TaskManagement from './pages/mentor/TaskManagement';
@@ -82,11 +81,6 @@ function App() {
             <Route path="/login" element={
               <PublicRoute>
                 <Login />
-              </PublicRoute>
-            } />
-            <Route path="/register" element={
-              <PublicRoute>
-                <Register />
               </PublicRoute>
             } />
             <Route path="/about" element={<About />} />
