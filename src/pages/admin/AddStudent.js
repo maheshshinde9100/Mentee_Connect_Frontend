@@ -13,6 +13,8 @@ const AddStudent = ({ onStudentAdded }) => {
     course: '',
     batch: '',
     semester: '',
+    department: '',
+    dob: '',
     attendance: '',
     cgpa: ''
   });
@@ -44,8 +46,8 @@ const AddStudent = ({ onStudentAdded }) => {
         cgpa: parseFloat(formData.cgpa)
       };
 
-      const response = await adminService.createStudent(studentData);
-      
+      const response = await adminService.createAdminStudent(studentData);
+
       if (response.data) {
         setSuccess('Student created successfully!');
         setFormData({
@@ -59,6 +61,8 @@ const AddStudent = ({ onStudentAdded }) => {
           course: '',
           batch: '',
           semester: '',
+          department: '',
+          dob: '',
           attendance: '',
           cgpa: ''
         });
@@ -247,6 +251,36 @@ const AddStudent = ({ onStudentAdded }) => {
           </div>
 
           <div>
+            <label htmlFor="department" className="block text-sm font-medium text-gray-700">
+              Department
+            </label>
+            <input
+              type="text"
+              name="department"
+              id="department"
+              required
+              value={formData.department}
+              onChange={handleChange}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="dob" className="block text-sm font-medium text-gray-700">
+              Date of Birth
+            </label>
+            <input
+              type="date"
+              name="dob"
+              id="dob"
+              required
+              value={formData.dob}
+              onChange={handleChange}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div>
             <label htmlFor="attendance" className="block text-sm font-medium text-gray-700">
               Attendance (%)
             </label>
@@ -304,4 +338,4 @@ const AddStudent = ({ onStudentAdded }) => {
   );
 };
 
-export default AddStudent; 
+export default AddStudent;

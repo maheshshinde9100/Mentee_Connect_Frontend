@@ -36,7 +36,7 @@ const AddMentor = ({ onMentorAdded }) => {
     setSuccess('');
 
     try {
-      await adminService.createMentor(formData);
+      await adminService.createAdminMentor(formData);
       setSuccess('Mentor created successfully!');
       setFormData({
         username: '',
@@ -287,4 +287,4 @@ const AddMentor = ({ onMentorAdded }) => {
   );
 };
 
-export default AddMentor; 
+export default AddMentor;
