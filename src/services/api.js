@@ -112,6 +112,7 @@ export const adminService = {
 
   // Mentor-Student Assignment
   assignMentorToStudent: (data) => api.post('/api/admin/assign-mentor', data),
+  removeMentorFromStudent: (studentId) => api.delete(`/api/students/${studentId}/mentor`),
 
   // Batch Management
   getBatches: () => api.get('/api/admin/batches'),
