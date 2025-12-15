@@ -36,14 +36,14 @@ const Login = () => {
 
     try {
       const response = await authService.login(formData);
-      
+
       const { token, email, roles, id } = response.data;
-      
+
       // Validate token
       if (!token) {
         throw new Error('Server returned success but no token was provided');
       }
-      
+
       // Store refresh token if provided
       if (response.data.refreshToken) {
         localStorage.setItem('refreshToken', response.data.refreshToken);
@@ -55,9 +55,9 @@ const Login = () => {
         role: roles[0].replace('ROLE_', ''), // Convert 'ROLE_ADMIN' to 'ADMIN'
         roles
       };
-      
+
       await login(userData, token);
-      
+
       // Verify token was stored correctly
       const storedToken = localStorage.getItem('token');
       if (!storedToken) {
@@ -71,7 +71,7 @@ const Login = () => {
       navigate(redirectPath);
     } catch (err) {
       console.error('Login error:', err);
-      
+
       if (err.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
@@ -112,7 +112,7 @@ const Login = () => {
             <div className="absolute -top-2 -right-2 h-6 w-6 bg-gradient-to-r from-pink-400 to-orange-400 rounded-full animate-pulse"></div>
           </div>
         </div>
-        
+
         <h2 className="text-center text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
           Welcome Back
         </h2>
@@ -205,16 +205,6 @@ const Login = () => {
               </button>
             </div>
           </form>
-
-          {/* Additional footer section */}
-          <div className="mt-8 pt-6 border-t border-gray-200/50">
-            <p className="text-center text-sm text-gray-500">
-              New to MenteeConnect?{' '}
-              <Link to="/register" className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">
-                Create an account
-              </Link>
-            </p>
-          </div>
         </div>
       </div>
 
