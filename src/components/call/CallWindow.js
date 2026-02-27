@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
 const VideoTile = ({ label, stream }) => {
   const videoRef = React.useRef(null);
@@ -31,6 +31,36 @@ const VideoTile = ({ label, stream }) => {
 };
 
 const CallWindow = ({ localStream, remoteStreams, onEnd, minimized, onToggleSize }) => {
+  const [videoEnabled, setVideoEnabled] = useState(true);
+  const [audioEnabled, setAudioEnabled] = useState(true);
+
+  // Keep toggle state in sync if stream appears/disappears
+  useEffect(() => {
+    if (!localStream) return;
+    const hasVideo = localStream.getVideoTracks().some((t) => t.enabled);
+    const hasAudio = localStream.getAudioTracks().some((t) => t.enabled);
+    setVideoEnabled(hasVideo || localStream.getVideoTracks().length === 0);
+    setAudioEnabled(hasAudio || localStream.getAudioTracks().length === 0);
+  }, [localStream]);
+
+  const toggleVideo = () => {
+    if (!localStream) return;
+    const newValue = !videoEnabled;
+    localStream.getVideoTracks().forEach((t) => {
+      t.enabled = newValue;
+    });
+    setVideoEnabled(newValue);
+  };
+
+  const toggleAudio = () => {
+    if (!localStream) return;
+    const newValue = !audioEnabled;
+    localStream.getAudioTracks().forEach((t) => {
+      t.enabled = newValue;
+    });
+    setAudioEnabled(newValue);
+  };
+
   const remoteList = useMemo(() => Object.entries(remoteStreams || {}), [remoteStreams]);
 
   return (
@@ -40,7 +70,29 @@ const CallWindow = ({ localStream, remoteStreams, onEnd, minimized, onToggleSize
       <div className={`bg-white dark:bg-slate-800 shadow-lg ${minimized ? 'rounded-lg h-full' : 'h-full'} flex flex-col`}>
         <div className="flex items-center justify-between px-4 py-2 border-b">
           <div className="font-semibold text-gray-800 dark:text-gray-100">Live Call</div>
-          <div className="space-x-2">
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={toggleVideo}
+              className={`text-xs px-2 py-1 rounded border ${
+                videoEnabled
+                  ? 'border-gray-300 dark:border-slate-600 hover:bg-gray-100'
+                  : 'border-yellow-500 bg-yellow-500/10 text-yellow-700 dark:text-yellow-300'
+              }`}
+              disabled={!localStream}
+            >
+              {videoEnabled ? 'Video On' : 'Video Off'}
+            </button>
+            <button
+              onClick={toggleAudio}
+              className={`text-xs px-2 py-1 rounded border ${
+                audioEnabled
+                  ? 'border-gray-300 dark:border-slate-600 hover:bg-gray-100'
+                  : 'border-yellow-500 bg-yellow-500/10 text-yellow-700 dark:text-yellow-300'
+              }`}
+              disabled={!localStream}
+            >
+              {audioEnabled ? 'Mic On' : 'Mic Off'}
+            </button>
             <button
               onClick={onToggleSize}
               className="text-xs px-2 py-1 rounded border border-gray-300 dark:border-slate-600 hover:bg-gray-100"

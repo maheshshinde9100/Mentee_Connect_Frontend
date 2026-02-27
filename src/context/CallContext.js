@@ -11,6 +11,7 @@ export const CallProvider = ({ user, children }) => {
   const [activeRoom, setActiveRoom] = useState(null);
   const [minimized, setMinimized] = useState(false);
   const targetsRef = useRef([]);
+  const incomingRef = useRef(null);
   const activeRoomRef = useRef(null);
   const startWithTargetsRef = useRef(null);
   const handleSignalRef = useRef(null);
@@ -37,6 +38,10 @@ export const CallProvider = ({ user, children }) => {
   useEffect(() => {
     activeRoomRef.current = activeRoom;
   }, [activeRoom]);
+
+  useEffect(() => {
+    incomingRef.current = incoming;
+  }, [incoming]);
 
   useEffect(() => {
     startWithTargetsRef.current = startWithTargets;
@@ -104,7 +109,7 @@ export const CallProvider = ({ user, children }) => {
             if (currentRoom && msg.roomId === currentRoom && handleSignalRef.current) {
               console.log(`Processing ${msg.type} signal for active room ${currentRoom} from ${msg.from}`);
               handleSignalRef.current(msg);
-            } else if (msg.type === 'offer' && incoming && incoming.roomId === msg.roomId) {
+            } else if (msg.type === 'offer' && incomingRef.current && incomingRef.current.roomId === msg.roomId) {
               // If we receive an offer while we have an incoming call, process it
               // This handles the case where offer arrives before acceptCall is called
               console.log('Received offer for incoming call, processing it');
@@ -197,7 +202,10 @@ export const CallProvider = ({ user, children }) => {
     sendSignal({ type: 'call-invite', from: user?.id, targets: targetIds, roomId, title });
     // Wait a bit for invites to be sent before starting WebRTC
     setTimeout(async () => {
-      await startWithTargets(targetIds);
+      // Use ref to ensure we call the latest startWithTargets
+      if (startWithTargetsRef.current) {
+        await startWithTargetsRef.current(targetIds);
+      }
     }, 500);
   };
 
