@@ -30,7 +30,12 @@ export const mentorService = {
   getAttendance: (mentorId) => api.get(`/api/mentors/${mentorId}/attendance`),
   getStudentAttendance: (mentorId, studentId) => api.get(`/api/mentors/${mentorId}/students/${studentId}/attendance`),
   updateAttendance: (attendanceId, attendanceData) => api.put(`/api/mentors/attendance/${attendanceId}`, attendanceData),
-  deleteAttendance: (attendanceId) => api.delete(`/api/mentors/attendance/${attendanceId}`)
+  deleteAttendance: (attendanceId) => api.delete(`/api/mentors/attendance/${attendanceId}`),
+
+  // Video Calls
+  startVideoCall: (mentorId, payload) => api.post(`/api/mentors/${mentorId}/video-calls/start`, payload),
+  endVideoCall: (mentorId, callId) => api.post(`/api/mentors/${mentorId}/video-calls/${callId}/end`),
+  getVideoCalls: (mentorId) => api.get(`/api/mentors/${mentorId}/video-calls`)
 };
 
 export default mentorService; 

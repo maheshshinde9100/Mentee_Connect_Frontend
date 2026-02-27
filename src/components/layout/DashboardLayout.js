@@ -18,7 +18,8 @@ import {
   BuildingLibraryIcon,
   EnvelopeIcon,
   SunIcon,
-  MoonIcon
+  MoonIcon,
+  VideoCameraIcon
 } from '@heroicons/react/24/outline';
 import NotificationIcon from './NotificationIcon';
 import { notificationService } from '../../services/notificationService';
@@ -70,6 +71,7 @@ const DashboardLayout = ({ children }) => {
     { name: 'Mentor Allocation', href: '/admin/mentor-allocation', icon: UserGroupIcon, description: 'Allocations' },
     { name: 'Communication', href: '/admin/communication', icon: ChatBubbleLeftRightIcon, description: 'Messages', badge: unreadCount > 0 ? unreadCount : null },
     { name: 'Reports', href: '/admin/reports', icon: DocumentTextIcon, description: 'Analytics' },
+    { name: 'Video Calls', href: '/admin/video-calls', icon: VideoCameraIcon, description: 'Call history' },
     { name: 'Add Mentors & Students', href: '/admin/manage-mentors-mentees', icon: UsersIcon, description: 'Create users' },
   ];
 
@@ -79,6 +81,7 @@ const DashboardLayout = ({ children }) => {
     { name: 'Tasks', href: '/mentor/tasks', icon: DocumentTextIcon, description: 'Tasks' },
     { name: 'Attendance', href: '/mentor/attendance/record', icon: AcademicCapIcon, description: 'Attendance' },
     { name: 'Updates', href: '/mentor/updates', icon: ChatBubbleLeftRightIcon, description: 'Updates' },
+    { name: 'Video Calls', href: '/mentor/video-calls', icon: VideoCameraIcon, description: 'Call history' },
   ];
 
   const studentNavigation = [

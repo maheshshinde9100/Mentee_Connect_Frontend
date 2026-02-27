@@ -7,6 +7,7 @@ import CallWindow from './components/call/CallWindow';
 import IncomingCallModal from './components/call/IncomingCallModal';
 import Login from './pages/authentication/Login';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import VideoCallHistory from './pages/admin/VideoCallHistory';
 import MentorDashboard from './pages/mentor/MentorDashboard';
 import TaskManagement from './pages/mentor/TaskManagement';
 import Analytics from './pages/admin/Analytics';
@@ -42,6 +43,7 @@ import TaskForm from './pages/mentor/TaskForm';
 import AttendanceForm from './pages/mentor/AttendanceForm';
 import Updates from './pages/mentor/Updates';
 import ShareUpdate from './pages/mentor/ShareUpdate';
+import MentorVideoCallHistory from './pages/mentor/VideoCallHistory';
 import './App.css';
 
 function App() {
@@ -129,6 +131,16 @@ function App() {
                   <ProtectedRoute allowedRoles={['ADMIN']}>
                     <DashboardLayout>
                       <Analytics />
+                    </DashboardLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/video-calls"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <DashboardLayout>
+                      <VideoCallHistory />
                     </DashboardLayout>
                   </ProtectedRoute>
                 }
@@ -303,6 +315,16 @@ function App() {
                   <ProtectedRoute allowedRoles={['MENTOR']}>
                     <DashboardLayout>
                       <Updates />
+                    </DashboardLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/mentor/video-calls"
+                element={
+                  <ProtectedRoute allowedRoles={['MENTOR']}>
+                    <DashboardLayout>
+                      <MentorVideoCallHistory />
                     </DashboardLayout>
                   </ProtectedRoute>
                 }

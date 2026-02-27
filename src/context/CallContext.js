@@ -10,11 +10,14 @@ export const CallProvider = ({ user, children }) => {
   const [incoming, setIncoming] = useState(null);
   const [activeRoom, setActiveRoom] = useState(null);
   const [minimized, setMinimized] = useState(false);
+  const [currentCallId, setCurrentCallId] = useState(null);
+  const [callStartedAt, setCallStartedAt] = useState(null);
   const targetsRef = useRef([]);
   const incomingRef = useRef(null);
   const activeRoomRef = useRef(null);
   const startWithTargetsRef = useRef(null);
   const handleSignalRef = useRef(null);
+  const leaveRef = useRef(null);
 
   const sendSignal = useCallback((payload) => {
     if (wsClient && wsClient.ws && wsClient.ws.readyState === WebSocket.OPEN) {
@@ -50,6 +53,10 @@ export const CallProvider = ({ user, children }) => {
   useEffect(() => {
     handleSignalRef.current = handleSignal;
   }, [handleSignal]);
+
+  useEffect(() => {
+    leaveRef.current = leave;
+  }, [leave]);
 
   // Establish websocket connection when user is present
   useEffect(() => {
@@ -117,6 +124,16 @@ export const CallProvider = ({ user, children }) => {
               if (handleSignalRef.current) {
                 handleSignalRef.current(msg);
               }
+            } else if (msg.type === 'end-call' && currentRoom && msg.roomId === currentRoom) {
+              console.log('Received end-call signal, ending call locally');
+              if (leaveRef.current) {
+                leaveRef.current();
+              }
+              setActiveRoom(null);
+              setMinimized(false);
+              targetsRef.current = [];
+              setCurrentCallId(null);
+              setCallStartedAt(null);
             } else if (msg.type === 'offer' || msg.type === 'answer' || msg.type === 'candidate') {
               // Log unprocessed signaling messages for debugging
               console.log(`Received ${msg.type} signal but no active room. Current room: ${currentRoom}, Message room: ${msg.roomId}`);
@@ -197,9 +214,29 @@ export const CallProvider = ({ user, children }) => {
     const roomId = makeRoomId();
     targetsRef.current = targetIds;
     setActiveRoom(roomId);
+    activeRoomRef.current = roomId;
     setMinimized(false);
+    const startedAt = new Date();
+    setCallStartedAt(startedAt);
     console.log('Starting call with targets:', targetIds, 'roomId:', roomId);
     sendSignal({ type: 'call-invite', from: user?.id, targets: targetIds, roomId, title });
+
+    // Create backend record for mentor call history (only for mentors)
+    if (user?.role === 'MENTOR') {
+      try {
+        const { mentorService } = await import('../services/mentorService');
+        const response = await mentorService.startVideoCall(user.id, {
+          title,
+          menteeIds: targetIds,
+        });
+        if (response && response.data && response.data.id) {
+          setCurrentCallId(response.data.id);
+        }
+      } catch (err) {
+        console.error('Failed to create video call record', err);
+      }
+    }
+
     // Wait a bit for invites to be sent before starting WebRTC
     setTimeout(async () => {
       // Use ref to ensure we call the latest startWithTargets
@@ -227,9 +264,38 @@ export const CallProvider = ({ user, children }) => {
   };
 
   const endCall = () => {
-    leave();
+    // Notify remote participants that the call has ended
+    const room = activeRoomRef.current;
+    if (room && targetsRef.current && targetsRef.current.length > 0) {
+      targetsRef.current.forEach((targetId) => {
+        sendSignal({
+          type: 'end-call',
+          to: targetId,
+          from: user?.id,
+          roomId: room,
+        });
+      });
+    }
+
+    if (leaveRef.current) {
+      leaveRef.current();
+    } else {
+      leave();
+    }
+
+    // Persist video call end for mentor
+    if (user?.role === 'MENTOR' && currentCallId) {
+      import('../services/mentorService')
+        .then(({ mentorService }) => mentorService.endVideoCall(user.id, currentCallId))
+        .catch((err) => console.error('Failed to mark video call ended', err));
+    }
+
     setActiveRoom(null);
+    activeRoomRef.current = null;
+    setMinimized(false);
     targetsRef.current = [];
+    setCurrentCallId(null);
+    setCallStartedAt(null);
   };
 
   const value = useMemo(
@@ -239,13 +305,15 @@ export const CallProvider = ({ user, children }) => {
       minimized,
       localStream,
       remoteStreams,
+      currentCallId,
+      callStartedAt,
       startCall,
       acceptCall,
       rejectCall,
       endCall,
       setMinimized,
     }),
-    [incoming, activeRoom, minimized, localStream, remoteStreams, startCall, acceptCall]
+    [incoming, activeRoom, minimized, localStream, remoteStreams, currentCallId, callStartedAt, startCall, acceptCall]
   );
 
   return <CallContext.Provider value={value}>{children}</CallContext.Provider>;

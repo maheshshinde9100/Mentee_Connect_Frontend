@@ -245,7 +245,10 @@ export const adminService = {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
-    })
+    }),
+
+  // Video Calls
+  getVideoCalls: () => api.get('/api/admin/video-calls')
 };
 
 export default adminService;
