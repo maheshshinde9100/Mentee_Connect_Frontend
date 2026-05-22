@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
+import useFetchGuard from '../../hooks/useFetchGuard';
 import { useAuth } from '../../contexts/AuthContext';
 import mentorService from '../../services/mentorService';
 import { Link } from 'react-router-dom';
@@ -10,41 +11,32 @@ const MyMentees = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    if (user?.id) {
-      fetchMentees();
-    }
-  }, [user]);
-
-  const fetchMentees = async () => {
+  const fetchMentees = useCallback(async (isCancelled) => {
     if (!user?.id) return;
-    
+
     try {
       setLoading(true);
       setError(null);
-      console.log(`Fetching mentees for mentor ID: ${user.id}`);
       const response = await mentorService.getMyStudents(user.id);
-      
-      console.log('API Response:', response);
-      
-      if (response && response.data) {
-        // Set all mentees status to ACTIVE
-        const activeStatusMentees = response.data.map(mentee => ({
-          ...mentee,
-          status: 'ACTIVE'
-        }));
-        setMentees(activeStatusMentees);
-      } else {
+
+      if (!isCancelled() && response?.data) {
+        setMentees(
+          response.data.map((mentee) => ({ ...mentee, status: 'ACTIVE' }))
+        );
+      } else if (!isCancelled()) {
         setMentees([]);
-        console.warn('API returned empty or invalid data');
       }
     } catch (err) {
-      console.error('Error fetching mentees:', err);
-      setError(`Failed to load your mentees: ${err.message || 'Unknown error'}`);
+      if (!isCancelled()) {
+        console.error('Error fetching mentees:', err);
+        setError(`Failed to load your mentees: ${err.message || 'Unknown error'}`);
+      }
     } finally {
-      setLoading(false);
+      if (!isCancelled()) setLoading(false);
     }
-  };
+  }, [user?.id]);
+
+  useFetchGuard(fetchMentees, [user?.id]);
 
   const filteredMentees = mentees.filter(mentee => {
     // Safely handle potentially missing properties

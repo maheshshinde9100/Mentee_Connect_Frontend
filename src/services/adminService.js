@@ -1,120 +1,31 @@
 import api from './api';
+import { normalizePageResponse } from '../utils/pageUtils';
 
 export const adminService = {
   // Student Management
   createStudent: (studentData) => api.post('/api/admin/students', studentData),
-  getAllStudents: () => api.get('/api/admin/students'),
+  getAllStudents: async (page = 0, size = 20) => {
+    const response = await api.get('/api/admin/students', { params: { page, size } });
+    const pageData = normalizePageResponse(response.data);
+    return { data: pageData.content, pagination: pageData };
+  },
   updateStudent: (id, studentData) => api.put(`/api/admin/students/${id}`, studentData),
   deleteStudent: (id) => api.delete(`/api/admin/students/${id}`),
 
   // Mentor Management
   createMentor: (mentorData) => api.post('/api/admin/mentors', mentorData),
-  getAllMentors: async () => {
-    try {
-      console.log('Fetching all mentors with pagination...');
-
-      const initialResponse = await api.get('/api/admin/mentors?size=100&page=0');
-      console.log('Initial mentors API response:', initialResponse);
-
-
-      if (initialResponse.data &&
-        initialResponse.data.content &&
-        Array.isArray(initialResponse.data.content)) {
-
-        const totalPages = initialResponse.data.totalPages || 1;
-        const totalElements = initialResponse.data.totalElements || 0;
-
-        console.log(`Detected paginated response with ${totalElements} total mentors across ${totalPages} pages`);
-
-        if (totalPages <= 1) {
-          console.log('Single page of mentors, returning directly');
-          return {
-            data: initialResponse.data.content,
-            pagination: {
-              totalElements: initialResponse.data.totalElements,
-              totalPages: initialResponse.data.totalPages,
-              currentPage: initialResponse.data.number,
-              pageSize: initialResponse.data.size
-            }
-          };
-        }
-
-        console.log(`Fetching all ${totalPages} pages of mentors...`);
-        let allMentors = [...initialResponse.data.content];
-        const pagePromises = [];
-        for (let page = 1; page < totalPages; page++) {
-          pagePromises.push(api.get(`/api/admin/mentors?size=100&page=${page}`));
-        }
-
-        const pageResponses = await Promise.all(pagePromises);
-
-        pageResponses.forEach(response => {
-          if (response.data &&
-            response.data.content &&
-            Array.isArray(response.data.content)) {
-            allMentors = [...allMentors, ...response.data.content];
-          }
-        });
-
-        console.log(`Successfully fetched all ${allMentors.length} mentors across ${totalPages} pages`);
-
-        return {
-          data: allMentors,
-          pagination: {
-            totalElements: initialResponse.data.totalElements,
-            totalPages: initialResponse.data.totalPages,
-            currentPage: 'all',
-            pageSize: allMentors.length
-          }
-        };
-      }
-
-      // Handle non-paginated responses (fallback to previous implementation)
-
-      // Log the exact structure to debug
-      console.log('Response structure:', {
-        hasData: !!initialResponse.data,
-        isDataArray: Array.isArray(initialResponse.data),
-        dataType: typeof initialResponse.data,
-        dataKeys: initialResponse.data && typeof initialResponse.data === 'object' ? Object.keys(initialResponse.data) : []
-      });
-
-      // Case 1: Direct array in response.data
-      if (Array.isArray(initialResponse.data)) {
-        console.log('Response data is directly an array, using it');
-        return { data: initialResponse.data };
-      }
-
-      // Case 2: Array in response.data.data (Axios often wraps responses)
-      if (initialResponse.data && Array.isArray(initialResponse.data.data)) {
-        console.log('Found array in response.data.data');
-        return { data: initialResponse.data.data };
-      }
-
-      // Case 3: If raw response contains the array (unusual but possible)
-      if (Array.isArray(initialResponse)) {
-        console.log('Raw response is an array, using it directly');
-        return { data: initialResponse };
-      }
-
-      // If we got here but still have a valid response, try to extract the first array property
-      if (initialResponse.data && typeof initialResponse.data === 'object') {
-        const keys = Object.keys(initialResponse.data);
-        for (const key of keys) {
-          if (Array.isArray(initialResponse.data[key])) {
-            console.log(`Found array in response.data.${key}`);
-            return { data: initialResponse.data[key] };
-          }
-        }
-      }
-
-      // If all else fails, return empty array
-      console.error('Could not extract mentor data from response');
-      return { data: [] };
-    } catch (error) {
-      console.error('Error fetching mentors:', error);
-      throw error;
-    }
+  getAllMentors: async (page = 0, size = 20) => {
+    const response = await api.get('/api/admin/mentors', { params: { page, size } });
+    const pageData = normalizePageResponse(response.data);
+    return {
+      data: pageData.content,
+      pagination: {
+        totalElements: pageData.totalElements,
+        totalPages: pageData.totalPages,
+        currentPage: pageData.number,
+        pageSize: pageData.size,
+      },
+    };
   },
   assignMentorToStudent: (studentId, mentorId) =>
     api.post('/api/admin/assign-mentor', { studentId, mentorId }),

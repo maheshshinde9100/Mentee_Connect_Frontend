@@ -119,7 +119,7 @@ const BatchManagement = () => {
       setLoading(prevState => ({ ...prevState, students: true }));
       console.log('Fetching students...');
       
-      const response = await adminService.getAllStudents();
+      const response = await adminService.getAllStudents(0, 100);
       console.log('Students API response:', response);
       
       // Process response to ensure we have an array
@@ -160,7 +160,7 @@ const BatchManagement = () => {
       setMentors([]);
       setLoadingMessage('Loading mentors across multiple pages. This may take a moment...');
       
-      const response = await adminService.getAllMentors();
+      const response = await adminService.getAllMentors(0, 100);
       console.log('Mentors API response in component:', {
         dataLength: response?.data?.length || 0,
         hasPagination: !!response?.pagination,
@@ -300,7 +300,7 @@ const BatchManagement = () => {
         
         // If we have mentor IDs assigned to this batch, fetch their details
         if (mentorIds.length > 0) {
-          const mentorsResponse = await adminService.getAllMentors();
+          const mentorsResponse = await adminService.getAllMentors(0, 100);
           
           if (mentorsResponse && mentorsResponse.data) {
             // Get all mentors

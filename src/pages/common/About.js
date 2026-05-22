@@ -96,6 +96,8 @@ const About = () => {
             <img
               src={personalInfo.photo}
               alt={personalInfo.name}
+              loading="lazy"
+              decoding="async"
               className="w-32 h-32 rounded-full mx-auto object-cover border-4 border-indigo-600 dark:border-indigo-500"
             />
           </div>

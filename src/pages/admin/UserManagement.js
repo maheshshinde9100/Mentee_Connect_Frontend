@@ -1,59 +1,77 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { adminService } from '../../services/api';
+import useDebounce from '../../hooks/useDebounce';
+import useFetchGuard from '../../hooks/useFetchGuard';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearch = useDebounce(searchQuery, 400);
   const [loading, setLoading] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
+  const initialLoadDone = useRef(false);
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  useEffect(() => {
-    if (successMessage) {
-      const timer = setTimeout(() => {
-        setSuccessMessage('');
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [successMessage]);
-
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async (isCancelled) => {
     try {
       setLoading(true);
       const response = await adminService.getAllUsers();
-      setUsers(response.data);
-      setError(null);
+      if (!isCancelled()) {
+        setUsers(response.data);
+        setError(null);
+      }
     } catch (err) {
-      setError('Failed to fetch users');
-      console.error(err);
+      if (!isCancelled()) {
+        setError('Failed to fetch users');
+        console.error(err);
+      }
     } finally {
-      setLoading(false);
+      if (!isCancelled()) setLoading(false);
     }
-  };
+  }, []);
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) {
-      fetchUsers();
-      return;
-    }
+  useFetchGuard((isCancelled) => {
+    initialLoadDone.current = true;
+    return fetchUsers(isCancelled);
+  }, []);
 
-    try {
-      setLoading(true);
-      const response = await adminService.searchUsers(searchQuery);
-      setUsers(response.data);
-      setError(null);
-    } catch (err) {
-      setError('Failed to search users');
-      console.error(err);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (!initialLoadDone.current) return;
+
+    let cancelled = false;
+    const runSearch = async () => {
+      if (!debouncedSearch.trim()) {
+        fetchUsers(() => cancelled);
+        return;
+      }
+      try {
+        setLoading(true);
+        const response = await adminService.searchUsers(debouncedSearch);
+        if (!cancelled) {
+          setUsers(response.data);
+          setError(null);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError('Failed to search users');
+          console.error(err);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    runSearch();
+    return () => { cancelled = true; };
+  }, [debouncedSearch, fetchUsers]);
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => setSuccessMessage(''), 3000);
+      return () => clearTimeout(timer);
     }
-  };
+  }, [successMessage]);
 
   const handleDelete = async (userId) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
@@ -135,7 +153,6 @@ const UserManagement = () => {
         </p>
       </div>
 
-      {/* Success Message */}
       {successMessage && (
         <div className="mb-4 rounded-md bg-green-50 dark:bg-green-900/20 p-4 text-green-700 flex items-center justify-between">
           <div className="flex items-center">
@@ -147,27 +164,21 @@ const UserManagement = () => {
         </div>
       )}
 
-      {/* Search Bar */}
       <div className="mb-6">
         <div className="max-w-xl bg-white dark:bg-slate-800 rounded-lg shadow-sm flex items-center p-2">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
             placeholder="Search users by name..."
-            className="flex-1 px-4 py-2 focus:outline-none"
+            className="flex-1 px-4 py-2 focus:outline-none bg-transparent text-gray-900 dark:text-white"
           />
-          <button
-            onClick={handleSearch}
-            className="ml-2 px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200"
-          >
-            Search
-          </button>
+          {loading && (
+            <span className="text-xs text-gray-500 dark:text-slate-400 px-2">Searching...</span>
+          )}
         </div>
       </div>
 
-      {/* Error Message */}
       {error && (
         <div className="mb-4 rounded-md bg-red-50 dark:bg-red-900/20 p-4 text-red-700 flex items-center">
           <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -177,7 +188,6 @@ const UserManagement = () => {
         </div>
       )}
 
-      {/* Users Table */}
       <div className="bg-white dark:bg-slate-800 rounded-lg shadow overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
           <thead className="bg-gray-50 dark:bg-slate-900/50">
@@ -190,7 +200,7 @@ const UserManagement = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-slate-700 bg-white dark:bg-slate-800">
-            {loading ? (
+            {loading && users.length === 0 ? (
               <tr>
                 <td colSpan="5" className="px-6 py-4 text-center">
                   <div className="flex items-center justify-center">
@@ -269,18 +279,12 @@ const UserManagement = () => {
                           onClick={() => handleUpdate(user.id, editingUser)}
                           className="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                         >
-                          <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                          </svg>
                           Save
                         </button>
                         <button
                           onClick={() => setEditingUser(null)}
                           className="inline-flex items-center px-3 py-1 border border-gray-300 dark:border-slate-600 text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
-                          <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                          </svg>
                           Cancel
                         </button>
                       </div>
@@ -290,18 +294,12 @@ const UserManagement = () => {
                           onClick={() => handleEditClick(user)}
                           className="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
-                          <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                          </svg>
                           Edit
                         </button>
                         <button
                           onClick={() => handleDelete(user.id)}
                           className="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                         >
-                          <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
                           Delete
                         </button>
                       </div>

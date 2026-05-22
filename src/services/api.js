@@ -1,5 +1,43 @@
 import axios from 'axios';
 
+// ─── In-Memory GET Response Cache ────────────────────────────────────────────
+// Caches GET responses for 30 seconds to avoid redundant network round-trips.
+// Write operations (POST/PUT/DELETE) automatically clear the cache.
+const API_CACHE = new Map();
+const CACHE_TTL_MS = 30 * 1000; // 30 seconds
+const CACHE_MAX_ENTRIES = 100;
+
+const getCacheKey = (config) => {
+  const params = config.params ? JSON.stringify(config.params) : '';
+  return `${config.method}:${config.url}:${params}`;
+};
+
+const isGetRequest = (config) =>
+  config.method === 'get' || config.method === 'GET';
+
+const isWriteRequest = (config) =>
+  ['post', 'put', 'patch', 'delete'].includes((config.method || '').toLowerCase());
+
+const pruneCache = () => {
+  const now = Date.now();
+  for (const [key, entry] of API_CACHE) {
+    if (now - entry.timestamp > CACHE_TTL_MS) {
+      API_CACHE.delete(key);
+    }
+  }
+  // Evict oldest entries if cache is too large
+  if (API_CACHE.size > CACHE_MAX_ENTRIES) {
+    const oldest = [...API_CACHE.entries()]
+      .sort((a, b) => a[1].timestamp - b[1].timestamp);
+    const toRemove = oldest.slice(0, API_CACHE.size - CACHE_MAX_ENTRIES);
+    toRemove.forEach(([key]) => API_CACHE.delete(key));
+  }
+};
+
+/** Programmatically clear all cached GET responses */
+export const clearApiCache = () => API_CACHE.clear();
+// ─────────────────────────────────────────────────────────────────────────────
+
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080',
   headers: {
@@ -15,6 +53,30 @@ api.interceptors.request.use(
       // Ensure there's a proper Authorization header with Bearer token format
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Serve GET requests from cache if a fresh entry exists
+    if (isGetRequest(config) && !config.skipCache) {
+      const key = getCacheKey(config);
+      const cached = API_CACHE.get(key);
+      if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+        // Return a resolved adapter response so Axios skips the network
+        config.adapter = () =>
+          Promise.resolve({
+            data: cached.data,
+            status: cached.status,
+            statusText: cached.statusText,
+            headers: cached.headers,
+            config,
+            request: {},
+          });
+      }
+    }
+
+    // Write operations bust the entire cache to keep data fresh
+    if (isWriteRequest(config)) {
+      API_CACHE.clear();
+    }
+
     return config;
   },
   (error) => {
@@ -24,7 +86,21 @@ api.interceptors.request.use(
 
 // Add a response interceptor
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Cache successful GET responses
+    if (isGetRequest(response.config) && response.status >= 200 && response.status < 300) {
+      pruneCache();
+      const key = getCacheKey(response.config);
+      API_CACHE.set(key, {
+        data: response.data,
+        status: response.status,
+        statusText: response.statusText,
+        headers: response.headers,
+        timestamp: Date.now(),
+      });
+    }
+    return response;
+  },
   async (error) => {
     if (error.response?.status === 401 &&
       !error.config.url.includes('/api/auth/login') &&
@@ -65,13 +141,15 @@ export const authService = {
 
 // Student Services
 export const studentService = {
-  getAllStudents: () => api.get('/students'),
+  getAllStudents: (page = 0, size = 20) =>
+    api.get('/students', { params: { page, size } }),
   createStudent: (studentData) => api.post('/students', studentData),
   updateStudent: (id, studentData) => api.put(`/students/${id}`, studentData),
   deleteStudent: (id) => api.delete(`/students/${id}`),
   getStudentById: (id) => api.get(`/students/${id}`),
   getCurrentStudent: () => api.get('/students/me'),
-  getStudentsByMentor: (mentorId) => api.get(`/students/mentor/${mentorId}`),
+  getStudentsByMentor: (mentorId, page = 0, size = 20) =>
+    api.get(`/students/mentor/${mentorId}`, { params: { page, size } }),
   updateStudentProgress: (id, progressData) => api.put(`/students/${id}/progress`, progressData),
   getMyMentor: () => api.get('/students/my-mentor'),
   getProgressReports: () => api.get('/students/progress-reports')
@@ -79,7 +157,8 @@ export const studentService = {
 
 // Mentor Services
 export const mentorService = {
-  getAllMentors: () => api.get('/mentors'),
+  getAllMentors: (page = 0, size = 20) =>
+    api.get('/mentors', { params: { page, size } }),
   createMentor: (mentorData) => api.post('/mentors', mentorData),
   updateMentor: (id, mentorData) => api.put(`/mentors/${id}`, mentorData),
   deleteMentor: (id) => api.delete(`/mentors/${id}`),
@@ -96,16 +175,18 @@ export const adminService = {
   searchUsers: (name) => api.get(`/api/admin/users/search?name=${name}`),
   deleteUser: (userId) => api.delete(`/api/admin/users/${userId}`),
   updateUser: (userId, userData) => api.put(`/api/admin/users/${userId}`, userData),
-  getAnalytics: () => api.get('/api/admin/analytics'),
+  getAnalytics: () => api.get('/api/admin/analytics', { skipCache: true }),
 
   // Student Management
-  getAdminStudents: () => api.get('/api/admin/students'),
+  getAdminStudents: (page = 0, size = 20) =>
+    api.get('/api/admin/students', { params: { page, size } }),
   createAdminStudent: (studentData) => api.post('/api/admin/students', studentData),
   updateAdminStudent: (id, studentData) => api.put(`/api/admin/students/${id}`, studentData),
   deleteAdminStudent: (id) => api.delete(`/api/admin/students/${id}`),
 
   // Mentor Management
-  getAdminMentors: () => api.get('/api/admin/mentors'),
+  getAdminMentors: (page = 0, size = 20) =>
+    api.get('/api/admin/mentors', { params: { page, size } }),
   createAdminMentor: (mentorData) => api.post('/api/admin/mentors', mentorData),
   updateAdminMentor: (id, mentorData) => api.put(`/api/admin/mentors/${id}`, mentorData),
   deleteAdminMentor: (id) => api.delete(`/api/admin/mentors/${id}`),
