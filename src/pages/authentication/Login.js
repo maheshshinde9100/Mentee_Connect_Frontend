@@ -52,11 +52,13 @@ const Login = () => {
         localStorage.setItem('refreshToken', response.data.refreshToken);
       }
 
+      const rawRole = Array.isArray(roles) && roles.length > 0 ? roles[0] : 'ROLE_STUDENT';
       const userData = {
         id,
         email,
-        role: roles[0].replace('ROLE_', ''), // Convert 'ROLE_ADMIN' to 'ADMIN'
-        roles
+        // DB/JWT use ROLE_ADMIN; web routes use ADMIN, MENTOR, STUDENT
+        role: rawRole.replace('ROLE_', ''),
+        roles: Array.isArray(roles) ? roles : [rawRole]
       };
 
       await login(userData, token);

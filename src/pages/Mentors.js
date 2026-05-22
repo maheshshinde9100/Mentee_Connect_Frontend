@@ -97,6 +97,8 @@ const Mentors = () => {
                     className="h-16 w-16 rounded-full object-cover"
                     src={mentor.image}
                     alt={mentor.name}
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="ml-4">
                     <h3 className="text-lg font-medium text-gray-900 dark:text-white">{mentor.name}</h3>

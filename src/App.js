@@ -1,50 +1,72 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { CallProvider, useCall } from './context/CallContext';
 import CallWindow from './components/call/CallWindow';
 import IncomingCallModal from './components/call/IncomingCallModal';
-import Login from './pages/authentication/Login';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import VideoCallHistory from './pages/admin/VideoCallHistory';
-import MentorDashboard from './pages/mentor/MentorDashboard';
-import TaskManagement from './pages/mentor/TaskManagement';
-import Analytics from './pages/admin/Analytics';
-import UserManagement from './pages/admin/UserManagement';
-import Users from './pages/admin/Users';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import PublicRoute from './components/auth/PublicRoute';
-import DepartmentManagement from './pages/admin/DepartmentManagement';
-import BatchManagement from './pages/admin/BatchManagement';
-import MentorAllocation from './pages/admin/MentorAllocation';
-import Communication from './pages/admin/Communication';
-import SendNotification from './pages/admin/SendNotification';
-import NotificationManagement from './pages/admin/NotificationManagement';
-import ManageMentorsMentees from './pages/admin/ManageMentorsMentees';
-import Notifications from './pages/user/Notifications';
-import NotFound from './pages/NotFound';
 import DashboardLayout from './components/layout/DashboardLayout';
-import Profile from './pages/profile/Profile';
-import LandingPage from './pages/LandingPage';
-import CertificateManagement from './components/CertificateManagement';
+import './App.css';
+
+// ─── Route-level code splitting ──────────────────────────────────────────────
+// Each page is loaded on-demand as a separate JS chunk, reducing the initial
+// bundle size and time-to-interactive significantly.
+const Login = React.lazy(() => import('./pages/authentication/Login'));
+const AdminDashboard = React.lazy(() => import('./pages/admin/AdminDashboard'));
+const VideoCallHistory = React.lazy(() => import('./pages/admin/VideoCallHistory'));
+const MentorDashboard = React.lazy(() => import('./pages/mentor/MentorDashboard'));
+const TaskManagement = React.lazy(() => import('./pages/mentor/TaskManagement'));
+const Analytics = React.lazy(() => import('./pages/admin/Analytics'));
+const UserManagement = React.lazy(() => import('./pages/admin/UserManagement'));
+const Users = React.lazy(() => import('./pages/admin/Users'));
+const DepartmentManagement = React.lazy(() => import('./pages/admin/DepartmentManagement'));
+const BatchManagement = React.lazy(() => import('./pages/admin/BatchManagement'));
+const MentorAllocation = React.lazy(() => import('./pages/admin/MentorAllocation'));
+const Communication = React.lazy(() => import('./pages/admin/Communication'));
+const SendNotification = React.lazy(() => import('./pages/admin/SendNotification'));
+const NotificationManagement = React.lazy(() => import('./pages/admin/NotificationManagement'));
+const ManageMentorsMentees = React.lazy(() => import('./pages/admin/ManageMentorsMentees'));
+const Notifications = React.lazy(() => import('./pages/user/Notifications'));
+const NotFound = React.lazy(() => import('./pages/NotFound'));
+const Profile = React.lazy(() => import('./pages/profile/Profile'));
+const LandingPage = React.lazy(() => import('./pages/LandingPage'));
+const CertificateManagement = React.lazy(() => import('./components/CertificateManagement'));
 
 // Student Pages
-import StudentDashboard from './pages/student/StudentDashboard';
-import MentorDetails from './pages/student/MentorDetails';
-import SkillsManagement from './pages/student/SkillsManagement';
+const StudentDashboard = React.lazy(() => import('./pages/student/StudentDashboard'));
+const MentorDetails = React.lazy(() => import('./pages/student/MentorDetails'));
+const SkillsManagement = React.lazy(() => import('./pages/student/SkillsManagement'));
 
-import About from './pages/common/About';
-import Contact from './pages/common/Contact';
+const About = React.lazy(() => import('./pages/common/About'));
+const Contact = React.lazy(() => import('./pages/common/Contact'));
 
-import MyMentees from './pages/mentor/MyMentees';
-import MenteeDetail from './pages/mentor/MenteeDetail';
-import TaskForm from './pages/mentor/TaskForm';
-import AttendanceForm from './pages/mentor/AttendanceForm';
-import Updates from './pages/mentor/Updates';
-import ShareUpdate from './pages/mentor/ShareUpdate';
-import MentorVideoCallHistory from './pages/mentor/VideoCallHistory';
-import './App.css';
+// Mentor Pages
+const MyMentees = React.lazy(() => import('./pages/mentor/MyMentees'));
+const MenteeDetail = React.lazy(() => import('./pages/mentor/MenteeDetail'));
+const TaskForm = React.lazy(() => import('./pages/mentor/TaskForm'));
+const AttendanceForm = React.lazy(() => import('./pages/mentor/AttendanceForm'));
+const Updates = React.lazy(() => import('./pages/mentor/Updates'));
+const ShareUpdate = React.lazy(() => import('./pages/mentor/ShareUpdate'));
+const MentorVideoCallHistory = React.lazy(() => import('./pages/mentor/VideoCallHistory'));
+
+// ─── Suspense fallback ───────────────────────────────────────────────────────
+const PageLoader = () => (
+  <div style={{
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    minHeight: '60vh', width: '100%',
+  }}>
+    <div style={{
+      width: 40, height: 40,
+      border: '4px solid rgba(99, 102, 241, 0.2)',
+      borderTopColor: '#6366f1',
+      borderRadius: '50%',
+      animation: 'spin 0.8s linear infinite',
+    }} />
+    <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+  </div>
+);
 
 function App() {
   const CallOverlay = () => {
@@ -80,6 +102,7 @@ function App() {
       <ThemeProvider>
         <AuthProvider>
           <CallProviderWrapper>
+            <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* Public Routes */}
               <Route path="/login" element={
@@ -402,6 +425,7 @@ function App() {
               {/* 404 Not Found Route - Must be last */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            </Suspense>
           </CallProviderWrapper>
         </AuthProvider>
       </ThemeProvider>

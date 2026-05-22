@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
+import useFetchGuard from '../../hooks/useFetchGuard';
 import {
   BarChart,
   Bar,
@@ -22,23 +23,28 @@ const Analytics = () => {
   const [error, setError] = useState(null);
   const [selectedTimeframe, setSelectedTimeframe] = useState('6months');
 
-  useEffect(() => {
-    fetchAnalytics();
-  }, []);
-
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async (isCancelled) => {
     try {
       setLoading(true);
       const response = await adminService.getAnalytics();
-      setAnalyticsData(response.data);
-      setError(null);
+      const payload = response?.data;
+      if (!isCancelled() && payload?.userCounts) {
+        setAnalyticsData(payload);
+        setError(null);
+      } else if (!isCancelled()) {
+        setError('Analytics response format was unexpected');
+      }
     } catch (err) {
-      setError('Failed to fetch analytics data');
-      console.error(err);
+      if (!isCancelled()) {
+        setError('Failed to fetch analytics data');
+        console.error(err);
+      }
     } finally {
-      setLoading(false);
+      if (!isCancelled()) setLoading(false);
     }
-  };
+  }, []);
+
+  useFetchGuard(fetchAnalytics, []);
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 

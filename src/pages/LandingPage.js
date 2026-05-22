@@ -529,7 +529,7 @@ const LandingPage = () => {
             <div className="flex flex-col md:flex-row items-center gap-8">
               <div className="relative">
                 <div className="w-40 h-40 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full p-1 shadow-xl">
-                  <img src={devInfo.photo} alt={devInfo.name} className="w-full h-full object-cover rounded-full bg-white" />
+                  <img src={devInfo.photo} alt={devInfo.name} loading="lazy" decoding="async" className="w-full h-full object-cover rounded-full bg-white" />
                 </div>
                 <div className="absolute bottom-2 right-2 bg-green-500 w-6 h-6 rounded-full border-4 border-white dark:border-slate-800"></div>
               </div>

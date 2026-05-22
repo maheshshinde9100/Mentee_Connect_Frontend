@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { adminService } from '../../services/adminService';
+import Pagination from '../../components/common/Pagination';
 
 const MentorAllocation = () => {
-  const [activeTab, setActiveTab] = useState('allocate'); // 'allocate' or 'allocated'
+  const [activeTab, setActiveTab] = useState('allocate');
   const [students, setStudents] = useState([]);
   const [allocatedStudents, setAllocatedStudents] = useState([]);
   const [mentors, setMentors] = useState([]);
@@ -11,79 +12,65 @@ const MentorAllocation = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [loadingMentors, setLoadingMentors] = useState(false);
-  const [loadingMessage, setLoadingMessage] = useState(null);
 
-  useEffect(() => {
-    fetchData();
+  const [studentPage, setStudentPage] = useState(0);
+  const [studentPageSize, setStudentPageSize] = useState(20);
+  const [studentTotalPages, setStudentTotalPages] = useState(0);
+  const [studentTotalElements, setStudentTotalElements] = useState(0);
+
+  const [mentorPage, setMentorPage] = useState(0);
+  const [mentorPageSize, setMentorPageSize] = useState(20);
+  const [mentorTotalPages, setMentorTotalPages] = useState(0);
+  const [mentorTotalElements, setMentorTotalElements] = useState(0);
+  const [loadingMentors, setLoadingMentors] = useState(false);
+
+  const fetchStudents = useCallback(async (page, size) => {
+    const response = await adminService.getAllStudents(page, size);
+    const studentsData = response?.data || [];
+    const pagination = response?.pagination || {};
+    setStudents(studentsData.filter((s) => !s.mentorId));
+    setAllocatedStudents(studentsData.filter((s) => s.mentorId));
+    setStudentTotalPages(pagination.totalPages ?? 1);
+    setStudentTotalElements(pagination.totalElements ?? studentsData.length);
   }, []);
 
-  const fetchData = async () => {
+  const fetchMentors = useCallback(async (page, size) => {
+    setLoadingMentors(true);
+    try {
+      const mentorsResponse = await adminService.getAllMentors(page, size);
+      setMentors(mentorsResponse?.data || []);
+      const p = mentorsResponse?.pagination || {};
+      setMentorTotalPages(p.totalPages ?? 1);
+      setMentorTotalElements(p.totalElements ?? mentorsResponse?.data?.length ?? 0);
+    } finally {
+      setLoadingMentors(false);
+    }
+  }, []);
+
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      setLoadingMentors(true);
       setError('');
-
-      // Fetch students
-      const studentsResponse = await adminService.getAllStudents();
-
-      // Handle students response - check for paginated structure
-      const studentsData = studentsResponse?.data?.content || studentsResponse?.data || [];
-
-      // Filter students
-      const unassigned = studentsData.filter(student => !student.mentorId);
-      const assigned = studentsData.filter(student => student.mentorId);
-
-      setStudents(unassigned);
-      setAllocatedStudents(assigned);
-
-      console.log('Fetched students:', studentsData);
-
-      // Separate the mentor fetching to handle large paginated responses
-      try {
-        console.log('Fetching mentors...');
-        setLoadingMessage('Loading mentors...');
-
-        // Use the updated getAllMentors that handles pagination for large datasets
-        const mentorsResponse = await adminService.getAllMentors();
-
-        // Get mentors array from response
-        const mentorsData = mentorsResponse?.data || [];
-        setMentors(mentorsData);
-
-        setLoadingMessage(null);
-        console.log(`Successfully loaded ${mentorsData.length} mentors`);
-      } catch (mentorError) {
-        console.error('Error fetching mentors:', mentorError);
-        console.error('Error details:', mentorError.response?.data);
-        setLoadingMessage(null);
-        setError('Failed to fetch mentors. Please try again.');
-      } finally {
-        setLoadingMentors(false);
-      }
-
+      await Promise.all([
+        fetchStudents(studentPage, studentPageSize),
+        fetchMentors(mentorPage, mentorPageSize),
+      ]);
     } catch (err) {
       console.error('Fetch error:', err);
-      console.error('Error details:', err.response?.data);
-      setLoadingMessage(null);
       setError('Failed to fetch data. Please try again.');
     } finally {
       setLoading(false);
     }
-  };
+  }, [fetchStudents, fetchMentors, studentPage, studentPageSize, mentorPage, mentorPageSize]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleStudentSelect = (studentId) => {
-    setSelectedStudents(prev => {
-      if (prev.includes(studentId)) {
-        return prev.filter(id => id !== studentId);
-      } else {
-        return [...prev, studentId];
-      }
-    });
-  };
-
-  const handleMentorChange = (e) => {
-    setSelectedMentor(e.target.value);
+    setSelectedStudents((prev) =>
+      prev.includes(studentId) ? prev.filter((id) => id !== studentId) : [...prev, studentId]
+    );
   };
 
   const handleSubmit = async (e) => {
@@ -97,23 +84,16 @@ const MentorAllocation = () => {
       setLoading(true);
       setError('');
       setSuccess('');
-
-      // Use the bulk assignment API to assign multiple students at once
-      const assignmentData = {
+      await adminService.assignMentorToStudents({
         studentIds: selectedStudents,
-        mentorId: selectedMentor
-      };
-
-      console.log('Assigning mentor with data:', assignmentData);
-      await adminService.assignMentorToStudents(assignmentData);
-
+        mentorId: selectedMentor,
+      });
       setSuccess('Mentor assigned successfully!');
       setSelectedStudents([]);
       setSelectedMentor('');
-      fetchData(); // Refresh the data
+      fetchData();
     } catch (err) {
       console.error('Assignment error:', err);
-      console.error('Error details:', err.response?.data);
       setError(err.response?.data?.message || 'Failed to assign mentor. Please try again.');
     } finally {
       setLoading(false);
@@ -127,11 +107,9 @@ const MentorAllocation = () => {
       setLoading(true);
       setError('');
       setSuccess('');
-
       await adminService.removeMentorFromStudent(studentId);
-
       setSuccess('Mentor removed successfully');
-      fetchData(); // Refresh data
+      fetchData();
     } catch (err) {
       console.error('Error removing mentor:', err);
       setError('Failed to remove mentor');
@@ -140,7 +118,7 @@ const MentorAllocation = () => {
     }
   };
 
-  if (loading && (!students.length && !allocatedStudents.length)) {
+  if (loading && students.length === 0 && allocatedStudents.length === 0) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
@@ -152,15 +130,16 @@ const MentorAllocation = () => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Mentor Allocation</h1>
 
-      {/* Tabs */}
       <div className="flex border-b border-gray-200 dark:border-slate-700 mb-6">
         <button
+          type="button"
           className={`py-2 px-4 font-medium text-sm focus:outline-none ${activeTab === 'allocate' ? 'border-b-2 border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-300'}`}
           onClick={() => setActiveTab('allocate')}
         >
           Allocate Mentors
         </button>
         <button
+          type="button"
           className={`py-2 px-4 font-medium text-sm focus:outline-none ${activeTab === 'allocated' ? 'border-b-2 border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-300'}`}
           onClick={() => setActiveTab('allocated')}
         >
@@ -187,45 +166,43 @@ const MentorAllocation = () => {
               Select Mentor
             </label>
             {loadingMentors ? (
-              <div className="flex flex-col items-center space-y-2 py-4">
+              <div className="flex justify-center py-4">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-                {loadingMessage && (
-                  <p className="text-sm text-gray-600 dark:text-slate-400 text-center">{loadingMessage}</p>
-                )}
-                <p className="text-xs text-gray-500 dark:text-slate-500">
-                  This may take some time as we're fetching mentors
-                </p>
               </div>
             ) : (
               <select
                 value={selectedMentor}
-                onChange={handleMentorChange}
+                onChange={(e) => setSelectedMentor(e.target.value)}
                 className="block w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
               >
                 <option value="">Choose a mentor</option>
-                {Array.isArray(mentors) && mentors.map(mentor => (
+                {mentors.map((mentor) => (
                   <option key={mentor.id} value={mentor.id}>
                     {`${mentor.firstName || ''} ${mentor.lastName || ''} (${mentor.email || 'No email'})`}
                   </option>
                 ))}
               </select>
             )}
-            {mentors.length > 0 && !loadingMentors && (
-              <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
-                Showing {mentors.length} total mentors
-              </p>
-            )}
+            <Pagination
+              page={mentorPage}
+              totalPages={mentorTotalPages}
+              totalElements={mentorTotalElements}
+              pageSize={mentorPageSize}
+              onPageChange={setMentorPage}
+              onPageSizeChange={(size) => { setMentorPageSize(size); setMentorPage(0); }}
+              disabled={loadingMentors}
+            />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
-              Select Students
+              Select Students (unassigned on this page)
             </label>
             <div className="border border-gray-300 dark:border-slate-600 rounded-md max-h-96 overflow-y-auto bg-white dark:bg-slate-800">
-              {!Array.isArray(students) || students.length === 0 ? (
-                <p className="p-4 text-gray-500 dark:text-slate-400">No unassigned students available</p>
+              {students.length === 0 ? (
+                <p className="p-4 text-gray-500 dark:text-slate-400">No unassigned students on this page</p>
               ) : (
-                students.map(student => (
+                students.map((student) => (
                   <div
                     key={student.id}
                     className="flex items-center p-4 hover:bg-gray-50 dark:hover:bg-slate-700 border-b border-gray-200 dark:border-slate-700 last:border-b-0"
@@ -247,24 +224,24 @@ const MentorAllocation = () => {
                 ))
               )}
             </div>
+            <Pagination
+              page={studentPage}
+              totalPages={studentTotalPages}
+              totalElements={studentTotalElements}
+              pageSize={studentPageSize}
+              onPageChange={setStudentPage}
+              onPageSizeChange={(size) => { setStudentPageSize(size); setStudentPage(0); }}
+              disabled={loading}
+            />
           </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading || loadingMentors || !selectedMentor || selectedStudents.length === 0}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-            >
-              {loading ? (
-                <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Assigning...
-                </div>
-              ) : (
-                'Assign Mentor'
-              )}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={loading || loadingMentors || !selectedMentor || selectedStudents.length === 0}
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+          >
+            {loading ? 'Assigning...' : 'Assign Mentor'}
+          </button>
         </form>
       ) : (
         <div className="bg-white dark:bg-slate-800 shadow overflow-hidden sm:rounded-lg border border-gray-200 dark:border-slate-700">
@@ -280,7 +257,9 @@ const MentorAllocation = () => {
             <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
               {allocatedStudents.length === 0 ? (
                 <tr>
-                  <td colSpan="4" className="px-6 py-4 text-center text-gray-500 dark:text-slate-400">No students with allocated mentors found.</td>
+                  <td colSpan="4" className="px-6 py-4 text-center text-gray-500 dark:text-slate-400">
+                    No students with allocated mentors on this page.
+                  </td>
                 </tr>
               ) : (
                 allocatedStudents.map((student) => (
@@ -296,6 +275,7 @@ const MentorAllocation = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
+                        type="button"
                         onClick={() => handleRemoveMentor(student.id)}
                         className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/20 px-3 py-1 rounded-md border border-red-200 dark:border-red-800/30"
                       >
@@ -307,6 +287,15 @@ const MentorAllocation = () => {
               )}
             </tbody>
           </table>
+          <Pagination
+            page={studentPage}
+            totalPages={studentTotalPages}
+            totalElements={studentTotalElements}
+            pageSize={studentPageSize}
+            onPageChange={setStudentPage}
+            onPageSizeChange={(size) => { setStudentPageSize(size); setStudentPage(0); }}
+            disabled={loading}
+          />
         </div>
       )}
     </div>

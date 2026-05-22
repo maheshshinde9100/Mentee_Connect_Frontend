@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
+import useFetchGuard from '../../hooks/useFetchGuard';
 import { useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import MentorAllocation from './MentorAllocation';
@@ -22,36 +23,40 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async (isCancelled) => {
     try {
       setLoading(true);
-      const response = await adminService.getAnalytics();
-      const { userCounts, departmentStats } = response.data;
-      setStats({
-        totalUsers: userCounts.totalUsers,
-        totalMentors: userCounts.totalMentors,
-        totalStudents: userCounts.totalStudents,
-        activeUsers: userCounts.activeUsers,
-        departmentStats: departmentStats,
-        recentActivities: [
-          { type: 'user_added', message: 'New student registered', time: '2 minutes ago' },
-          { type: 'mentor_assigned', message: 'Mentor assigned to 3 students', time: '5 minutes ago' },
-          { type: 'meeting_scheduled', message: 'New mentoring session scheduled', time: '10 minutes ago' },
-          { type: 'feedback_received', message: 'Feedback submitted by mentor', time: '15 minutes ago' }
-        ]
-      });
       setError(null);
+      const response = await adminService.getAnalytics();
+      const payload = response?.data;
+      if (!isCancelled() && payload?.userCounts) {
+        const { userCounts, departmentStats } = payload;
+        setStats({
+          totalUsers: userCounts.totalUsers ?? 0,
+          totalMentors: userCounts.totalMentors ?? 0,
+          totalStudents: userCounts.totalStudents ?? 0,
+          activeUsers: userCounts.activeUsers ?? 0,
+          departmentStats: departmentStats ?? {},
+          recentActivities: [
+            { type: 'user_added', message: 'New student registered', time: '2 minutes ago' },
+            { type: 'mentor_assigned', message: 'Mentor assigned to 3 students', time: '5 minutes ago' },
+            { type: 'meeting_scheduled', message: 'New mentoring session scheduled', time: '10 minutes ago' },
+            { type: 'feedback_received', message: 'Feedback submitted by mentor', time: '15 minutes ago' }
+          ]
+        });
+        setError(null);
+      }
     } catch (err) {
-      setError('Failed to fetch dashboard data');
-      console.error(err);
+      if (!isCancelled()) {
+        setError('Failed to fetch dashboard data');
+        console.error(err);
+      }
     } finally {
-      setLoading(false);
+      if (!isCancelled()) setLoading(false);
     }
-  };
+  }, []);
+
+  useFetchGuard(fetchDashboardData, []);
 
   const getActivityIcon = (type) => {
     switch (type) {
@@ -173,7 +178,7 @@ const AdminDashboard = () => {
             <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Here's what's happening in your mentorship program.</p>
           </div>
           <button
-            onClick={fetchDashboardData}
+            onClick={() => fetchDashboardData(() => false)}
             className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
           >
             <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
