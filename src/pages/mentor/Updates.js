@@ -26,9 +26,9 @@ const Updates = () => {
       
       if (!user?.id) return;
       
-      console.log(`Fetching updates for mentor ID: ${user.id}`);
+      //console.log(`Fetching updates for mentor ID: ${user.id}`);
       const response = await mentorService.getMySharedUpdates(user.id);
-      console.log('Updates response:', response);
+      //console.log('Updates response:', response);
       
       if (response && response.data) {
         setUpdates(response.data);
@@ -47,7 +47,7 @@ const Updates = () => {
   const handleDeleteUpdate = async (updateId) => {
     try {
       setLoading(true);
-      console.log(`Deleting update with ID: ${updateId}`);
+      //console.log(`Deleting update with ID: ${updateId}`);
       await mentorService.deleteUpdate(updateId);
       
       // Remove from state

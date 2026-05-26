@@ -35,9 +35,9 @@ const ShareUpdate = () => {
     try {
       if (!user?.id) return;
       
-      console.log(`Fetching mentees for mentor ID: ${user.id}`);
+      //console.log(`Fetching mentees for mentor ID: ${user.id}`);
       const response = await mentorService.getMyStudents(user.id);
-      console.log('Mentees response:', response);
+      //console.log('Mentees response:', response);
       
       if (response && response.data) {
         setMentees(response.data);
@@ -54,9 +54,9 @@ const ShareUpdate = () => {
   const fetchUpdateDetails = async () => {
     try {
       setLoading(true);
-      console.log(`Fetching update details for ID: ${updateId}`);
+      //console.log(`Fetching update details for ID: ${updateId}`);
       const response = await mentorService.getMySharedUpdates(user.id);
-      console.log('Updates response:', response);
+      //console.log('Updates response:', response);
       
       if (!response || !response.data) {
         setError('Failed to load update details. Empty response received.');
@@ -64,7 +64,7 @@ const ShareUpdate = () => {
       }
       
       const update = response.data.find(u => u._id === updateId || u.id === updateId);
-      console.log('Found update:', update);
+      //console.log('Found update:', update);
       
       if (update) {
         setFormData({
@@ -158,7 +158,7 @@ const ShareUpdate = () => {
       setLoading(true);
       setError(null);
       
-      console.log('Submitting update data:', { ...formData, studentIds: formData.isPublic ? [] : selectedMentees });
+      //console.log('Submitting update data:', { ...formData, studentIds: formData.isPublic ? [] : selectedMentees });
       
       const updateData = {
         ...formData,

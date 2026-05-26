@@ -24,7 +24,7 @@ const AttendanceForm = () => {
       const query = new URLSearchParams(location.search);
       const menteeId = query.get('menteeId');
       
-      console.log(`Loading attendance form with menteeId from query: ${menteeId}`);
+      //console.log(`Loading attendance form with menteeId from query: ${menteeId}`);
       fetchMentees();
       
       if (menteeId) {
@@ -37,9 +37,9 @@ const AttendanceForm = () => {
     try {
       if (!user?.id) return;
       
-      console.log(`Fetching mentees for mentor ID: ${user.id}`);
+      //console.log(`Fetching mentees for mentor ID: ${user.id}`);
       const response = await mentorService.getMyStudents(user.id);
-      console.log('Mentees response:', response);
+      //console.log('Mentees response:', response);
       
       if (response && response.data) {
         setMentees(response.data);
@@ -63,10 +63,10 @@ const AttendanceForm = () => {
 
   const handleMenteeSelect = (e, menteeId) => {
     if (e.target.checked) {
-      console.log(`Adding mentee ${menteeId} to selected list`);
+      //console.log(`Adding mentee ${menteeId} to selected list`);
       setSelectedMentees([...selectedMentees, menteeId]);
     } else {
-      console.log(`Removing mentee ${menteeId} from selected list`);
+      //console.log(`Removing mentee ${menteeId} from selected list`);
       setSelectedMentees(selectedMentees.filter(id => {
         if (typeof id === 'object') {
           return id.id !== menteeId && id._id !== menteeId;
@@ -78,16 +78,16 @@ const AttendanceForm = () => {
 
   const handleSelectAllMentees = (e) => {
     if (e.target.checked) {
-      console.log('Selecting all mentees');
+      //console.log('Selecting all mentees');
       setSelectedMentees(mentees.map(mentee => mentee._id || mentee.id));
     } else {
-      console.log('Deselecting all mentees');
+      //console.log('Deselecting all mentees');
       setSelectedMentees([]);
     }
   };
 
   const handleAttendanceChange = (menteeId, status) => {
-    console.log(`Changing attendance status for mentee ${menteeId} to ${status}`);
+    //console.log(`Changing attendance status for mentee ${menteeId} to ${status}`);
     setSelectedMentees(prev => 
       prev.map(item => 
         typeof item === 'object' && (item.id === menteeId || item._id === menteeId)
@@ -133,9 +133,9 @@ const AttendanceForm = () => {
         studentAttendance: studentAttendance
       };
       
-      console.log('Submitting attendance data:', attendanceData);
+      //console.log('Submitting attendance data:', attendanceData);
       await mentorService.recordAttendance(user.id, attendanceData);
-      console.log('Attendance recorded successfully');
+      //console.log('Attendance recorded successfully');
       
       setSuccess(true);
       
