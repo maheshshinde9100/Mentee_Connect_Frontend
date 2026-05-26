@@ -70,31 +70,31 @@ export const CallProvider = ({ user, children }) => {
     const connect = () => {
       if (!isMounted || !user?.id || isConnecting) {
         if (isConnecting) {
-          console.log('WebSocket connection already in progress, skipping...');
+          //console.log('WebSocket connection already in progress, skipping...');
         }
         return;
       }
       
       // Check if we already have an open connection
       if (client?.ws && client.ws.readyState === WebSocket.OPEN) {
-        console.log('WebSocket already connected');
+        //console.log('WebSocket already connected');
         return;
       }
       
       isConnecting = true;
       
       try {
-        console.log('Creating WebSocket connection for user:', user.id);
+        //console.log('Creating WebSocket connection for user:', user.id);
         client = createSignalingClient(
           user.id,
           (msg) => {
             if (!isMounted) return;
-            console.log('Signaling message received:', msg);
+            //console.log('Signaling message received:', msg);
             // Handle incoming call invites (for students)
             if (msg.type === 'call-invite' && msg.roomId) {
               // Use ref to check current activeRoom value
               if (!activeRoomRef.current) {
-                console.log('Received call invite:', msg);
+                //console.log('Received call invite:', msg);
                 setIncoming({ roomId: msg.roomId, from: msg.from, title: msg.title || 'Mentor Call' });
               }
               return;
@@ -105,7 +105,7 @@ export const CallProvider = ({ user, children }) => {
             if (msg.type === 'ready' && msg.roomId) {
               const currentRoom = activeRoomRef.current;
               if (currentRoom === msg.roomId) {
-                console.log('Participant ready:', msg.from);
+                //console.log('Participant ready:', msg.from);
                 // The mentor's peer connections are already created as initiators
                 // The offers should already be sent, so we just log this
               }
@@ -114,18 +114,18 @@ export const CallProvider = ({ user, children }) => {
             // Process WebRTC signaling for active room
             const currentRoom = activeRoomRef.current;
             if (currentRoom && msg.roomId === currentRoom && handleSignalRef.current) {
-              console.log(`Processing ${msg.type} signal for active room ${currentRoom} from ${msg.from}`);
+              //console.log(`Processing ${msg.type} signal for active room ${currentRoom} from ${msg.from}`);
               handleSignalRef.current(msg);
             } else if (msg.type === 'offer' && incomingRef.current && incomingRef.current.roomId === msg.roomId) {
               // If we receive an offer while we have an incoming call, process it
               // This handles the case where offer arrives before acceptCall is called
-              console.log('Received offer for incoming call, processing it');
+              //console.log('Received offer for incoming call, processing it');
               // Process it - the handleSignal will create the peer connection when needed
               if (handleSignalRef.current) {
                 handleSignalRef.current(msg);
               }
             } else if (msg.type === 'end-call' && currentRoom && msg.roomId === currentRoom) {
-              console.log('Received end-call signal, ending call locally');
+              //console.log('Received end-call signal, ending call locally');
               if (leaveRef.current) {
                 leaveRef.current();
               }
@@ -136,24 +136,24 @@ export const CallProvider = ({ user, children }) => {
               setCallStartedAt(null);
             } else if (msg.type === 'offer' || msg.type === 'answer' || msg.type === 'candidate') {
               // Log unprocessed signaling messages for debugging
-              console.log(`Received ${msg.type} signal but no active room. Current room: ${currentRoom}, Message room: ${msg.roomId}`);
+              //console.log(`Received ${msg.type} signal but no active room. Current room: ${currentRoom}, Message room: ${msg.roomId}`);
             }
           },
           () => {
             if (!isMounted) return;
             isConnecting = false;
-            console.log('WebSocket connected successfully');
+            //console.log('WebSocket connected successfully');
             setWsClient(client);
           },
           () => {
             if (!isMounted) return;
             isConnecting = false;
-            console.log('WebSocket disconnected');
+            //console.log('WebSocket disconnected');
             setWsClient(null);
             // Attempt reconnect after 3 seconds, but only if still mounted
             reconnectTimeout = setTimeout(() => {
               if (isMounted && user?.id && !isConnecting) {
-                console.log('Attempting WebSocket reconnection...');
+                //console.log('Attempting WebSocket reconnection...');
                 connect();
               }
             }, 3000);
@@ -218,7 +218,7 @@ export const CallProvider = ({ user, children }) => {
     setMinimized(false);
     const startedAt = new Date();
     setCallStartedAt(startedAt);
-    console.log('Starting call with targets:', targetIds, 'roomId:', roomId);
+    //console.log('Starting call with targets:', targetIds, 'roomId:', roomId);
     sendSignal({ type: 'call-invite', from: user?.id, targets: targetIds, roomId, title });
 
     // Create backend record for mentor call history (only for mentors)

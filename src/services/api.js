@@ -201,19 +201,19 @@ export const adminService = {
   getBatchStudents: (batchId) => api.get(`/api/admin/batches/${batchId}/students`),
   getBatchMentors: async (batchId) => {
     try {
-      console.log(`Getting mentors for batch ${batchId}`);
+      //console.log(`Getting mentors for batch ${batchId}`);
       const response = await api.get(`/api/admin/batches/${batchId}/mentors?size=100`);
-      console.log('Batch mentors raw response:', response);
+      //console.log('Batch mentors raw response:', response);
 
       // Check different possible response formats
       if (Array.isArray(response.data)) {
-        console.log('Batch mentors: data is an array, using directly');
+        //console.log('Batch mentors: data is an array, using directly');
         return { data: response.data };
       }
 
       // Handle paginated response
       if (response.data && response.data.content && Array.isArray(response.data.content)) {
-        console.log('Batch mentors: Found paginated response with content array');
+        //console.log('Batch mentors: Found paginated response with content array');
         return {
           data: response.data.content,
           pagination: {
@@ -227,7 +227,7 @@ export const adminService = {
 
       // Check if response.data has a mentors property
       if (response.data && response.data.mentors && Array.isArray(response.data.mentors)) {
-        console.log('Batch mentors: Found mentors array in response.data.mentors');
+        //console.log('Batch mentors: Found mentors array in response.data.mentors');
         return { data: response.data.mentors };
       }
 
@@ -236,7 +236,7 @@ export const adminService = {
         const keys = Object.keys(response.data);
         for (const key of keys) {
           if (Array.isArray(response.data[key])) {
-            console.log(`Batch mentors: Found array in response.data.${key}`);
+            //console.log(`Batch mentors: Found array in response.data.${key}`);
             return { data: response.data[key] };
           }
         }
@@ -253,7 +253,7 @@ export const adminService = {
         try {
           const batchService = require('./batchService').default;
           if (batchService.isMockModeEnabled && batchService.isMockModeEnabled()) {
-            console.log('Using mock data for getBatchMentors');
+            //console.log('Using mock data for getBatchMentors');
             // Return mock mentors (assuming mockMentors is defined in batchService)
             return {
               data: [

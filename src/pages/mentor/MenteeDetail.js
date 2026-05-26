@@ -26,7 +26,7 @@ const MenteeDetail = () => {
 
   useEffect(() => {
     if (menteeId && user?.id) {
-      console.log(`Loading details for mentee: ${menteeId}, mentor: ${user.id}`);
+      //console.log(`Loading details for mentee: ${menteeId}, mentor: ${user.id}`);
       fetchMenteeDetails();
       fetchTasks();
       fetchAttendance();
@@ -68,16 +68,16 @@ const MenteeDetail = () => {
         return;
       }
       
-      console.log(`Fetching mentee details - Mentor ID: ${user.id}, Mentee ID: ${menteeId}`);
-      console.log(`API endpoint: /api/mentors/${user.id}/students/${menteeId}`);
+      //console.log(`Fetching mentee details - Mentor ID: ${user.id}, Mentee ID: ${menteeId}`);
+      //console.log(`API endpoint: /api/mentors/${user.id}/students/${menteeId}`);
       
       const response = await mentorService.getStudentDetails(user.id, menteeId);
       
-      console.log('Mentee details API response:', {
-        status: response?.status,
-        data: response?.data,
-        headers: response?.headers
-      });
+      // console.log('Mentee details API response:', {
+      //   status: response?.status,
+      //   data: response?.data,
+      //   headers: response?.headers
+      // });
       
       if (response && response.data) {
         const menteeData = {
@@ -128,9 +128,9 @@ const MenteeDetail = () => {
 
   const fetchTasks = async () => {
     try {
-      console.log(`Fetching tasks for mentee: ${menteeId}, mentor: ${user.id}`);
+      //console.log(`Fetching tasks for mentee: ${menteeId}, mentor: ${user.id}`);
       const response = await mentorService.getStudentTasks(user.id, menteeId);
-      console.log('Tasks response:', response);
+      //console.log('Tasks response:', response);
       setTasks(response.data || []);
     } catch (err) {
       console.error('Error fetching tasks:', err);
@@ -139,9 +139,9 @@ const MenteeDetail = () => {
 
   const fetchAttendance = async () => {
     try {
-      console.log(`Fetching attendance for mentee: ${menteeId}, mentor: ${user.id}`);
+      //console.log(`Fetching attendance for mentee: ${menteeId}, mentor: ${user.id}`);
       const response = await mentorService.getStudentAttendance(user.id, menteeId);
-      console.log('Attendance response:', response);
+      //console.log('Attendance response:', response);
       setAttendance(response.data || []);
     } catch (err) {
       console.error('Error fetching attendance:', err);
@@ -203,20 +203,20 @@ const MenteeDetail = () => {
         status: 'ACTIVE'
       };
       
-      console.log('Updating mentee details:', {
-        mentorId: user.id,
-        menteeId: menteeId,
-        endpoint: `/api/mentors/${user.id}/students/${menteeId}/update`,
-        data: dataToSave
-      });
+      // console.log('Updating mentee details:', {
+      //   mentorId: user.id,
+      //   menteeId: menteeId,
+      //   endpoint: `/api/mentors/${user.id}/students/${menteeId}/update`,
+      //   data: dataToSave
+      // });
       
       const response = await mentorService.updateStudentInfo(user.id, menteeId, dataToSave);
       
-      console.log('Update response:', {
-        status: response?.status,
-        data: response?.data,
-        headers: response?.headers
-      });
+      // console.log('Update response:', {
+      //   status: response?.status,
+      //   data: response?.data,
+      //   headers: response?.headers
+      // });
       
       await fetchMenteeDetails();
       setEditMode(false);

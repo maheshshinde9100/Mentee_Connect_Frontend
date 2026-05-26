@@ -46,7 +46,7 @@ const BatchManagement = () => {
   const fetchBatches = async () => {
     try {
       setLoading(prevState => ({ ...prevState, batches: true }));
-      console.log('Starting to fetch batches...');
+      //console.log('Starting to fetch batches...');
       
       // Check if token exists
       const token = localStorage.getItem('token');
@@ -57,7 +57,7 @@ const BatchManagement = () => {
       }
       
       const response = await adminService.getAllBatches();
-      console.log('Batches fetched:', response);
+      //console.log('Batches fetched:', response);
       
       // Ensure batches is always an array
       let batchesArray = [];
@@ -67,7 +67,7 @@ const BatchManagement = () => {
           
           // Log pagination info if available
           if (response.pagination) {
-            console.log('Pagination info:', response.pagination);
+            //console.log('Pagination info:', response.pagination);
           }
         } else if (response.data.content && Array.isArray(response.data.content)) {
           batchesArray = response.data.content;
@@ -83,7 +83,7 @@ const BatchManagement = () => {
         }
       }
       
-      console.log('Processed batches array:', batchesArray);
+      //console.log('Processed batches array:', batchesArray);
       setBatches(batchesArray);
       setError(null);
     } catch (err) {
@@ -117,10 +117,10 @@ const BatchManagement = () => {
   const fetchStudents = async () => {
     try {
       setLoading(prevState => ({ ...prevState, students: true }));
-      console.log('Fetching students...');
+      //console.log('Fetching students...');
       
       const response = await adminService.getAllStudents(0, 100);
-      console.log('Students API response:', response);
+      //console.log('Students API response:', response);
       
       // Process response to ensure we have an array
       let studentsArray = [];
@@ -154,7 +154,7 @@ const BatchManagement = () => {
   const fetchMentors = async () => {
     try {
       setLoading(prevState => ({ ...prevState, mentors: true }));
-      console.log('Fetching mentors (this may take some time for ~1500 entries)...');
+      //console.log('Fetching mentors (this may take some time for ~1500 entries)...');
       
       // Set a message to show user that fetching large paginated data is in progress
       setMentors([]);
@@ -172,12 +172,12 @@ const BatchManagement = () => {
       let mentorsArray = [];
       if (response) {
         if (response.data && Array.isArray(response.data)) {
-          console.log('Using data array from response with length:', response.data.length);
+          //console.log('Using data array from response with length:', response.data.length);
           mentorsArray = response.data;
           
           // If we have pagination info, log it
           if (response.pagination) {
-            console.log('Pagination info received:', response.pagination);
+            //console.log('Pagination info received:', response.pagination);
             
             // Update loading message with number of mentors loaded
             if (response.pagination.totalElements) {
@@ -185,10 +185,10 @@ const BatchManagement = () => {
             }
           }
         } else if (response.content && Array.isArray(response.content)) {
-          console.log('Using content array directly from response');
+          //console.log('Using content array directly from response');
           mentorsArray = response.content;
         } else if (Array.isArray(response)) {
-          console.log('Using response as direct array');
+          //console.log('Using response as direct array');
           mentorsArray = response;
         }
       }
@@ -212,7 +212,7 @@ const BatchManagement = () => {
         return mentor;
       });
       
-      console.log(`Processed ${mentorsArray.length} mentors successfully`);
+      //console.log(`Processed ${mentorsArray.length} mentors successfully`);
       setMentors(mentorsArray);
       setLoadingMessage(null);
       setError(null);
@@ -234,10 +234,10 @@ const BatchManagement = () => {
   const fetchBatchDetails = async (batchId) => {
     try {
       setLoading(prevState => ({ ...prevState, batchDetails: true }));
-      console.log(`Fetching details for batch ID: ${batchId}`);
+      //console.log(`Fetching details for batch ID: ${batchId}`);
       
       const batchResponse = await batchService.getBatchById(batchId);
-      console.log('Batch data fetched:', batchResponse.data);
+      //console.log('Batch data fetched:', batchResponse.data);
       
       // Extract student IDs for filtering assigned students
       if (batchResponse.data) {
@@ -245,7 +245,7 @@ const BatchManagement = () => {
         
         if (batchResponse.data.studentsAssigned && Array.isArray(batchResponse.data.studentsAssigned)) {
           studentIds = batchResponse.data.studentsAssigned;
-          console.log('Extracted student IDs from batch:', studentIds);
+          //console.log('Extracted student IDs from batch:', studentIds);
         }
         // Ensure we always set currentBatchStudentIds, even if it's an empty array
         setCurrentBatchStudentIds(studentIds);
@@ -270,10 +270,10 @@ const BatchManagement = () => {
               return studentId && currentBatchStudentIds.includes(studentId);
             });
             
-            console.log('Filtered students by ID:', studentsData);
+            //console.log('Filtered students by ID:', studentsData);
           }
         } else {
-          console.log('No student IDs assigned to this batch');
+          //console.log('No student IDs assigned to this batch');
         }
       } catch (studErr) {
         console.error('Error fetching student details:', studErr);
@@ -294,7 +294,7 @@ const BatchManagement = () => {
           }
         }
         
-        console.log('Extracted mentor IDs from batch:', mentorIds);
+        //console.log('Extracted mentor IDs from batch:', mentorIds);
         // Ensure we always set currentBatchMentorIds, even if it's an empty array
         setCurrentBatchMentorIds(mentorIds);
         
@@ -314,10 +314,10 @@ const BatchManagement = () => {
               return mentorId && mentorIds.includes(mentorId);
             });
             
-            console.log('Filtered mentors by ID:', mentorsData);
+            //console.log('Filtered mentors by ID:', mentorsData);
           }
         } else {
-          console.log('No mentor IDs assigned to this batch');
+          //console.log('No mentor IDs assigned to this batch');
         }
       } catch (mentorErr) {
         console.error('Error fetching mentors for batch:', mentorErr);
@@ -435,11 +435,11 @@ const BatchManagement = () => {
 
     try {
       setLoading(prevState => ({ ...prevState, students: true }));
-      console.log(`Assigning students ${JSON.stringify(selectedStudents)} to batch ${selectedBatch}`);
+      //console.log(`Assigning students ${JSON.stringify(selectedStudents)} to batch ${selectedBatch}`);
       
       // Use the correct format for the API
       const response = await batchService.assignStudentsToBatch(selectedBatch, selectedStudents);
-      console.log('Assignment response:', response.data);
+      //console.log('Assignment response:', response.data);
       
       setSuccess('Students assigned to batch successfully!');
       
@@ -477,11 +477,11 @@ const BatchManagement = () => {
 
     try {
       setLoading(prevState => ({ ...prevState, mentors: true }));
-      console.log(`Assigning mentors ${JSON.stringify(selectedMentors)} to batch ${selectedBatch}`);
+      //console.log(`Assigning mentors ${JSON.stringify(selectedMentors)} to batch ${selectedBatch}`);
       
       // Use the correct format for the API
       const response = await batchService.assignMentorsToBatch(selectedBatch, selectedMentors);
-      console.log('Assignment response:', response.data);
+      //console.log('Assignment response:', response.data);
       
       setSuccess('Mentors assigned to batch successfully!');
       
@@ -517,18 +517,18 @@ const BatchManagement = () => {
 
     try {
       setLoading(prevState => ({ ...prevState, batchDetails: true }));
-      console.log(`Removing student ${studentId} from batch ${selectedBatch}`);
+      //console.log(`Removing student ${studentId} from batch ${selectedBatch}`);
       
       // Call the API to remove the student
       const response = await batchService.removeStudentFromBatch(selectedBatch, studentId);
-      console.log('Removal response:', response.data);
+      //console.log('Removal response:', response.data);
       
       setSuccess('Student removed from batch successfully!');
       
       // Update currentBatchStudentIds to remove this student ID
       setCurrentBatchStudentIds(prev => {
         const updated = prev.filter(id => id !== studentId);
-        console.log('Updated currentBatchStudentIds:', updated);
+        //console.log('Updated currentBatchStudentIds:', updated);
         return updated;
       });
       
@@ -555,18 +555,18 @@ const BatchManagement = () => {
 
     try {
       setLoading(prevState => ({ ...prevState, batchDetails: true }));
-      console.log(`Removing mentor ${mentorId} from batch ${selectedBatch}`);
+      //console.log(`Removing mentor ${mentorId} from batch ${selectedBatch}`);
       
       // Call the API to remove the mentor
       const response = await batchService.removeMentorFromBatch(selectedBatch, mentorId);
-      console.log('Removal response:', response.data);
+      //console.log('Removal response:', response.data);
       
       setSuccess('Mentor removed from batch successfully!');
       
       // Update currentBatchMentorIds to remove this mentor ID
       setCurrentBatchMentorIds(prev => {
         const updated = prev.filter(id => id !== mentorId);
-        console.log('Updated currentBatchMentorIds:', updated);
+        //console.log('Updated currentBatchMentorIds:', updated);
         return updated;
       });
       

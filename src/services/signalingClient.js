@@ -15,23 +15,23 @@ const getWsUrl = () => {
 
 export const createSignalingClient = (userId, onMessage, onOpen, onClose) => {
   const url = `${getWsUrl()}?userId=${encodeURIComponent(userId)}`;
-  console.log('Connecting to WebSocket:', url);
+  // console.log('Connecting to WebSocket:', url);
   const ws = new WebSocket(url);
 
   ws.onopen = () => {
-    console.log('WebSocket opened');
+    // console.log('WebSocket opened');
     if (onOpen) onOpen();
   };
   
   ws.onerror = (error) => {
-    console.error('WebSocket error:', error);
+    // console.error('WebSocket error:', error);
     // Log more details about the error
     if (error.target) {
-      console.error('WebSocket error details:', {
-        url: error.target.url,
-        readyState: error.target.readyState,
-        protocol: error.target.protocol
-      });
+      // console.error('WebSocket error details:', {
+      //   url: error.target.url,
+      //   readyState: error.target.readyState,
+      //   protocol: error.target.protocol
+      // });
     }
   };
   
@@ -50,26 +50,26 @@ export const createSignalingClient = (userId, onMessage, onOpen, onClose) => {
       1015: 'TLS handshake failed'
     };
     const codeMessage = codeMessages[event.code] || 'Unknown code';
-    console.log(`WebSocket closed: ${event.code} (${codeMessage}) - ${reason}`);
+    // console.log(`WebSocket closed: ${event.code} (${codeMessage}) - ${reason}`);
     if (onClose) onClose();
   };
   
   ws.onmessage = (event) => {
     try {
       const data = JSON.parse(event.data);
-      console.log('WebSocket message received:', data);
+      // console.log('WebSocket message received:', data);
       onMessage && onMessage(data);
     } catch (e) {
-      console.error('Invalid signaling message', e, event.data);
+      // console.error('Invalid signaling message', e, event.data);
     }
   };
 
   const send = (payload) => {
     if (ws.readyState === WebSocket.OPEN) {
-      console.log('Sending signaling message:', payload);
+      // console.log('Sending signaling message:', payload);
       ws.send(JSON.stringify(payload));
     } else {
-      console.warn('WebSocket not open, cannot send:', payload);
+      // console.warn('WebSocket not open, cannot send:', payload);
     }
   };
 

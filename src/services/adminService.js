@@ -40,20 +40,20 @@ export const adminService = {
   createBatch: (batchData) => api.post('/api/admin/batches', batchData),
   getAllBatches: async () => {
     try {
-      console.log('Fetching all batches...');
+      //console.log('Fetching all batches...');
 
       // Check if token exists and log it for debugging
       const token = localStorage.getItem('token');
-      console.log('Current token status:', {
-        exists: !!token,
-        length: token ? token.length : 0,
-        preview: token ? token.substring(0, 15) + '...' : 'none'
-      });
+      // console.log('Current token status:', {
+      //   exists: !!token,
+      //   length: token ? token.length : 0,
+      //   preview: token ? token.substring(0, 15) + '...' : 'none'
+      // });
 
       // First attempt
       try {
         const response = await api.get('/api/admin/batches?size=100');
-        console.log('Batches API response successful on first try');
+        //console.log('Batches API response successful on first try');
 
         // Return the response data
         if (response.data) {
@@ -80,18 +80,18 @@ export const adminService = {
 
         // If this was a 401 error, try to fix token and retry
         if (firstError.response?.status === 401) {
-          console.log('Authentication error on first attempt, trying to fix token...');
+          //console.log('Authentication error on first attempt, trying to fix token...');
 
           // Try with a cleaned token (ensure it doesn't have Bearer prefix in storage)
           if (token && token.startsWith('Bearer ')) {
             const cleanToken = token.replace('Bearer ', '');
             localStorage.setItem('token', cleanToken);
-            console.log('Fixed token format, retrying...');
+            //console.log('Fixed token format, retrying...');
           }
 
           // Retry the request
           const response = await api.get('/api/admin/batches?size=100');
-          console.log('Retry successful after token fix');
+          //console.log('Retry successful after token fix');
 
           // Return the response data
           if (response.data) {
