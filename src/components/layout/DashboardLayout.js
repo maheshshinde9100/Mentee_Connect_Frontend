@@ -1,5 +1,6 @@
-import React, { Fragment, useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import React, { Fragment, Suspense, useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation, Outlet } from 'react-router-dom';
+import PageLoader from '../common/PageLoader';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { Dialog, Menu, Transition } from '@headlessui/react';
@@ -28,7 +29,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-const DashboardLayout = ({ children }) => {
+const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, logout } = useAuth();
   const { darkMode, toggleTheme } = useTheme();
@@ -362,7 +363,9 @@ const DashboardLayout = ({ children }) => {
         <main className="flex-1 relative overflow-y-auto focus:outline-none bg-slate-50 dark:bg-slate-900 transition-colors duration-200">
           <div className="py-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-              {children}
+              <Suspense fallback={<PageLoader />}>
+                <Outlet />
+              </Suspense>
             </div>
           </div>
         </main>
