@@ -143,12 +143,12 @@ const LandingPage = () => {
   return (
     <div className="bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 font-sans min-h-screen transition-colors duration-300">
       {/* Navigation */}
-      <nav className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-indigo-100 dark:border-slate-800 fixed w-full z-50 transition-all duration-300">
+      <nav className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-indigo-100 dark:border-slate-800 fixed w-full z-50 transition-colors duration-150">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center">
               <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                <MenteeConnectLogo size="md" animate />
+                <MenteeConnectLogo size="md" showText={true} />
               </div>
             </div>
 
@@ -176,14 +176,14 @@ const LandingPage = () => {
                 {isAuthenticated ? (
                   <Link
                     to={`/${user.role.toLowerCase()}/dashboard`}
-                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2.5 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg hover:shadow-indigo-500/30 backdrop-blur-sm font-medium flex items-center"
+                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2.5 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-colors shadow-lg font-medium flex items-center"
                   >
                     Go to Dashboard <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 ) : (
                   <Link
                     to="/login"
-                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2.5 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg hover:shadow-indigo-500/30 backdrop-blur-sm font-medium"
+                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2.5 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-colors shadow-lg font-medium"
                   >
                     Log in
                   </Link>
@@ -261,7 +261,7 @@ const LandingPage = () => {
               </div>
               <h1 className="text-5xl md:text-7xl font-bold text-slate-900 dark:text-white mb-6 leading-tight tracking-tight">
                 Empowering <br />
-                <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent animate-gradient-x">
+                <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
                   Future Leaders
                 </span>
               </h1>
@@ -272,13 +272,13 @@ const LandingPage = () => {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   to="/login"
-                  className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all transform hover:scale-105 shadow-xl hover:shadow-indigo-500/30 backdrop-blur-sm flex items-center justify-center"
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition-colors shadow-xl flex items-center justify-center"
                 >
                   Get Started <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
                 <a
                   href="#features"
-                  className="border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-8 py-4 rounded-xl text-lg font-semibold hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-slate-800 transition-all backdrop-blur-sm flex items-center justify-center"
+                  className="border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-8 py-4 rounded-xl text-lg font-semibold hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-slate-800 transition-colors flex items-center justify-center"
                 >
                   Learn More
                 </a>
@@ -297,7 +297,7 @@ const LandingPage = () => {
             </div>
 
             <div className="relative hidden lg:block">
-              <div className="relative z-10 bg-white/40 dark:bg-slate-800/40 backdrop-blur-xl rounded-3xl p-6 border border-white/50 dark:border-slate-700/50 shadow-2xl hover:rotate-0 transition-all duration-500">
+              <div className="relative z-10 bg-white/40 dark:bg-slate-800/40 backdrop-blur-xl rounded-3xl p-6 border border-white/50 dark:border-slate-700/50 shadow-2xl">
                 <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-inner overflow-hidden border border-slate-100 dark:border-slate-700">
                   {/* Mock UI Header */}
                   <div className="bg-slate-50 dark:bg-slate-900 p-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
@@ -397,8 +397,8 @@ const LandingPage = () => {
             <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-indigo-100 dark:bg-slate-800 -z-10 transform -translate-y-1/2"></div>
 
             {steps.map((step, index) => (
-              <div key={index} className="relative bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 text-center group hover:-translate-y-2 transition-all duration-300">
-                <div className="h-16 w-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl hover:rotate-0 transition-transform duration-300">
+              <div key={index} className="relative bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 text-center group hover:-translate-y-1 transition-transform duration-200">
+                <div className="h-16 w-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
                   {step.icon}
                 </div>
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-white dark:bg-slate-800 px-4 py-1 rounded-full border border-indigo-100 dark:border-slate-700 text-indigo-600 dark:text-indigo-400 font-bold text-sm shadow-sm">
@@ -424,9 +424,9 @@ const LandingPage = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <div key={index} className="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-slate-100 dark:border-slate-700 group">
-                <div className="flex items-center justify-center w-14 h-14 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl mb-6 group-hover:bg-indigo-600 transition-colors duration-300">
-                  {React.cloneElement(feature.icon, { className: "h-7 w-7 text-indigo-600 dark:text-indigo-400 group-hover:text-white transition-colors duration-300" })}
+              <div key={index} className="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-200 border border-slate-100 dark:border-slate-700 group">
+                <div className="flex items-center justify-center w-14 h-14 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl mb-6 group-hover:bg-indigo-600 transition-colors duration-200">
+                  {React.cloneElement(feature.icon, { className: "h-7 w-7 text-indigo-600 dark:text-indigo-400 group-hover:text-white transition-colors duration-200" })}
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">{feature.title}</h3>
                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{feature.description}</p>
