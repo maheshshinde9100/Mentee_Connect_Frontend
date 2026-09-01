@@ -1,5 +1,6 @@
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
+import { logger } from '../utils/logger';
 
 class WebSocketService {
   constructor() {
@@ -46,7 +47,7 @@ class WebSocketService {
             resolve(frame);
           },
           (error) => {
-            console.error('WebSocket connection error:', error);
+            logger.error('WebSocket connection error');
             this.connected = false;
             this.connectionPromise = null; // Clear promise
             this.handleReconnect();
@@ -54,7 +55,7 @@ class WebSocketService {
           }
         );
       } catch (error) {
-        console.error('Error creating WebSocket connection:', error);
+        logger.error('Error creating WebSocket connection');
         this.connectionPromise = null; // Clear promise
         reject(error);
       }
@@ -73,7 +74,7 @@ class WebSocketService {
         });
       }, this.reconnectDelay * this.reconnectAttempts);
     } else {
-      console.error('Max reconnection attempts reached');
+      logger.error('Max reconnection attempts reached');
     }
   }
 
@@ -113,7 +114,7 @@ class WebSocketService {
       this.subscriptions.set(destination, subscription);
       return subscription;
     } catch (error) {
-      console.error('Error subscribing to:', destination, error);
+      logger.error('Error subscribing to WebSocket channel');
       throw error;
     }
   }
@@ -128,7 +129,7 @@ class WebSocketService {
 
   send(destination, body = {}, headers = {}) {
     if (!this.connected || !this.stompClient) {
-      console.error('WebSocket not connected. Cannot send to:', destination);
+      logger.error('WebSocket not connected. Cannot send message.');
       return false;
     }
 
@@ -136,7 +137,7 @@ class WebSocketService {
       this.stompClient.send(destination, headers, JSON.stringify(body));
       return true;
     } catch (error) {
-      console.error('Error sending message to:', destination, error);
+      logger.error('Error sending WebSocket message');
       return false;
     }
   }
@@ -154,11 +155,11 @@ class WebSocketService {
           const data = JSON.parse(message.body);
           callback(data);
         } catch (error) {
-          console.error('Error parsing join request message:', error);
+          logger.error('Error parsing join request message');
         }
       });
     } catch (error) {
-      console.error('Failed to subscribe to join requests:', error);
+      logger.error('Failed to subscribe to join requests');
       throw error;
     }
   }
@@ -171,11 +172,11 @@ class WebSocketService {
           const data = JSON.parse(message.body);
           callback(data);
         } catch (error) {
-          console.error('Error parsing approval message:', error);
+          logger.error('Error parsing approval message');
         }
       });
     } catch (error) {
-      console.error('Failed to subscribe to meeting approval:', error);
+      logger.error('Failed to subscribe to meeting approval');
       throw error;
     }
   }
@@ -188,11 +189,11 @@ class WebSocketService {
           const data = JSON.parse(message.body);
           callback(data);
         } catch (error) {
-          console.error('Error parsing meeting start message:', error);
+          logger.error('Error parsing meeting start message');
         }
       });
     } catch (error) {
-      console.error('Failed to subscribe to meeting start notifications:', error);
+      logger.error('Failed to subscribe to meeting start notifications');
       throw error;
     }
   }

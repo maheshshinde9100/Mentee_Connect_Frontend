@@ -51,7 +51,12 @@ api.interceptors.request.use(
     const token = localStorage.getItem('token');
     if (token) {
       // Ensure there's a proper Authorization header with Bearer token format
-      config.headers.Authorization = `Bearer ${token}`;
+      // Using .set() ensures compatibility with AxiosHeaders in Axios 1.x+
+      if (config.headers && typeof config.headers.set === 'function') {
+        config.headers.set('Authorization', `Bearer ${token}`);
+      } else {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
 
     // Serve GET requests from cache if a fresh entry exists
@@ -102,11 +107,18 @@ api.interceptors.response.use(
     return response;
   },
   async (error) => {
-    if (error.response?.status === 401 &&
-      !error.config.url.includes('/api/auth/login') &&
-      !error.config.url.includes('/api/auth/refresh-token')) {
+    const originalConfig = error.config;
+
+    if (
+      error.response?.status === 401 &&
+      originalConfig &&
+      !originalConfig._retry &&
+      !originalConfig.url.includes('/api/auth/login') &&
+      !originalConfig.url.includes('/api/auth/refresh-token')
+    ) {
       const refreshToken = localStorage.getItem('refreshToken');
       if (refreshToken) {
+        originalConfig._retry = true;
         try {
           const response = await api.post('/api/auth/refresh-token', { refreshToken });
           const { token } = response.data;
@@ -114,11 +126,29 @@ api.interceptors.response.use(
           // Store the new token
           localStorage.setItem('token', token);
 
-          // Retry the original request
-          const config = error.config;
-          config.headers.Authorization = `Bearer ${token}`;
-          return api(config);
+          // Retry the original request with new token
+          originalConfig.headers.Authorization = `Bearer ${token}`;
+          return api(originalConfig);
         } catch (refreshError) {
+          // Refresh failed — clear session and redirect to login
+          localStorage.removeItem('token');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('user');
+          API_CACHE.clear();
+          if (window.location.pathname !== '/login') {
+            window.location.href = '/login';
+            return new Promise(() => {}); // Return a never-resolving promise to halt further execution
+          }
+          return Promise.reject(refreshError);
+        }
+      } else {
+        // No refresh token — clear session and redirect
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        API_CACHE.clear();
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login';
+          return new Promise(() => {}); // Return a never-resolving promise to halt further execution
         }
       }
     }
@@ -242,19 +272,13 @@ export const adminService = {
         }
       }
 
-      console.warn('Batch mentors: Could not extract mentor array from response', response.data);
       return { data: [] };
     } catch (error) {
-      console.error(`Error getting mentors for batch ${batchId}:`, error);
-
-      // When batch service is in mock mode, return mock data
+      // Error handling: silently fall back to empty data on auth or not-found errors
       if (error.response?.status === 401 || error.response?.status === 404) {
-        // Try to access the batchService to get mock data
         try {
           const batchService = require('./batchService').default;
           if (batchService.isMockModeEnabled && batchService.isMockModeEnabled()) {
-            //console.log('Using mock data for getBatchMentors');
-            // Return mock mentors (assuming mockMentors is defined in batchService)
             return {
               data: [
                 { id: '1', firstName: 'Alice', lastName: 'Williams', email: 'alice@example.com', specialization: 'Web Development' },
@@ -263,11 +287,11 @@ export const adminService = {
             };
           }
         } catch (err) {
-          console.error('Could not use mock data:', err);
+          // fallthrough to empty
         }
       }
 
-      // If unable to get mock data, return empty array
+      // Return empty array to prevent UI crash
       return { data: [] };
     }
   },

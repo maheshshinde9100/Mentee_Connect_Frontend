@@ -89,31 +89,24 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden transition-colors duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden transition-colors duration-200">
 
       {/* Dark Mode Toggle */}
       <div className="absolute top-6 right-6 z-50">
         <button
           onClick={toggleTheme}
-          className="p-2 rounded-full bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 backdrop-blur-sm transition-all shadow-lg border border-white/20 dark:border-slate-700"
+          className="p-2 rounded-full bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors shadow-lg border border-white/20 dark:border-slate-700"
           title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
         >
           {darkMode ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
         </button>
       </div>
 
-      {/* Background decorative elements */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-indigo-300/20 to-purple-300/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-r from-purple-300/20 to-pink-300/20 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-blue-300/10 to-indigo-300/10 rounded-full blur-2xl"></div>
-      </div>
-
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         {/* Logo section */}
         <div className="flex justify-center mb-8">
           <div className="relative">
-            <div className="h-16 w-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl hover:rotate-0 transition-transform duration-300">
+            <div className="h-16 w-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
               <div className="h-12 w-12 bg-white rounded-xl flex items-center justify-center">
                 <span className="text-indigo-600 font-bold text-2xl">M</span>
               </div>
@@ -131,7 +124,7 @@ const Login = () => {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-        <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl py-10 px-6 shadow-2xl sm:rounded-2xl sm:px-12 border border-white/20 dark:border-slate-700 transition-colors duration-300">
+        <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl py-10 px-6 shadow-2xl sm:rounded-2xl sm:px-12 border border-white/20 dark:border-slate-700 transition-colors duration-200">
           {error && (
             <div className="bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 p-4 rounded-xl mb-6 backdrop-blur-sm">
               <div className="flex items-center">
@@ -196,7 +189,7 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="group relative w-full flex justify-center py-4 px-4 border border-transparent rounded-xl text-base font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transform hover:scale-[1.02] transition-all duration-300 shadow-xl hover:shadow-2xl"
+                className="group relative w-full flex justify-center py-4 px-4 border border-transparent rounded-xl text-base font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-colors duration-150 shadow-xl"
               >
                 {loading ? (
                   <div className="flex items-center">
@@ -206,7 +199,7 @@ const Login = () => {
                 ) : (
                   <div className="flex items-center">
                     <span>Sign In</span>
-                    <div className="ml-3 group-hover:translate-x-1 transition-transform duration-300">
+                    <div className="ml-3">
                       →
                     </div>
                   </div>
@@ -216,10 +209,6 @@ const Login = () => {
           </form>
         </div>
       </div>
-
-      {/* Floating elements */}
-        <div className="absolute bottom-10 left-10 w-4 h-4 bg-indigo-400 rounded-full"></div>
-        <div className="absolute top-32 right-16 w-3 h-3 bg-purple-400 rounded-full"></div>
     </div>
   );
 };
