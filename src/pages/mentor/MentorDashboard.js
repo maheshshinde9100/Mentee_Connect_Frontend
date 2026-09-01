@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { mentorService } from '../../services/mentorService';
 import { useCall } from '../../context/CallContext';
@@ -14,13 +14,7 @@ const MentorDashboard = () => {
   const [mentees, setMentees] = useState([]);
   const [selected, setSelected] = useState(new Set());
 
-  useEffect(() => {
-    if (user?.id) {
-      loadMentees();
-    }
-  }, [user]);
-
-  const loadMentees = async () => {
+  const loadMentees = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -29,12 +23,15 @@ const MentorDashboard = () => {
       setMentees(list);
       setTotalMentees(list.length || 0);
     } catch (err) {
-      console.error('Failed to load mentees for dashboard', err);
       setError('Unable to load mentee information right now.');
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.id]);
+
+  useEffect(() => {
+    loadMentees();
+  }, [loadMentees]);
 
   return (
     <div className="py-6 px-4 sm:px-6 lg:px-8">

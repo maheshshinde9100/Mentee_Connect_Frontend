@@ -28,7 +28,6 @@ const MyMentees = () => {
       }
     } catch (err) {
       if (!isCancelled()) {
-        console.error('Error fetching mentees:', err);
         setError(`Failed to load your mentees: ${err.message || 'Unknown error'}`);
       }
     } finally {
