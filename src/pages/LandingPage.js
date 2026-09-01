@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Users, Shield, MessageSquare, Calendar, Target, TrendingUp, CheckCircle, Github, Linkedin, Mail, MapPin, Menu, X, MessageCircle, ArrowRight, BookOpen, Award, Sun, Moon } from 'lucide-react';
+import { User, Users, Shield, MessageSquare, Calendar, Target, TrendingUp, CheckCircle, Github, Linkedin, Mail, MapPin, Menu, X, MessageCircle, ArrowRight, Award, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
@@ -20,7 +20,7 @@ const MenteeConnectLogo = ({ size = "md", animate = false, showText = true }) =>
             <span className={`text-indigo-600 font-bold ${size === 'sm' ? 'text-sm' : size === 'md' ? 'text-lg' : size === 'lg' ? 'text-xl' : 'text-2xl'}`}>M</span>
           </div>
         </div>
-        <div className="absolute -top-1 -right-1 h-4 w-4 bg-gradient-to-r from-pink-400 to-orange-400 rounded-full animate-pulse"></div>
+        <div className="absolute -top-2 -right-2 h-6 w-6 bg-gradient-to-r from-pink-400 to-orange-400 rounded-full"></div>
       </div>
       {showText && (
         <span className={`ml-3 font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent ${size === 'sm' ? 'text-lg' : size === 'md' ? 'text-2xl' : size === 'lg' ? 'text-3xl' : 'text-4xl'}`}>
@@ -248,15 +248,15 @@ const LandingPage = () => {
       <section className="pt-32 pb-20 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 overflow-hidden relative min-h-screen flex items-center transition-colors duration-300">
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-indigo-300/20 to-purple-300/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gradient-to-r from-purple-300/20 to-pink-300/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-indigo-300/20 to-purple-300/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-r from-purple-300/20 to-pink-300/20 rounded-full blur-3xl"></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="text-left animate-fade-in-up">
+            <div className="text-left">
               <div className="inline-flex items-center px-4 py-2 rounded-full bg-indigo-100/50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-sm font-semibold mb-6 border border-indigo-200 dark:border-indigo-800">
-                <span className="flex h-2 w-2 rounded-full bg-indigo-600 dark:bg-indigo-400 mr-2 animate-pulse"></span>
+                <span className="flex h-2 w-2 rounded-full bg-indigo-600 dark:bg-indigo-400 mr-2"></span>
                 Revolutionizing Academic Mentorship
               </div>
               <h1 className="text-5xl md:text-7xl font-bold text-slate-900 dark:text-white mb-6 leading-tight tracking-tight">
@@ -265,7 +265,7 @@ const LandingPage = () => {
                   Future Leaders
                 </span>
               </h1>
-              <p className="text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-xl leading-relaxed">
+              <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 max-w-xl leading-relaxed">
                 A comprehensive platform bridging the gap between mentors and students.
                 Streamline communication, track progress, and achieve academic excellence together.
               </p>
@@ -297,7 +297,7 @@ const LandingPage = () => {
             </div>
 
             <div className="relative hidden lg:block">
-              <div className="relative z-10 bg-white/40 dark:bg-slate-800/40 backdrop-blur-xl rounded-3xl p-6 border border-white/50 dark:border-slate-700/50 shadow-2xl transform rotate-2 hover:rotate-0 transition-all duration-500">
+              <div className="relative z-10 bg-white/40 dark:bg-slate-800/40 backdrop-blur-xl rounded-3xl p-6 border border-white/50 dark:border-slate-700/50 shadow-2xl hover:rotate-0 transition-all duration-500">
                 <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-inner overflow-hidden border border-slate-100 dark:border-slate-700">
                   {/* Mock UI Header */}
                   <div className="bg-slate-50 dark:bg-slate-900 p-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
@@ -365,7 +365,7 @@ const LandingPage = () => {
                       {/* Right Column: Chart Placeholder */}
                       <div className="w-1/3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col items-center justify-center p-2 relative overflow-hidden">
                         <div className="absolute inset-0 bg-gradient-to-t from-indigo-50 to-transparent dark:from-indigo-900/20 opacity-50"></div>
-                        <div className="w-14 h-14 rounded-full border-4 border-indigo-500 border-t-transparent animate-spin-slow mb-2 z-10"></div>
+                        <div className="w-14 h-14 rounded-full border-4 border-indigo-500 border-t-transparent mb-2 z-10"></div>
                         <div className="h-2 w-10 bg-slate-200 dark:bg-slate-700 rounded z-10"></div>
                       </div>
                     </div>
@@ -374,8 +374,8 @@ const LandingPage = () => {
               </div>
 
               {/* Floating decorative elements */}
-              <div className="absolute -top-10 -right-10 w-24 h-24 bg-gradient-to-br from-pink-400 to-purple-500 rounded-2xl rotate-12 opacity-20 animate-float"></div>
-              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-gradient-to-br from-indigo-400 to-blue-500 rounded-full opacity-20 animate-float-delayed"></div>
+              <div className="absolute -top-10 -right-10 w-24 h-24 bg-gradient-to-br from-pink-400 to-purple-500 rounded-2xl rotate-12 opacity-20"></div>
+              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-gradient-to-br from-indigo-400 to-blue-500 rounded-full opacity-20"></div>
             </div>
           </div>
         </div>
@@ -398,7 +398,7 @@ const LandingPage = () => {
 
             {steps.map((step, index) => (
               <div key={index} className="relative bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 text-center group hover:-translate-y-2 transition-all duration-300">
-                <div className="w-16 h-16 mx-auto bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="h-16 w-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl hover:rotate-0 transition-transform duration-300">
                   {step.icon}
                 </div>
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-white dark:bg-slate-800 px-4 py-1 rounded-full border border-indigo-100 dark:border-slate-700 text-indigo-600 dark:text-indigo-400 font-bold text-sm shadow-sm">
@@ -448,28 +448,25 @@ const LandingPage = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {roles.map((role, index) => (
-              <div key={index} className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl"></div>
-                <div className="relative bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 h-full flex flex-col">
-                  <div className="text-center mb-8">
-                    <div className="inline-flex p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl mb-4 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-800 transition-colors">
-                      {role.icon}
-                    </div>
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{role.title}</h3>
+              <div key={index} className="relative bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 h-full flex flex-col">
+                <div className="text-center mb-8">
+                  <div className="inline-flex p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl mb-4">
+                    {role.icon}
                   </div>
-                  <ul className="space-y-4 flex-grow">
-                    {role.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start text-slate-600 dark:text-slate-400">
-                        <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-700">
-                    <Link to="/login" className="text-indigo-600 dark:text-indigo-400 font-semibold hover:text-purple-600 dark:hover:text-purple-400 flex items-center justify-center group-hover:gap-2 transition-all">
-                      Access Portal <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{role.title}</h3>
+                </div>
+                <ul className="space-y-4 flex-grow">
+                  {role.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-start text-slate-600 dark:text-slate-400">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-700">
+                  <Link to="/login" className="text-indigo-600 dark:text-indigo-400 font-semibold hover:text-purple-600 dark:hover:text-purple-400 flex items-center justify-center transition-all">
+                    Access Portal <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
                 </div>
               </div>
             ))}
@@ -613,9 +610,9 @@ const LandingPage = () => {
               </p>
               <div className="flex space-x-4">
                 {[Github, Linkedin, Mail].map((Icon, i) => (
-                  <a key={i} href="#" className="h-10 w-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-indigo-600 transition-all">
+                  <button key={i} className="h-10 w-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-indigo-600 transition-all">
                     <Icon className="h-5 w-5 text-white" />
-                  </a>
+                  </button>
                 ))}
               </div>
             </div>
@@ -639,9 +636,9 @@ const LandingPage = () => {
               <ul className="space-y-3">
                 {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map((item) => (
                   <li key={item}>
-                    <a href="#" className="text-slate-400 hover:text-white transition-colors">
+                    <button className="text-slate-400 hover:text-white transition-colors">
                       {item}
-                    </a>
+                    </button>
                   </li>
                 ))}
               </ul>

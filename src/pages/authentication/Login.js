@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { authService } from '../../services/authService';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -66,8 +66,6 @@ const Login = () => {
       // Verify token was stored correctly
       const storedToken = localStorage.getItem('token');
       if (!storedToken) {
-        console.error('Token was not stored in localStorage');
-        // Try storing it again
         localStorage.setItem('token', token);
       }
 
@@ -75,18 +73,12 @@ const Login = () => {
       const redirectPath = `/${userData.role.toLowerCase()}/dashboard`;
       navigate(redirectPath);
     } catch (err) {
-      console.error('Login error:', err);
-
       if (err.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
         setError(`Login failed: ${err.response.data?.message || err.response.statusText || 'Server error'}`);
-        console.error('Response data:', err.response.data);
-        console.error('Response status:', err.response.status);
       } else if (err.request) {
-        // The request was made but no response was received
         setError('No response from server. Please check your internet connection and try again.');
-        console.error('No response received');
       } else {
         // Something happened in setting up the request that triggered an Error
         setError(err.message || 'Failed to login. Please try again.');
@@ -112,8 +104,8 @@ const Login = () => {
 
       {/* Background decorative elements */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-indigo-300/20 to-purple-300/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-r from-purple-300/20 to-pink-300/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-indigo-300/20 to-purple-300/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-r from-purple-300/20 to-pink-300/20 rounded-full blur-3xl"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-blue-300/10 to-indigo-300/10 rounded-full blur-2xl"></div>
       </div>
 
@@ -121,12 +113,12 @@ const Login = () => {
         {/* Logo section */}
         <div className="flex justify-center mb-8">
           <div className="relative">
-            <div className="h-16 w-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl transform rotate-12 hover:rotate-0 transition-transform duration-300">
-              <div className="h-12 w-12 bg-white rounded-xl flex items-center justify-center transform -rotate-12">
+            <div className="h-16 w-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl hover:rotate-0 transition-transform duration-300">
+              <div className="h-12 w-12 bg-white rounded-xl flex items-center justify-center">
                 <span className="text-indigo-600 font-bold text-2xl">M</span>
               </div>
             </div>
-            <div className="absolute -top-2 -right-2 h-6 w-6 bg-gradient-to-r from-pink-400 to-orange-400 rounded-full animate-pulse"></div>
+            <div className="absolute -top-2 -right-2 h-6 w-6 bg-gradient-to-r from-pink-400 to-orange-400 rounded-full"></div>
           </div>
         </div>
 
@@ -226,9 +218,8 @@ const Login = () => {
       </div>
 
       {/* Floating elements */}
-      <div className="absolute bottom-10 left-10 w-4 h-4 bg-indigo-400 rounded-full animate-bounce"></div>
-      <div className="absolute top-32 right-16 w-3 h-3 bg-purple-400 rounded-full animate-pulse"></div>
-      <div className="absolute top-1/3 left-8 w-2 h-2 bg-pink-400 rounded-full animate-ping"></div>
+        <div className="absolute bottom-10 left-10 w-4 h-4 bg-indigo-400 rounded-full"></div>
+        <div className="absolute top-32 right-16 w-3 h-3 bg-purple-400 rounded-full"></div>
     </div>
   );
 };
