@@ -1,10 +1,7 @@
 import axios from 'axios';
 
-// ─── In-Memory GET Response Cache ────────────────────────────────────────────
-// Caches GET responses for 30 seconds to avoid redundant network round-trips.
-// Write operations (POST/PUT/DELETE) automatically clear the cache.
 const API_CACHE = new Map();
-const CACHE_TTL_MS = 30 * 1000; // 30 seconds
+const CACHE_TTL_MS = 30 * 1000;
 const CACHE_MAX_ENTRIES = 100;
 
 const getCacheKey = (config) => {
@@ -25,7 +22,6 @@ const pruneCache = () => {
       API_CACHE.delete(key);
     }
   }
-  // Evict oldest entries if cache is too large
   if (API_CACHE.size > CACHE_MAX_ENTRIES) {
     const oldest = [...API_CACHE.entries()]
       .sort((a, b) => a[1].timestamp - b[1].timestamp);
@@ -34,24 +30,47 @@ const pruneCache = () => {
   }
 };
 
-/** Programmatically clear all cached GET responses */
 export const clearApiCache = () => API_CACHE.clear();
-// ─────────────────────────────────────────────────────────────────────────────
+
+const clearSession = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('user');
+  API_CACHE.clear();
+};
+
+const redirectToLogin = () => {
+  if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
+    window.location.href = '/login';
+  }
+};
 
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080',
   headers: {
     'Content-Type': 'application/json'
-  }
+  },
+  timeout: 30000,
 });
 
-// Add a request interceptor
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
-      // Ensure there's a proper Authorization header with Bearer token format
-      // Using .set() ensures compatibility with AxiosHeaders in Axios 1.x+
       if (config.headers && typeof config.headers.set === 'function') {
         config.headers.set('Authorization', `Bearer ${token}`);
       } else {
@@ -59,12 +78,10 @@ api.interceptors.request.use(
       }
     }
 
-    // Serve GET requests from cache if a fresh entry exists
     if (isGetRequest(config) && !config.skipCache) {
       const key = getCacheKey(config);
       const cached = API_CACHE.get(key);
       if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
-        // Return a resolved adapter response so Axios skips the network
         config.adapter = () =>
           Promise.resolve({
             data: cached.data,
@@ -77,7 +94,6 @@ api.interceptors.request.use(
       }
     }
 
-    // Write operations bust the entire cache to keep data fresh
     if (isWriteRequest(config)) {
       API_CACHE.clear();
     }
@@ -89,10 +105,8 @@ api.interceptors.request.use(
   }
 );
 
-// Add a response interceptor
 api.interceptors.response.use(
   (response) => {
-    // Cache successful GET responses
     if (isGetRequest(response.config) && response.status >= 200 && response.status < 300) {
       pruneCache();
       const key = getCacheKey(response.config);
@@ -109,47 +123,82 @@ api.interceptors.response.use(
   async (error) => {
     const originalConfig = error.config;
 
+    if (error.code === 'ECONNABORTED' || error.message === 'Network Error' || !error.response) {
+      return Promise.reject(error);
+    }
+
     if (
       error.response?.status === 401 &&
       originalConfig &&
       !originalConfig._retry &&
-      !originalConfig.url.includes('/api/auth/login') &&
-      !originalConfig.url.includes('/api/auth/refresh-token')
+      !originalConfig.url?.includes('/api/auth/login')
     ) {
-      const refreshToken = localStorage.getItem('refreshToken');
-      if (refreshToken) {
-        originalConfig._retry = true;
-        try {
-          const response = await api.post('/api/auth/refresh-token', { refreshToken });
-          const { token } = response.data;
+      const token = localStorage.getItem('token');
+      const refreshToken = localStorage.getItem('refreshToken') || token;
 
-          // Store the new token
-          localStorage.setItem('token', token);
+      if (!refreshToken) {
+        clearSession();
+        redirectToLogin();
+        return Promise.reject(error);
+      }
 
-          // Retry the original request with new token
+      if (isRefreshing) {
+        return new Promise(function(resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        }).then(token => {
           originalConfig.headers.Authorization = `Bearer ${token}`;
           return api(originalConfig);
-        } catch (refreshError) {
-          // Refresh failed — clear session and redirect to login
-          localStorage.removeItem('token');
-          localStorage.removeItem('refreshToken');
-          localStorage.removeItem('user');
-          API_CACHE.clear();
-          if (window.location.pathname !== '/login') {
-            window.location.href = '/login';
-            return new Promise(() => {}); // Return a never-resolving promise to halt further execution
+        }).catch(err => {
+          return Promise.reject(err);
+        });
+      }
+
+      originalConfig._retry = true;
+      isRefreshing = true;
+
+      try {
+        let newToken;
+        try {
+          const response = await api.post('/api/auth/refresh-token', { refreshToken });
+          newToken = response.data?.token || response.data?.accessToken;
+          if (newToken) {
+            localStorage.setItem('token', newToken);
+            if (response.data?.refreshToken) {
+              localStorage.setItem('refreshToken', response.data.refreshToken);
+            }
+            processQueue(null, newToken);
           }
-          return Promise.reject(refreshError);
+        } catch (refreshError) {
+          try {
+            const ping = await api.get('/api/auth/ping');
+            if (ping?.status === 200 && token) {
+              newToken = token;
+              processQueue(null, newToken);
+            } else {
+              throw refreshError;
+            }
+          } catch (_e) {
+            processQueue(refreshError, null);
+            clearSession();
+            redirectToLogin();
+            return Promise.reject(refreshError);
+          }
         }
-      } else {
-        // No refresh token — clear session and redirect
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        API_CACHE.clear();
-        if (window.location.pathname !== '/login') {
-          window.location.href = '/login';
-          return new Promise(() => {}); // Return a never-resolving promise to halt further execution
+
+        if (newToken) {
+          originalConfig.headers.Authorization = `Bearer ${newToken}`;
+          return api(originalConfig);
+        } else {
+          clearSession();
+          redirectToLogin();
+          return Promise.reject(error);
         }
+      } catch (err) {
+        clearSession();
+        redirectToLogin();
+        return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
       }
     }
 
@@ -157,7 +206,6 @@ api.interceptors.response.use(
   }
 );
 
-// Auth Services
 export const authService = {
   login: (credentials) => api.post('/api/auth/login', credentials),
   register: (userData) => api.post('/api/auth/register', userData),
@@ -169,7 +217,6 @@ export const authService = {
   }
 };
 
-// Student Services
 export const studentService = {
   getAllStudents: (page = 0, size = 20) =>
     api.get('/students', { params: { page, size } }),
@@ -185,7 +232,6 @@ export const studentService = {
   getProgressReports: () => api.get('/students/progress-reports')
 };
 
-// Mentor Services
 export const mentorService = {
   getAllMentors: (page = 0, size = 20) =>
     api.get('/mentors', { params: { page, size } }),
@@ -198,52 +244,40 @@ export const mentorService = {
   checkMentorSlots: (id) => api.get(`/mentors/${id}/slots`)
 };
 
-// Admin Services
 export const adminService = {
-  // User Management
   getAllUsers: () => api.get('/api/admin/users'),
   searchUsers: (name) => api.get(`/api/admin/users/search?name=${name}`),
   deleteUser: (userId) => api.delete(`/api/admin/users/${userId}`),
   updateUser: (userId, userData) => api.put(`/api/admin/users/${userId}`, userData),
   getAnalytics: () => api.get('/api/admin/analytics', { skipCache: true }),
 
-  // Student Management
   getAdminStudents: (page = 0, size = 20) =>
     api.get('/api/admin/students', { params: { page, size } }),
   createAdminStudent: (studentData) => api.post('/api/admin/students', studentData),
   updateAdminStudent: (id, studentData) => api.put(`/api/admin/students/${id}`, studentData),
   deleteAdminStudent: (id) => api.delete(`/api/admin/students/${id}`),
 
-  // Mentor Management
   getAdminMentors: (page = 0, size = 20) =>
     api.get('/api/admin/mentors', { params: { page, size } }),
   createAdminMentor: (mentorData) => api.post('/api/admin/mentors', mentorData),
   updateAdminMentor: (id, mentorData) => api.put(`/api/admin/mentors/${id}`, mentorData),
   deleteAdminMentor: (id) => api.delete(`/api/admin/mentors/${id}`),
 
-  // Mentor-Student Assignment
   assignMentorToStudent: (data) => api.post('/api/admin/assign-mentor', data),
   removeMentorFromStudent: (studentId) => api.delete(`/api/students/${studentId}/mentor`),
 
-  // Batch Management
   getBatches: () => api.get('/api/admin/batches'),
   createBatch: (batchData) => api.post('/api/admin/batches', batchData),
   getBatchStudents: (batchId) => api.get(`/api/admin/batches/${batchId}/students`),
   getBatchMentors: async (batchId) => {
     try {
-      //console.log(`Getting mentors for batch ${batchId}`);
       const response = await api.get(`/api/admin/batches/${batchId}/mentors?size=100`);
-      //console.log('Batch mentors raw response:', response);
 
-      // Check different possible response formats
       if (Array.isArray(response.data)) {
-        //console.log('Batch mentors: data is an array, using directly');
         return { data: response.data };
       }
 
-      // Handle paginated response
       if (response.data && response.data.content && Array.isArray(response.data.content)) {
-        //console.log('Batch mentors: Found paginated response with content array');
         return {
           data: response.data.content,
           pagination: {
@@ -255,18 +289,14 @@ export const adminService = {
         };
       }
 
-      // Check if response.data has a mentors property
       if (response.data && response.data.mentors && Array.isArray(response.data.mentors)) {
-        //console.log('Batch mentors: Found mentors array in response.data.mentors');
         return { data: response.data.mentors };
       }
 
-      // If response.data is not an array but is an object, search for first array property
       if (response.data && typeof response.data === 'object') {
         const keys = Object.keys(response.data);
         for (const key of keys) {
           if (Array.isArray(response.data[key])) {
-            //console.log(`Batch mentors: Found array in response.data.${key}`);
             return { data: response.data[key] };
           }
         }
@@ -274,7 +304,6 @@ export const adminService = {
 
       return { data: [] };
     } catch (error) {
-      // Error handling: silently fall back to empty data on auth or not-found errors
       if (error.response?.status === 401 || error.response?.status === 404) {
         try {
           const batchService = require('./batchService').default;
@@ -287,11 +316,9 @@ export const adminService = {
             };
           }
         } catch (err) {
-          // fallthrough to empty
         }
       }
 
-      // Return empty array to prevent UI crash
       return { data: [] };
     }
   },
@@ -302,10 +329,8 @@ export const adminService = {
   updateBatch: (batchId, batchData) =>
     api.put(`/api/admin/batches/${batchId}`, batchData),
 
-  // Analytics
   getMentorEngagement: () => api.get('/api/admin/analytics/mentor-engagement'),
   getStudentProgress: () => api.get('/api/admin/analytics/student-progress'),
-  // Meeting metrics removed with video call feature cleanup
 };
 
 export default api; 
