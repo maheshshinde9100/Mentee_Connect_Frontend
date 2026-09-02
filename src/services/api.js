@@ -131,7 +131,8 @@ api.interceptors.response.use(
       error.response?.status === 401 &&
       originalConfig &&
       !originalConfig._retry &&
-      !originalConfig.url?.includes('/api/auth/login')
+      !originalConfig.url?.includes('/api/auth/login') &&
+      !originalConfig.url?.includes('/api/auth/refresh-token')
     ) {
       const token = localStorage.getItem('token');
       const refreshToken = localStorage.getItem('refreshToken') || token;
