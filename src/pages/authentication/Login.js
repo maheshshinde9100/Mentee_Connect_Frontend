@@ -47,10 +47,10 @@ const Login = () => {
         throw new Error('Server returned success but no token was provided');
       }
 
-      // Store refresh token if provided
-      if (response.data.refreshToken) {
-        localStorage.setItem('refreshToken', response.data.refreshToken);
-      }
+      // Store refresh token if provided; otherwise fall back to token itself so the
+      // 401 interceptor has SOMETHING to try before wiping the session.
+      const refreshToken = response.data.refreshToken || token;
+      localStorage.setItem('refreshToken', refreshToken);
 
       const rawRole = Array.isArray(roles) && roles.length > 0 ? roles[0] : 'ROLE_STUDENT';
       const userData = {
@@ -67,6 +67,9 @@ const Login = () => {
       const storedToken = localStorage.getItem('token');
       if (!storedToken) {
         localStorage.setItem('token', token);
+      }
+      if (!localStorage.getItem('refreshToken')) {
+        localStorage.setItem('refreshToken', refreshToken);
       }
 
       // Redirect based on user role
