@@ -242,7 +242,30 @@ export const mentorService = {
   getMentorById: (id) => api.get(`/mentors/${id}`),
   getCurrentMentor: () => api.get('/mentors/me'),
   getMentorStudents: (id) => api.get(`/mentors/${id}/students`),
-  checkMentorSlots: (id) => api.get(`/mentors/${id}/slots`)
+  checkMentorSlots: (id) => api.get(`/mentors/${id}/slots`),
+  createTask: (mentorId, taskData) =>
+    api.post(`/mentors/${mentorId}/tasks`, taskData),
+  getMentorTasks: (mentorId) =>
+    api.get(`/mentors/${mentorId}/tasks`),
+  getStudentTasks: (mentorId, studentId) =>
+    api.get(`/mentors/${mentorId}/students/${studentId}/tasks`),
+  updateTask: (taskId, taskData) =>
+    api.put(`/mentors/tasks/${taskId}`, taskData),
+  deleteTask: (taskId) => api.delete(`/mentors/tasks/${taskId}`),
+  getMentorUpdates: (mentorId, page = 0, size = 20) =>
+    api.get(`/mentors/${mentorId}/updates`, { params: { page, size } }),
+  createMentorUpdate: (mentorId, updateData) =>
+    api.post(`/mentors/${mentorId}/updates`, updateData),
+  getMentorAttendance: (mentorId, page = 0, size = 20) =>
+    api.get(`/mentors/${mentorId}/attendance`, { params: { page, size } }),
+  markAttendance: (mentorId, attendanceData) =>
+    api.post(`/mentors/${mentorId}/attendance`, attendanceData),
+  updateStudentAsMentor: (mentorId, studentId, updateData) =>
+    api.put(`/mentors/${mentorId}/students/${studentId}`, updateData),
+  getMenteeDetails: (mentorId, studentId) =>
+    api.get(`/mentors/${mentorId}/students/${studentId}`),
+  updateMenteeDetails: (mentorId, studentId, updateData) =>
+    api.put(`/mentors/${mentorId}/students/${studentId}/update`, updateData)
 };
 
 export const adminService = {
