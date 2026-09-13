@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import useFetchGuard from '../../hooks/useFetchGuard';
 import { useAuth } from '../../contexts/AuthContext';
-import { mentorService } from '../../services/api';
+import mentorService from '../../services/mentorService';
 import { Link } from 'react-router-dom';
 
 const MyMentees = () => {

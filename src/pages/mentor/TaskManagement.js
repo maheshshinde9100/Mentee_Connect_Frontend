@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { mentorService } from '../../services/mentorService';
+import mentorService from '../../services/mentorService';
 import { useAuth } from '../../contexts/AuthContext';
 
 const TaskManagement = () => {

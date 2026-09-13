@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { mentorService } from '../../services/mentorService';
+import mentorService from '../../services/mentorService';
 import { useCall } from '../../context/CallContext';
 import MyMentees from './MyMentees';
 import TaskManagement from './TaskManagement';
