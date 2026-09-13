@@ -3,19 +3,21 @@ import { normalizePageResponse } from '../utils/pageUtils';
 
 export const adminService = {
   // Student Management
-  createStudent: (studentData) => api.post('/api/admin/students', studentData),
+  createStudent: (studentData) => api.post('/admin/students', studentData),
+  createAdminStudent: (studentData) => api.post('/admin/students', studentData),
   getAllStudents: async (page = 0, size = 20) => {
-    const response = await api.get('/api/admin/students', { params: { page, size } });
+    const response = await api.get('/admin/students', { params: { page, size } });
     const pageData = normalizePageResponse(response.data);
     return { data: pageData.content, pagination: pageData };
   },
-  updateStudent: (id, studentData) => api.put(`/api/admin/students/${id}`, studentData),
-  deleteStudent: (id) => api.delete(`/api/admin/students/${id}`),
+  updateStudent: (id, studentData) => api.put(`/admin/students/${id}`, studentData),
+  deleteStudent: (id) => api.delete(`/admin/students/${id}`),
 
   // Mentor Management
-  createMentor: (mentorData) => api.post('/api/admin/mentors', mentorData),
+  createMentor: (mentorData) => api.post('/admin/mentors', mentorData),
+  createAdminMentor: (mentorData) => api.post('/admin/mentors', mentorData),
   getAllMentors: async (page = 0, size = 20) => {
-    const response = await api.get('/api/admin/mentors', { params: { page, size } });
+    const response = await api.get('/admin/mentors', { params: { page, size } });
     const pageData = normalizePageResponse(response.data);
     return {
       data: pageData.content,
@@ -28,16 +30,16 @@ export const adminService = {
     };
   },
   assignMentorToStudent: (studentId, mentorId) =>
-    api.post('/api/admin/assign-mentor', { studentId, mentorId }),
+    api.post('/admin/assign-mentor', { studentId, mentorId }),
 
   // Bulk assign multiple students to a mentor in a single request
   assignMentorToStudents: (assignmentData) =>
-    api.post('/api/admin/assign-mentor', assignmentData),
+    api.post('/admin/assign-mentor', assignmentData),
 
-  removeMentorFromStudent: (studentId) => api.delete(`/api/students/${studentId}/mentor`),
+  removeMentorFromStudent: (studentId) => api.delete(`/students/${studentId}/mentor`),
 
   // Batch Management
-  createBatch: (batchData) => api.post('/api/admin/batches', batchData),
+  createBatch: (batchData) => api.post('/admin/batches', batchData),
   getAllBatches: async () => {
     try {
       //console.log('Fetching all batches...');
@@ -52,7 +54,7 @@ export const adminService = {
 
       // First attempt
       try {
-        const response = await api.get('/api/admin/batches?size=100');
+        const response = await api.get('/admin/batches?size=100');
         //console.log('Batches API response successful on first try');
 
         // Return the response data
@@ -90,7 +92,7 @@ export const adminService = {
           }
 
           // Retry the request
-          const response = await api.get('/api/admin/batches?size=100');
+          const response = await api.get('/admin/batches?size=100');
           //console.log('Retry successful after token fix');
 
           // Return the response data
@@ -129,37 +131,47 @@ export const adminService = {
       throw error;
     }
   },
-  getStudentsInBatch: (batchId) => api.get(`/api/admin/batches/${batchId}/students`),
-  getMentorsInBatch: (batchId) => api.get(`/api/admin/batches/${batchId}/mentors`),
+  getStudentsInBatch: (batchId) => api.get(`/admin/batches/${batchId}/students`),
+  getMentorsInBatch: (batchId) => api.get(`/admin/batches/${batchId}/mentors`),
 
   // Analytics
-  getMentorEngagement: () => api.get('/api/admin/analytics/mentor-engagement'),
-  getStudentProgress: () => api.get('/api/admin/analytics/student-progress'),
+  getMentorEngagement: () => api.get('/admin/analytics/mentor-engagement'),
+  getStudentProgress: () => api.get('/admin/analytics/student-progress'),
 
   // Batch Operations
   assignMentorToBatch: (batchId, mentorIds) =>
-    api.post(`/api/admin/batches/assign-mentor`, { batchId, mentorIds }),
+    api.post(`/admin/batches/assign-mentor`, { batchId, mentorIds }),
   assignStudentsToBatch: (batchId, studentIds) =>
-    api.post(`/api/admin/batches/assign-students`, { batchId, studentIds }),
+    api.post(`/admin/batches/assign-students`, { batchId, studentIds }),
   updateBatch: (batchId, batchData) =>
-    api.put(`/api/admin/batches/${batchId}`, batchData),
+    api.put(`/admin/batches/${batchId}`, batchData),
 
   // Bulk Upload Operations
   bulkUploadMentors: (formData) =>
-    api.post('/api/admin/mentors/bulk-upload', formData, {
+    api.post('/admin/mentors/bulk-upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     }),
   bulkUploadMentees: (formData) =>
-    api.post('/api/admin/students/bulk-upload', formData, {
+    api.post('/admin/students/bulk-upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     }),
 
   // Video Calls
-  getVideoCalls: () => api.get('/api/admin/video-calls')
+  getVideoCalls: () => api.get('/admin/video-calls'),
+
+  // User Management
+  getAllUsers: () => api.get('/admin/users'),
+  searchUsers: (query) => api.get('/admin/users/search', { params: { query } }),
+
+  // Analytics
+  getAnalytics: () => api.get('/admin/analytics'),
+
+  // Departments
+  getAllDepartments: () => api.get('/admin/departments')
 };
 
 export default adminService;

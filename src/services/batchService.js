@@ -340,7 +340,7 @@ export const batchService = {
       });
       
       // Use PUT to update the batch with new students list
-      const response = await api.put(`/api/admin/batches/${batchId}`, batchData);
+      const response = await api.put(`/admin/batches/${batchId}`, batchData);
       return response;
     } catch (error) {
       throw error;
@@ -351,7 +351,7 @@ export const batchService = {
   assignMentorsToBatch: async (batchId, mentorIds) => {
     try {
       // First get current batch data
-      const batchResponse = await api.get(`/api/admin/batches/${batchId}`);
+      const batchResponse = await api.get(`/admin/batches/${batchId}`);
       const batchData = batchResponse.data;
       
       // Add mentors to batch data
@@ -367,7 +367,7 @@ export const batchService = {
       });
       
       // Use PUT to update the batch with new mentors list
-      const response = await api.put(`/api/admin/batches/${batchId}`, batchData);
+      const response = await api.put(`/admin/batches/${batchId}`, batchData);
       return response;
     } catch (error) {
       throw error;
@@ -377,28 +377,28 @@ export const batchService = {
   // Delete a batch
   deleteBatch: async (batchId) => {
     try {
-      const response = await api.delete(`/api/admin/batches/${batchId}`);
+      const response = await api.delete(`/admin/batches/${batchId}`);
       return response;
     } catch (error) {
       throw error;
     }
   },
-  
+
   // Update a batch
   updateBatch: async (batchId, batchData) => {
     try {
-      const response = await api.put(`/api/admin/batches/${batchId}`, batchData);
+      const response = await api.put(`/admin/batches/${batchId}`, batchData);
       return response;
     } catch (error) {
       throw error;
     }
   },
-  
+
   // Remove a student from a batch
   removeStudentFromBatch: async (batchId, studentId) => {
     try {
       // First get current batch data
-      const batchResponse = await api.get(`/api/admin/batches/${batchId}`);
+      const batchResponse = await api.get(`/admin/batches/${batchId}`);
       const batchData = batchResponse.data;
       
       // Remove student from studentsAssigned array
@@ -410,18 +410,18 @@ export const batchService = {
       }
       
       // Use PUT to update the batch
-      const response = await api.put(`/api/admin/batches/${batchId}`, batchData);
+      const response = await api.put(`/admin/batches/${batchId}`, batchData);
       return response;
     } catch (error) {
       throw error;
     }
   },
-  
+
   // Remove a mentor from a batch
   removeMentorFromBatch: async (batchId, mentorId) => {
     try {
       // First get current batch data
-      const batchResponse = await api.get(`/api/admin/batches/${batchId}`);
+      const batchResponse = await api.get(`/admin/batches/${batchId}`);
       const batchData = batchResponse.data;
       
       // Remove mentor from mentorsAssigned array
@@ -433,7 +433,7 @@ export const batchService = {
       }
       
       // Use PUT to update the batch
-      const response = await api.put(`/api/admin/batches/${batchId}`, batchData);
+      const response = await api.put(`/admin/batches/${batchId}`, batchData);
       return response;
     } catch (error) {
       throw error;

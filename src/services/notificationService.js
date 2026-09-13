@@ -2,16 +2,16 @@ import api from './api';
 
 export const notificationService = {
   // Get notifications for the current user
-  getUserNotifications: () => api.get('/api/notifications/my-notifications'),
+  getUserNotifications: () => api.get('/notifications/my-notifications'),
 
   // Mark a notification as read
-  markAsRead: (notificationId) => api.put(`/api/notifications/${notificationId}/read`),
+  markAsRead: (notificationId) => api.put(`/notifications/${notificationId}/read`),
 
   // Send a notification (admin only)
-  sendNotification: (notificationData) => api.post('/api/notifications/admin/send', notificationData),
+  sendNotification: (notificationData) => api.post('/notifications/admin/send', notificationData),
 
   // Get unread notification count
-  getUnreadCount: () => api.get('/api/notifications/unread'),
+  getUnreadCount: () => api.get('/notifications/unread'),
 
 
   // For backward compatibility, keeping these methods but using the available endpoints
@@ -24,7 +24,7 @@ export const notificationService = {
   },
 
   getAllNotifications: async () => {
-    const response = await api.get('/api/notifications/my-notifications');
+    const response = await api.get('/notifications/my-notifications');
     return response;
   }
 };

@@ -2,33 +2,33 @@ import api from './api';
 
 export const studentService = {
   // Profile Management
-  getCurrentProfile: () => api.get('/api/students/me/profile'),
-  updateProfile: (profileData) => api.put('/api/students/me/profile', profileData),
-  getStudentById: (id) => api.get(`/api/students/${id}`),
+  getCurrentProfile: () => api.get('/students/me/profile'),
+  updateProfile: (profileData) => api.put('/students/me/profile', profileData),
+  getStudentById: (id) => api.get(`/students/${id}`),
 
   // Mentor Related
-  getMyMentor: () => api.get('/api/students/me/mentor'),
-  getStudentsByMentor: (mentorId) => api.get(`/api/students/mentor/${mentorId}`),
-  
+  getMyMentor: () => api.get('/students/me/mentor'),
+  getStudentsByMentor: (mentorId) => api.get(`/students/mentor/${mentorId}`),
+
   // Certificate Management
-  uploadCertificate: (formData) => api.post('/api/students/me/certificates', formData, {
+  uploadCertificate: (formData) => api.post('/students/me/certificates', formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
   }),
-  getMyCertificates: () => api.get('/api/students/me/certificates'),
-  deleteCertificate: (certificateId) => api.delete(`/api/students/me/certificates/${certificateId}`),
-  getCertificateFile: (filename) => api.get(`/api/certificates/${filename}`),
-  
+  getMyCertificates: () => api.get('/students/me/certificates'),
+  deleteCertificate: (certificateId) => api.delete(`/students/me/certificates/${certificateId}`),
+  getCertificateFile: (filename) => api.get(`/certificates/${filename}`),
+
   // Progress Management
-  updateProgress: (id, progressData) => 
-    api.put(`/api/students/${id}/progress`, progressData),
+  updateProgress: (id, progressData) =>
+    api.put(`/students/${id}/progress`, progressData),
 
   // Batch Related
-  getAllStudents: () => api.get('/api/students'),
-  assignMentor: (studentId, mentorId) => 
-    api.put(`/api/students/${studentId}/mentor/${mentorId}`),
-  
+  getAllStudents: () => api.get('/students'),
+  assignMentor: (studentId, mentorId) =>
+    api.put(`/students/${studentId}/mentor/${mentorId}`),
+
 };
 
-export default studentService; 
+export default studentService;

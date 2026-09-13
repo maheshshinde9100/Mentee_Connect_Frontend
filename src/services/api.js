@@ -160,7 +160,7 @@ api.interceptors.response.use(
       try {
         let newToken;
         try {
-          const response = await api.post('/api/auth/refresh-token', { refreshToken });
+          const response = await api.post('/auth/refresh-token', { refreshToken });
           newToken = response.data?.token || response.data?.accessToken;
           if (newToken) {
             localStorage.setItem('token', newToken);
@@ -171,7 +171,7 @@ api.interceptors.response.use(
           }
         } catch (refreshError) {
           try {
-            const ping = await api.get('/api/auth/ping');
+            const ping = await api.get('/auth/ping');
             if (ping?.status === 200 && token) {
               newToken = token;
               processQueue(null, newToken);
@@ -208,9 +208,9 @@ api.interceptors.response.use(
 );
 
 export const authService = {
-  login: (credentials) => api.post('/api/auth/login', credentials),
-  register: (userData) => api.post('/api/auth/register', userData),
-  refreshToken: (refreshToken) => api.post('/api/auth/refresh-token', { refreshToken }),
+  login: (credentials) => api.post('/auth/login', credentials),
+  register: (userData) => api.post('/auth/register', userData),
+  refreshToken: (refreshToken) => api.post('/auth/refresh-token', { refreshToken }),
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
@@ -271,33 +271,33 @@ export const mentorService = {
 };
 
 export const adminService = {
-  getAllUsers: () => api.get('/api/admin/users'),
-  searchUsers: (name) => api.get(`/api/admin/users/search?name=${name}`),
-  deleteUser: (userId) => api.delete(`/api/admin/users/${userId}`),
-  updateUser: (userId, userData) => api.put(`/api/admin/users/${userId}`, userData),
-  getAnalytics: () => api.get('/api/admin/analytics', { skipCache: true }),
+  getAllUsers: () => api.get('/admin/users'),
+  searchUsers: (name) => api.get(`/admin/users/search?name=${name}`),
+  deleteUser: (userId) => api.delete(`/admin/users/${userId}`),
+  updateUser: (userId, userData) => api.put(`/admin/users/${userId}`, userData),
+  getAnalytics: () => api.get('/admin/analytics', { skipCache: true }),
 
   getAdminStudents: (page = 0, size = 20) =>
-    api.get('/api/admin/students', { params: { page, size } }),
-  createAdminStudent: (studentData) => api.post('/api/admin/students', studentData),
-  updateAdminStudent: (id, studentData) => api.put(`/api/admin/students/${id}`, studentData),
-  deleteAdminStudent: (id) => api.delete(`/api/admin/students/${id}`),
+    api.get('/admin/students', { params: { page, size } }),
+  createAdminStudent: (studentData) => api.post('/admin/students', studentData),
+  updateAdminStudent: (id, studentData) => api.put(`/admin/students/${id}`, studentData),
+  deleteAdminStudent: (id) => api.delete(`/admin/students/${id}`),
 
   getAdminMentors: (page = 0, size = 20) =>
-    api.get('/api/admin/mentors', { params: { page, size } }),
-  createAdminMentor: (mentorData) => api.post('/api/admin/mentors', mentorData),
-  updateAdminMentor: (id, mentorData) => api.put(`/api/admin/mentors/${id}`, mentorData),
-  deleteAdminMentor: (id) => api.delete(`/api/admin/mentors/${id}`),
+    api.get('/admin/mentors', { params: { page, size } }),
+  createAdminMentor: (mentorData) => api.post('/admin/mentors', mentorData),
+  updateAdminMentor: (id, mentorData) => api.put(`/admin/mentors/${id}`, mentorData),
+  deleteAdminMentor: (id) => api.delete(`/admin/mentors/${id}`),
 
-  assignMentorToStudent: (data) => api.post('/api/admin/assign-mentor', data),
-  removeMentorFromStudent: (studentId) => api.delete(`/api/students/${studentId}/mentor`),
+  assignMentorToStudent: (data) => api.post('/admin/assign-mentor', data),
+  removeMentorFromStudent: (studentId) => api.delete(`/students/${studentId}/mentor`),
 
-  getBatches: () => api.get('/api/admin/batches'),
-  createBatch: (batchData) => api.post('/api/admin/batches', batchData),
-  getBatchStudents: (batchId) => api.get(`/api/admin/batches/${batchId}/students`),
+  getBatches: () => api.get('/admin/batches'),
+  createBatch: (batchData) => api.post('/admin/batches', batchData),
+  getBatchStudents: (batchId) => api.get(`/admin/batches/${batchId}/students`),
   getBatchMentors: async (batchId) => {
     try {
-      const response = await api.get(`/api/admin/batches/${batchId}/mentors?size=100`);
+      const response = await api.get(`/admin/batches/${batchId}/mentors?size=100`);
 
       if (Array.isArray(response.data)) {
         return { data: response.data };
@@ -349,14 +349,14 @@ export const adminService = {
     }
   },
   assignStudentsToBatch: (batchId, studentIds) =>
-    api.post('/api/admin/batches/assign-students', { batchId, studentIds }),
+    api.post('/admin/batches/assign-students', { batchId, studentIds }),
   assignMentorToBatch: (batchId, mentorIds) =>
-    api.post('/api/admin/batches/assign-mentor', { batchId, mentorIds }),
+    api.post('/admin/batches/assign-mentor', { batchId, mentorIds }),
   updateBatch: (batchId, batchData) =>
-    api.put(`/api/admin/batches/${batchId}`, batchData),
+    api.put(`/admin/batches/${batchId}`, batchData),
 
-  getMentorEngagement: () => api.get('/api/admin/analytics/mentor-engagement'),
-  getStudentProgress: () => api.get('/api/admin/analytics/student-progress'),
+  getMentorEngagement: () => api.get('/admin/analytics/mentor-engagement'),
+  getStudentProgress: () => api.get('/admin/analytics/student-progress'),
 };
 
 export default api; 

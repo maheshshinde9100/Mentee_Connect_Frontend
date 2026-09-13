@@ -1,15 +1,20 @@
 const getWsUrl = () => {
+  // Use the WebSocket URL from environment variable if available
+  const wsUrl = process.env.REACT_APP_SIGNAL_URL;
+  if (wsUrl) {
+    return wsUrl;
+  }
+
+  // Fallback to constructing from API URL
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080';
-  // Extract host and port from API URL
   try {
     const url = new URL(apiUrl);
     const host = url.host;
-    return `${protocol}//${host}/api/signal`;
+    return `${protocol}//${host}/signal`;
   } catch (e) {
-    // Fallback if URL parsing fails
     const host = apiUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
-    return `${protocol}//${host}/api/signal`;
+    return `${protocol}//${host}/signal`;
   }
 };
 
