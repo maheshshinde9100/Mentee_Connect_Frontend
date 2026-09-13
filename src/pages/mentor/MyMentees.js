@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import useFetchGuard from '../../hooks/useFetchGuard';
 import { useAuth } from '../../contexts/AuthContext';
-import mentorService from '../../services/mentorService';
+import { mentorService } from '../../services/api';
 import { Link } from 'react-router-dom';
 
 const MyMentees = () => {
@@ -12,12 +12,10 @@ const MyMentees = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const fetchMentees = useCallback(async (isCancelled) => {
-    if (!user?.id) return;
-
     try {
       setLoading(true);
       setError(null);
-      const response = await mentorService.getMyStudents(user.id);
+      const response = await mentorService.getMyStudents();
 
       if (!isCancelled() && response?.data) {
         setMentees(
@@ -33,7 +31,7 @@ const MyMentees = () => {
     } finally {
       if (!isCancelled()) setLoading(false);
     }
-  }, [user?.id]);
+  }, []);
 
   useFetchGuard(fetchMentees, [user?.id]);
 

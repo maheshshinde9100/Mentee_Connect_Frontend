@@ -242,11 +242,13 @@ export const mentorService = {
   getMentorById: (id) => api.get(`/mentors/${id}`),
   getCurrentMentor: () => api.get('/mentors/me'),
   getMentorStudents: (id) => api.get(`/mentors/${id}/students`),
+  getMyStudents: () => api.get('/mentors/me/students'),
   checkMentorSlots: (id) => api.get(`/mentors/${id}/slots`),
   createTask: (mentorId, taskData) =>
     api.post(`/mentors/${mentorId}/tasks`, taskData),
   getMentorTasks: (mentorId) =>
     api.get(`/mentors/${mentorId}/tasks`),
+  getMyTasks: () => api.get('/mentors/me/tasks'),
   getStudentTasks: (mentorId, studentId) =>
     api.get(`/mentors/${mentorId}/students/${studentId}/tasks`),
   updateTask: (taskId, taskData) =>

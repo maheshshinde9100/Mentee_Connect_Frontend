@@ -18,7 +18,7 @@ const MentorDashboard = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await mentorService.getMyStudents(user.id);
+      const response = await mentorService.getMyStudents();
       const list = response.data || [];
       setMentees(list);
       setTotalMentees(list.length || 0);
@@ -27,7 +27,7 @@ const MentorDashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, [user?.id]);
+  }, []);
 
   useEffect(() => {
     loadMentees();

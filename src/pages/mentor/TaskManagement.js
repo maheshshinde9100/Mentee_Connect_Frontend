@@ -22,10 +22,9 @@ const TaskManagement = () => {
   }, [user?.id]);
 
   const fetchTasks = async () => {
-    if (!user?.id) return;
     try {
       setLoading(true);
-      const response = await mentorService.getAssignedTasks(user.id);
+      const response = await mentorService.getMyTasks();
       setTasks(response.data || []);
     } catch (error) {
       console.error('Error fetching tasks:', error);
@@ -35,9 +34,8 @@ const TaskManagement = () => {
   };
 
   const fetchAssignedStudents = async () => {
-    if (!user?.id) return;
     try {
-      const response = await mentorService.getMyStudents(user.id);
+      const response = await mentorService.getMyStudents();
       setAssignedStudents(response.data || []);
     } catch (error) {
       console.error('Error fetching students:', error);
@@ -49,7 +47,7 @@ const TaskManagement = () => {
     if (!user?.id) return;
     try {
       setLoading(true);
-      await mentorService.assignTask(user.id, newTask);
+      await mentorService.createTask(user.id, newTask);
       setNewTask({ title: '', description: '', dueDate: '', assignedTo: [] });
       fetchTasks();
     } catch (error) {
