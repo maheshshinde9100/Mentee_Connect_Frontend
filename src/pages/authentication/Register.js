@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { GraduationCap, Users } from 'lucide-react';
 import MenteeConnectLogo from '../../MenteeConnectLogo';
+import { authService } from '../../services/authService';
+import { useAuth } from '../../contexts/AuthContext';
 
 const roles = [
   {
@@ -29,6 +31,9 @@ const Register = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -40,7 +45,7 @@ const Register = () => {
     setFormData({ ...formData, role });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -48,9 +53,46 @@ const Register = () => {
       return setError('Passwords do not match');
     }
 
-    // UI only — backend registration will be wired up later.
     setLoading(true);
-    setLoading(false);
+    try {
+      const response = await authService.register({
+        fullName: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+      });
+
+      const { token, refreshToken, id, email, roles } = response.data;
+
+      if (!token) {
+        throw new Error('Server returned success but no token was provided');
+      }
+
+      const rawRole = Array.isArray(roles) && roles.length > 0 ? roles[0] : `ROLE_${formData.role}`;
+      const userData = {
+        id,
+        email,
+        name: formData.name,
+        // DB/JWT use ROLE_STUDENT; web routes use STUDENT, MENTOR, ADMIN
+        role: rawRole.replace('ROLE_', ''),
+        roles: Array.isArray(roles) ? roles : [rawRole],
+      };
+
+      localStorage.setItem('refreshToken', refreshToken || token);
+      await login(userData, token);
+
+      navigate(`/${userData.role.toLowerCase()}/dashboard`);
+    } catch (err) {
+      if (err.response) {
+        setError(err.response.data?.message || err.response.statusText || 'Registration failed');
+      } else if (err.request) {
+        setError('No response from server. Please check your internet connection and try again.');
+      } else {
+        setError(err.message || 'Registration failed. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
