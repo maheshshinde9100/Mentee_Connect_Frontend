@@ -123,32 +123,32 @@ const TaskForm = () => {
 
   if (loading && taskId) {
     return (
-      <div className="h-full flex justify-center items-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      <div className="flex h-full items-center justify-center py-12">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-brand-600 dark:border-slate-700 dark:border-t-brand-400" />
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-3xl mx-auto">
+    <div className="space-y-6">
+      <div className="mx-auto max-w-3xl">
         {/* Header with back button */}
         <div className="mb-6 flex items-center">
           <button 
             onClick={() => navigate(-1)}
-            className="mr-4 p-2 rounded-full hover:bg-gray-100"
+            className="btn-icon mr-2"
           >
-            <svg className="h-5 w-5 text-gray-600 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
             </svg>
           </button>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 className="page-title">
             {taskId ? 'Edit Task' : 'Assign New Task'}
           </h1>
         </div>
 
         {error && (
-          <div className="mb-6 bg-red-50 dark:bg-red-900/20 p-4 rounded-md">
+          <div className="alert-error mb-6">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -156,16 +156,16 @@ const TaskForm = () => {
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">{error}</h3>
+                <h3 className="text-sm font-medium">{error}</h3>
               </div>
             </div>
           </div>
         )}
 
-        <div className="bg-white dark:bg-slate-800 shadow rounded-lg overflow-hidden">
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <div className="card overflow-hidden">
+          <form onSubmit={handleSubmit} className="card-pad space-y-6">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label htmlFor="title" className="label">
                 Task Title <span className="text-red-500">*</span>
               </label>
               <input
@@ -174,13 +174,13 @@ const TaskForm = () => {
                 id="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="input"
                 required
               />
             </div>
 
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label htmlFor="description" className="label">
                 Description <span className="text-red-500">*</span>
               </label>
               <textarea
@@ -189,14 +189,14 @@ const TaskForm = () => {
                 rows={4}
                 value={formData.description}
                 onChange={handleInputChange}
-                className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="textarea"
                 required
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label htmlFor="dueDate" className="label">
                   Due Date <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -205,13 +205,13 @@ const TaskForm = () => {
                   id="dueDate"
                   value={formData.dueDate}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="input"
                   required
                 />
               </div>
 
               <div>
-                <label htmlFor="priority" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label htmlFor="priority" className="label">
                   Priority
                 </label>
                 <select
@@ -219,7 +219,7 @@ const TaskForm = () => {
                   name="priority"
                   value={formData.priority}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="select"
                 >
                   <option value="LOW">Low</option>
                   <option value="MEDIUM">Medium</option>
@@ -229,7 +229,7 @@ const TaskForm = () => {
             </div>
 
             <div>
-              <label htmlFor="studentId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label htmlFor="studentId" className="label">
                 Assign To <span className="text-red-500">*</span>
               </label>
               <select
@@ -237,7 +237,7 @@ const TaskForm = () => {
                 name="studentId"
                 value={formData.studentId}
                 onChange={handleInputChange}
-                className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="select"
                 required
                 disabled={formData.studentId && location.search.includes('menteeId')}
               >
@@ -250,18 +250,18 @@ const TaskForm = () => {
               </select>
             </div>
 
-            <div className="flex justify-end space-x-3">
+            <div className="flex justify-end gap-3">
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="btn-secondary"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="btn-primary"
               >
                 {loading ? 'Saving...' : taskId ? 'Update Task' : 'Create Task'}
               </button>

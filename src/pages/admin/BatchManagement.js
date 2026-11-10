@@ -597,10 +597,10 @@ const BatchManagement = () => {
 
   const renderTabs = () => (
     <div className="border-b border-gray-200 dark:border-slate-700">
-      <div className="flex justify-between items-center mb-4">
+      <div className="mb-4 flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Batch Management</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Manage batches, students, and mentors</p>
+          <h1 className="page-title">Batch Management</h1>
+          <p className="page-subtitle">Manage batches, students, and mentors</p>
         </div>
         
         <div className="flex space-x-2">
@@ -614,7 +614,7 @@ const BatchManagement = () => {
                 fetchBatches();
               }
             }}
-            className="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-slate-600 text-xs font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:bg-slate-900/50"
+            className="btn-secondary btn-sm"
             title="Debug authentication status and fix token issues"
           >
             Debug Auth
@@ -623,14 +623,14 @@ const BatchManagement = () => {
       </div>
       
       {error && (
-        <div className="mb-4 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 rounded-md">
-          <p className="text-red-800 text-sm">{error}</p>
+        <div className="alert-error mb-4">
+          <p className="text-sm">{error}</p>
         </div>
       )}
       
       {success && (
-        <div className="mb-4 p-2 bg-green-50 dark:bg-green-900/20 border border-green-200 rounded-md">
-          <p className="text-green-800 text-sm">{success}</p>
+        <div className="alert-success mb-4">
+          <p className="text-sm">{success}</p>
         </div>
       )}
 
@@ -641,7 +641,7 @@ const BatchManagement = () => {
         <select
           id="tabs"
           name="tabs"
-          className="block w-full focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 dark:border-slate-600 rounded-md"
+          className="select"
           value={activeTab}
           onChange={(e) => handleTabChange(e.target.value)}
         >
@@ -655,10 +655,7 @@ const BatchManagement = () => {
         <nav className="-mb-px flex space-x-8">
           <button
             className={classNames(
-              activeTab === 'allBatches'
-                ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:border-slate-600',
-              'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
+              activeTab === 'allBatches' ? 'tab tab-active' : 'tab'
             )}
             onClick={() => handleTabChange('allBatches')}
           >
@@ -666,10 +663,7 @@ const BatchManagement = () => {
           </button>
           <button
             className={classNames(
-              activeTab === 'createBatch'
-                ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:border-slate-600',
-              'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
+              activeTab === 'createBatch' ? 'tab tab-active' : 'tab'
             )}
             onClick={() => handleTabChange('createBatch')}
           >
@@ -677,10 +671,7 @@ const BatchManagement = () => {
           </button>
           <button
             className={classNames(
-              activeTab === 'assignStudents'
-                ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:border-slate-600',
-              'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
+              activeTab === 'assignStudents' ? 'tab tab-active' : 'tab'
             )}
             onClick={() => handleTabChange('assignStudents')}
           >
@@ -688,10 +679,7 @@ const BatchManagement = () => {
           </button>
           <button
             className={classNames(
-              activeTab === 'assignMentors'
-                ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:border-slate-600',
-              'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
+              activeTab === 'assignMentors' ? 'tab tab-active' : 'tab'
             )}
             onClick={() => handleTabChange('assignMentors')}
           >
@@ -710,75 +698,77 @@ const BatchManagement = () => {
       case 'allBatches':
         return (
           <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-4">All Batches</h2>
+            <h2 className="section-title mb-4">All Batches</h2>
             {loading.batches ? (
               <div className="flex justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-brand-600 dark:border-slate-700 dark:border-t-brand-400" />
               </div>
             ) : batchesArray.length === 0 ? (
-              <p className="text-gray-500 dark:text-gray-400 text-center">No batches found</p>
+              <p className="muted text-center">No batches found</p>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
-                  <thead className="bg-gray-50 dark:bg-slate-900/50">
+              <div className="table-wrap">
+                <table className="table">
+                  <thead>
                     <tr>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th scope="col">
                         Batch Name
                       </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th scope="col">
                         Course
                       </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th scope="col">
                         Start Date
                       </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th scope="col">
                         End Date
                       </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      <th scope="col">
                         Actions
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
+                  <tbody>
                     {batchesArray.map((batch) => (
                       <tr key={batch.id || batch._id || `batch-${Math.random()}`}>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900 dark:text-white">{batch.batchName}</div>
+                        <td>
+                          <div className="font-medium text-gray-900 dark:text-white">{batch.batchName}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-500 dark:text-gray-400">{batch.course}</div>
+                        <td>
+                          <div className="muted">{batch.course}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-500 dark:text-gray-400">{formatDate(batch.startDate)}</div>
+                        <td>
+                          <div className="muted">{formatDate(batch.startDate)}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-500 dark:text-gray-400">{formatDate(batch.endDate)}</div>
+                        <td>
+                          <div className="muted">{formatDate(batch.endDate)}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <button 
-                            className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 mr-4"
-                            onClick={() => {
-                              setSelectedBatch(batch.id || batch._id);
-                              handleTabChange('assignStudents');
-                            }}
-                          >
-                            Assign Students
-                          </button>
-                          <button 
-                            className="text-green-600 dark:text-green-400 hover:text-green-900 mr-4"
-                            onClick={() => {
-                              setSelectedBatch(batch.id || batch._id);
-                              handleTabChange('assignMentors');
-                            }}
-                          >
-                            Assign Mentors
-                          </button>
-                          <button 
-                            className="text-blue-600 dark:text-blue-400 hover:text-blue-900"
-                            onClick={() => handleViewBatchDetails(batch.id || batch._id)}
-                          >
-                            View Details
-                          </button>
+                        <td className="font-medium">
+                          <div className="flex items-center gap-4">
+                            <button 
+                              className="link"
+                              onClick={() => {
+                                setSelectedBatch(batch.id || batch._id);
+                                handleTabChange('assignStudents');
+                              }}
+                            >
+                              Assign Students
+                            </button>
+                            <button 
+                              className="link"
+                              onClick={() => {
+                                setSelectedBatch(batch.id || batch._id);
+                                handleTabChange('assignMentors');
+                              }}
+                            >
+                              Assign Mentors
+                            </button>
+                            <button 
+                              className="link"
+                              onClick={() => handleViewBatchDetails(batch.id || batch._id)}
+                            >
+                              View Details
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -792,56 +782,56 @@ const BatchManagement = () => {
       case 'createBatch':
         return (
           <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-4">Create New Batch</h2>
-            <form onSubmit={handleCreateBatch} className="space-y-4 bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
+            <h2 className="section-title mb-4">Create New Batch</h2>
+            <form onSubmit={handleCreateBatch} className="card card-pad space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Batch Name</label>
+                <label className="label">Batch Name</label>
                 <input
                   type="text"
                   name="batchName"
                   value={batchForm.batchName}
                   onChange={handleBatchFormChange}
-                  className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="input"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Course</label>
+                <label className="label">Course</label>
                 <input
                   type="text"
                   name="course"
                   value={batchForm.course}
                   onChange={handleBatchFormChange}
-                  className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="input"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Start Date</label>
+                <label className="label">Start Date</label>
                 <input
                   type="date"
                   name="startDate"
                   value={batchForm.startDate}
                   onChange={handleBatchFormChange}
-                  className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="input"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">End Date</label>
+                <label className="label">End Date</label>
                 <input
                   type="date"
                   name="endDate"
                   value={batchForm.endDate}
                   onChange={handleBatchFormChange}
-                  className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="input"
                   required
                 />
               </div>
               <div>
                 <button
                   type="submit"
-                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="btn-primary"
                   disabled={loading.batches}
                 >
                   {loading.batches ? (
@@ -871,13 +861,13 @@ const BatchManagement = () => {
         
         return (
           <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-4">Assign Students to Batch</h2>
+            <h2 className="section-title mb-4">Assign Students to Batch</h2>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Batch</label>
+              <label className="label">Select Batch</label>
               <select
                 value={selectedBatch || ''}
                 onChange={(e) => handleBatchSelect(e.target.value)}
-                className="block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="select"
               >
                 <option value="">Select a batch</option>
                 {batchesArray.map((batch) => (
@@ -889,22 +879,22 @@ const BatchManagement = () => {
             </div>
 
             <div className="mt-4">
-              <h3 className="text-lg font-medium mb-2">Select Students</h3>
+              <h3 className="section-title mb-2">Select Students</h3>
               {loading.students ? (
                 <div className="flex justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+                  <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-brand-600 dark:border-slate-700 dark:border-t-brand-400" />
                 </div>
               ) : !Array.isArray(availableStudents) ? (
-                <p className="text-gray-500 dark:text-gray-400 text-center">Error loading students data. Please try again.</p>
+                <p className="muted text-center">Error loading students data. Please try again.</p>
               ) : availableStudents.length === 0 ? (
-                <p className="text-gray-500 dark:text-gray-400 text-center">No available students found. All students may already be assigned to this batch.</p>
+                <p className="muted text-center">No available students found. All students may already be assigned to this batch.</p>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {availableStudents.map((student) => (
                     <div 
                       key={student.id} 
-                      className={`border rounded-lg p-4 cursor-pointer ${
-                        selectedStudents.includes(student.id) ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20' : 'border-gray-200 dark:border-slate-700'
+                      className={`card card-pad cursor-pointer ${
+                        selectedStudents.includes(student.id) ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'card-hover'
                       }`}
                       onClick={() => handleStudentSelect(student.id)}
                     >
@@ -913,11 +903,11 @@ const BatchManagement = () => {
                           type="checkbox"
                           checked={selectedStudents.includes(student.id)}
                           onChange={() => {}}
-                          className="h-4 w-4 text-indigo-600 dark:text-indigo-400 focus:ring-indigo-500 border-gray-300 dark:border-slate-600 rounded"
+                          className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500 dark:border-slate-600"
                         />
                         <div className="ml-3">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white">{student.firstName} {student.lastName}</p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">{student.email}</p>
+                          <p className="font-medium text-gray-900 dark:text-white">{student.firstName} {student.lastName}</p>
+                          <p className="muted">{student.email}</p>
                         </div>
                       </div>
                     </div>
@@ -930,11 +920,7 @@ const BatchManagement = () => {
               <button
                 onClick={handleAssignStudents}
                 disabled={!selectedBatch || selectedStudents.length === 0 || loading.students}
-                className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
-                  !selectedBatch || selectedStudents.length === 0
-                    ? 'bg-gray-300 cursor-not-allowed'
-                    : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                }`}
+                className="btn-primary"
               >
                 {loading.students ? (
                   <span className="flex items-center">
@@ -962,13 +948,13 @@ const BatchManagement = () => {
         
         return (
           <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-4">Assign Mentors to Batch</h2>
+            <h2 className="section-title mb-4">Assign Mentors to Batch</h2>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Batch</label>
+              <label className="label">Select Batch</label>
               <select
                 value={selectedBatch || ''}
                 onChange={(e) => handleBatchSelect(e.target.value)}
-                className="block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="select"
               >
                 <option value="">Select a batch</option>
                 {batchesArray.map((batch) => (
@@ -980,27 +966,27 @@ const BatchManagement = () => {
             </div>
 
             <div className="mt-4">
-              <h3 className="text-lg font-medium mb-2">Select Mentors</h3>
+              <h3 className="section-title mb-2">Select Mentors</h3>
               {loading.mentors ? (
                 <div className="flex flex-col items-center justify-center p-8">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mb-4"></div>
+                  <div className="mb-4 h-12 w-12 animate-spin rounded-full border-2 border-gray-200 border-t-brand-600 dark:border-slate-700 dark:border-t-brand-400" />
                   {loadingMessage && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400 text-center">{loadingMessage}</p>
+                    <p className="muted text-center text-sm">{loadingMessage}</p>
                   )}
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  <p className="muted mt-2 text-xs">
                     This may take some time as we're fetching approximately 1500 mentors
                   </p>
                 </div>
               ) : !Array.isArray(availableMentors) ? (
-                <p className="text-gray-500 dark:text-gray-400 text-center">Error loading mentors data. Please try again.</p>
+                <p className="muted text-center">Error loading mentors data. Please try again.</p>
               ) : availableMentors.length === 0 ? (
                 <div className="text-center">
-                  <p className="text-gray-500 dark:text-gray-400 mb-2">No available mentors found. All mentors may already be assigned to this batch.</p>
+                  <p className="muted mb-2">No available mentors found. All mentors may already be assigned to this batch.</p>
                   <button 
                     onClick={fetchMentors}
-                    className="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-slate-600 text-xs font-medium rounded text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:bg-slate-900/50"
+                    className="btn-secondary btn-sm"
                   >
-                    <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
                     Refresh Mentors List
@@ -1008,26 +994,26 @@ const BatchManagement = () => {
                 </div>
               ) : (
                 <>
-                  <div className="mb-4 flex justify-between items-center">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <div className="mb-4 flex items-center justify-between">
+                    <p className="muted text-sm">
                       Showing {availableMentors.length} available mentors
                     </p>
                     <button 
                       onClick={fetchMentors}
-                      className="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-slate-600 text-xs font-medium rounded text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:bg-slate-900/50"
+                      className="btn-secondary btn-sm"
                     >
-                      <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                       </svg>
                       Refresh
                     </button>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {availableMentors.map((mentor) => (
                       <div
                         key={mentor.id || mentor._id || `mentor-${Math.random()}`}
-                        className={`border rounded-lg p-4 cursor-pointer ${
-                          selectedMentors.includes(mentor.id || mentor._id) ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20' : 'border-gray-200 dark:border-slate-700'
+                        className={`card card-pad cursor-pointer ${
+                          selectedMentors.includes(mentor.id || mentor._id) ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'card-hover'
                         }`}
                         onClick={() => handleMentorSelect(mentor.id || mentor._id)}
                       >
@@ -1036,22 +1022,22 @@ const BatchManagement = () => {
                             type="checkbox"
                             checked={selectedMentors.includes(mentor.id || mentor._id)}
                             onChange={() => {}}
-                            className="h-4 w-4 text-indigo-600 dark:text-indigo-400 focus:ring-indigo-500 border-gray-300 dark:border-slate-600 rounded"
+                            className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500 dark:border-slate-600"
                           />
                           <div className="ml-3">
-                            <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">{mentor.firstName || ''} {mentor.lastName || ''}</p>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{mentor.email || 'No email provided'}</p>
+                            <p className="truncate font-medium text-brand-600 dark:text-brand-400">{mentor.firstName || ''} {mentor.lastName || ''}</p>
+                            <p className="muted">{mentor.email || 'No email provided'}</p>
                             {mentor.mentorId && (
-                              <p className="text-xs text-gray-500 dark:text-gray-400">ID: {mentor.mentorId}</p>
+                              <p className="muted text-xs">ID: {mentor.mentorId}</p>
                             )}
                             {mentor.department && (
-                              <p className="text-xs text-gray-500 dark:text-gray-400">Department: {mentor.department}</p>
+                              <p className="muted text-xs">Department: {mentor.department}</p>
                             )}
                             {mentor.specialization && (
-                              <p className="text-xs text-gray-500 dark:text-gray-400">Specialization: {mentor.specialization}</p>
+                              <p className="muted text-xs">Specialization: {mentor.specialization}</p>
                             )}
                             {mentor.designation && (
-                              <p className="text-xs text-gray-500 dark:text-gray-400">Designation: {mentor.designation}</p>
+                              <p className="muted text-xs">Designation: {mentor.designation}</p>
                             )}
                           </div>
                         </div>
@@ -1066,11 +1052,7 @@ const BatchManagement = () => {
               <button
                 onClick={handleAssignMentors}
                 disabled={!selectedBatch || selectedMentors.length === 0 || loading.mentors}
-                className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
-                  !selectedBatch || selectedMentors.length === 0
-                    ? 'bg-gray-300 cursor-not-allowed'
-                    : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                }`}
+                className="btn-primary"
               >
                 {loading.mentors ? (
                   <span className="flex items-center">
@@ -1091,37 +1073,37 @@ const BatchManagement = () => {
       case 'batchDetails':
         return (
           <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-4">Batch Details</h2>
+            <h2 className="section-title mb-4">Batch Details</h2>
             {loading.batchDetails ? (
               <div className="flex justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-brand-600 dark:border-slate-700 dark:border-t-brand-400" />
               </div>
             ) : !batchDetails.batch ? (
-              <p className="text-gray-500 dark:text-gray-400 text-center">Batch details not found</p>
+              <p className="muted text-center">Batch details not found</p>
             ) : (
-              <div className="space-y-8">
+              <div className="space-y-6">
                 {/* Batch Information */}
-                <div className="bg-white dark:bg-slate-800 shadow overflow-hidden sm:rounded-lg">
-                  <div className="px-4 py-5 sm:px-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Batch Information</h3>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">Details about the batch.</p>
+                <div className="card overflow-hidden">
+                  <div className="card-pad">
+                    <h3 className="section-title">Batch Information</h3>
+                    <p className="page-subtitle max-w-2xl">Details about the batch.</p>
                   </div>
                   <div className="border-t border-gray-200 dark:border-slate-700">
                     <dl>
-                      <div className="bg-gray-50 dark:bg-slate-900/50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Batch Name</dt>
+                      <div className="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt className="muted text-sm font-medium">Batch Name</dt>
                         <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{batchDetails.batch.batchName}</dd>
                       </div>
-                      <div className="bg-white dark:bg-slate-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Course</dt>
+                      <div className="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt className="muted text-sm font-medium">Course</dt>
                         <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{batchDetails.batch.course}</dd>
                       </div>
-                      <div className="bg-gray-50 dark:bg-slate-900/50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Start Date</dt>
+                      <div className="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt className="muted text-sm font-medium">Start Date</dt>
                         <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{formatDate(batchDetails.batch.startDate)}</dd>
                       </div>
-                      <div className="bg-white dark:bg-slate-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">End Date</dt>
+                      <div className="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt className="muted text-sm font-medium">End Date</dt>
                         <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{formatDate(batchDetails.batch.endDate)}</dd>
                       </div>
                     </dl>
@@ -1129,16 +1111,16 @@ const BatchManagement = () => {
                 </div>
 
                 {/* Enrolled Students */}
-                <div className="bg-white dark:bg-slate-800 shadow overflow-hidden sm:rounded-lg">
-                  <div className="px-4 py-5 sm:px-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Enrolled Students</h3>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">Students currently enrolled in this batch.</p>
+                <div className="card overflow-hidden">
+                  <div className="card-pad">
+                    <h3 className="section-title">Enrolled Students</h3>
+                    <p className="page-subtitle max-w-2xl">Students currently enrolled in this batch.</p>
                   </div>
                   <div className="border-t border-gray-200 dark:border-slate-700">
                     {!batchDetails.batch || !Array.isArray(batchDetails.batch.studentsAssigned) ? (
-                      <div className="p-4 text-center text-gray-500 dark:text-gray-400">Cannot display students (data format error)</div>
+                      <div className="muted p-4 text-center">Cannot display students (data format error)</div>
                     ) : batchDetails.batch.studentsAssigned.length === 0 ? (
-                      <div className="p-4 text-center text-gray-500 dark:text-gray-400">No students assigned to this batch yet</div>
+                      <div className="muted p-4 text-center">No students assigned to this batch yet</div>
                     ) : (
                       <ul className="divide-y divide-gray-200 dark:divide-slate-700">
                         {/* If we have detailed student info, display it */}
@@ -1147,16 +1129,16 @@ const BatchManagement = () => {
                             <li key={student.id || student._id || `student-${Math.random()}`} className="px-4 py-4 sm:px-6">
                               <div className="flex items-center justify-between">
                                 <div>
-                                  <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">{student.firstName || ''} {student.lastName || ''}</p>
-                                  <p className="text-sm text-gray-500 dark:text-gray-400">{student.email || 'No email provided'}</p>
+                                  <p className="truncate text-sm font-medium text-brand-600 dark:text-brand-400">{student.firstName || ''} {student.lastName || ''}</p>
+                                  <p className="muted">{student.email || 'No email provided'}</p>
                                 </div>
-                                <div className="flex-shrink-0 flex items-center space-x-2">
-                                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                <div className="flex flex-shrink-0 items-center space-x-2">
+                                  <span className="badge badge-success">
                                     Active
                                   </span>
                                   <button
                                     onClick={() => handleRemoveStudent(student.id || student._id)}
-                                    className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                    className="btn-danger btn-sm"
                                     disabled={loading.batchDetails}
                                   >
                                     {loading.batchDetails ? 'Removing...' : 'Remove'}
@@ -1171,12 +1153,12 @@ const BatchManagement = () => {
                             <li key={`student-id-${studentId}`} className="px-4 py-4 sm:px-6">
                               <div className="flex items-center justify-between">
                                 <div>
-                                  <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">Student ID: {studentId}</p>
+                                  <p className="truncate text-sm font-medium text-brand-600 dark:text-brand-400">Student ID: {studentId}</p>
                                 </div>
-                                <div className="flex-shrink-0 flex items-center space-x-2">
+                                <div className="flex flex-shrink-0 items-center space-x-2">
                                   <button
                                     onClick={() => handleRemoveStudent(studentId)}
-                                    className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                    className="btn-danger btn-sm"
                                     disabled={loading.batchDetails}
                                   >
                                     {loading.batchDetails ? 'Removing...' : 'Remove'}
@@ -1192,16 +1174,16 @@ const BatchManagement = () => {
                 </div>
 
                 {/* Assigned Mentors */}
-                <div className="bg-white dark:bg-slate-800 shadow overflow-hidden sm:rounded-lg">
-                  <div className="px-4 py-5 sm:px-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Assigned Mentors</h3>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">Mentors assigned to this batch.</p>
+                <div className="card overflow-hidden">
+                  <div className="card-pad">
+                    <h3 className="section-title">Assigned Mentors</h3>
+                    <p className="page-subtitle max-w-2xl">Mentors assigned to this batch.</p>
                   </div>
                   <div className="border-t border-gray-200 dark:border-slate-700">
                     {!batchDetails.batch || !Array.isArray(batchDetails.batch.mentorsAssigned) ? (
-                      <div className="p-4 text-center text-gray-500 dark:text-gray-400">Cannot display mentors (data format error)</div>
+                      <div className="muted p-4 text-center">Cannot display mentors (data format error)</div>
                     ) : batchDetails.batch.mentorsAssigned.length === 0 ? (
-                      <div className="p-4 text-center text-gray-500 dark:text-gray-400">No mentors assigned to this batch yet</div>
+                      <div className="muted p-4 text-center">No mentors assigned to this batch yet</div>
                     ) : (
                       <ul className="divide-y divide-gray-200 dark:divide-slate-700">
                         {/* If we have detailed mentor info, display it */}
@@ -1210,28 +1192,28 @@ const BatchManagement = () => {
                             <li key={mentor.id || mentor._id || `mentor-${Math.random()}`} className="px-4 py-4 sm:px-6">
                               <div className="flex items-center justify-between">
                                 <div>
-                                  <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">{mentor.firstName || ''} {mentor.lastName || ''}</p>
-                                  <p className="text-sm text-gray-500 dark:text-gray-400">{mentor.email || 'No email provided'}</p>
+                                  <p className="truncate text-sm font-medium text-brand-600 dark:text-brand-400">{mentor.firstName || ''} {mentor.lastName || ''}</p>
+                                  <p className="muted">{mentor.email || 'No email provided'}</p>
                                   {mentor.mentorId && (
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">ID: {mentor.mentorId}</p>
+                                    <p className="muted text-xs">ID: {mentor.mentorId}</p>
                                   )}
                                   {mentor.department && (
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">Department: {mentor.department}</p>
+                                    <p className="muted text-xs">Department: {mentor.department}</p>
                                   )}
                                   {mentor.specialization && (
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">Specialization: {mentor.specialization}</p>
+                                    <p className="muted text-xs">Specialization: {mentor.specialization}</p>
                                   )}
                                   {mentor.designation && (
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">Designation: {mentor.designation}</p>
+                                    <p className="muted text-xs">Designation: {mentor.designation}</p>
                                   )}
                                 </div>
-                                <div className="flex-shrink-0 flex items-center space-x-2">
-                                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                                <div className="flex flex-shrink-0 items-center space-x-2">
+                                  <span className="badge badge-brand">
                                     Mentor
                                   </span>
                                   <button
                                     onClick={() => handleRemoveMentor(mentor.id || mentor._id)}
-                                    className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                    className="btn-danger btn-sm"
                                     disabled={loading.batchDetails}
                                   >
                                     {loading.batchDetails ? 'Removing...' : 'Remove'}
@@ -1246,12 +1228,12 @@ const BatchManagement = () => {
                             <li key={`mentor-id-${mentorId}`} className="px-4 py-4 sm:px-6">
                               <div className="flex items-center justify-between">
                                 <div>
-                                  <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">Mentor ID: {mentorId}</p>
+                                  <p className="truncate text-sm font-medium text-brand-600 dark:text-brand-400">Mentor ID: {mentorId}</p>
                                 </div>
-                                <div className="flex-shrink-0 flex items-center space-x-2">
+                                <div className="flex flex-shrink-0 items-center space-x-2">
                                   <button
                                     onClick={() => handleRemoveMentor(mentorId)}
-                                    className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                    className="btn-danger btn-sm"
                                     disabled={loading.batchDetails}
                                   >
                                     {loading.batchDetails ? 'Removing...' : 'Remove'}

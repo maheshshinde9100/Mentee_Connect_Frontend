@@ -79,26 +79,29 @@ const AddStudent = ({ onStudentAdded }) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6">Add New Student</h2>
+    <div className="max-w-2xl mx-auto">
+      <div className="mb-6">
+        <h2 className="page-title">Add New Student</h2>
+        <p className="page-subtitle">Create a student account with login and academic details.</p>
+      </div>
 
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 text-red-800 p-4 rounded-md mb-4">
+        <div className="alert-error mb-4">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="bg-green-50 dark:bg-green-900/20 text-green-800 p-4 rounded-md mb-4">
+        <div className="alert-success mb-4">
           {success}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <form onSubmit={handleSubmit} className="card card-pad space-y-6">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           {/* Basic Information */}
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="username" className="label">
               Username
             </label>
             <input
@@ -108,12 +111,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.username}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="input"
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="email" className="label">
               Email
             </label>
             <input
@@ -123,12 +126,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.email}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="input"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="password" className="label">
               Password
             </label>
             <input
@@ -138,12 +141,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.password}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="input"
             />
           </div>
 
           <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="firstName" className="label">
               First Name
             </label>
             <input
@@ -153,12 +156,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.firstName}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="input"
             />
           </div>
 
           <div>
-            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="lastName" className="label">
               Last Name
             </label>
             <input
@@ -168,12 +171,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.lastName}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="input"
             />
           </div>
 
           <div>
-            <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="phoneNumber" className="label">
               Phone Number
             </label>
             <input
@@ -183,13 +186,13 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.phoneNumber}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="input"
             />
           </div>
 
           {/* Academic Information */}
           <div>
-            <label htmlFor="studentId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="studentId" className="label">
               Student ID
             </label>
             <input
@@ -199,12 +202,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.studentId}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="input"
             />
           </div>
 
           <div>
-            <label htmlFor="course" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="course" className="label">
               Course
             </label>
             <input
@@ -214,12 +217,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.course}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="input"
             />
           </div>
 
           <div>
-            <label htmlFor="batch" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="batch" className="label">
               Batch
             </label>
             <input
@@ -229,12 +232,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.batch}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="input"
             />
           </div>
 
           <div>
-            <label htmlFor="semester" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="semester" className="label">
               Semester
             </label>
             <input
@@ -246,12 +249,12 @@ const AddStudent = ({ onStudentAdded }) => {
               max="8"
               value={formData.semester}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="input"
             />
           </div>
 
           <div>
-            <label htmlFor="department" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="department" className="label">
               Department
             </label>
             <input
@@ -261,12 +264,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.department}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="input"
             />
           </div>
 
           <div>
-            <label htmlFor="dob" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="dob" className="label">
               Date of Birth
             </label>
             <input
@@ -276,12 +279,12 @@ const AddStudent = ({ onStudentAdded }) => {
               required
               value={formData.dob}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="input"
             />
           </div>
 
           <div>
-            <label htmlFor="attendance" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="attendance" className="label">
               Attendance (%)
             </label>
             <input
@@ -294,12 +297,12 @@ const AddStudent = ({ onStudentAdded }) => {
               step="0.01"
               value={formData.attendance}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="input"
             />
           </div>
 
           <div>
-            <label htmlFor="cgpa" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="cgpa" className="label">
               CGPA
             </label>
             <input
@@ -312,7 +315,7 @@ const AddStudent = ({ onStudentAdded }) => {
               step="0.01"
               value={formData.cgpa}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="input"
             />
           </div>
         </div>
@@ -321,11 +324,11 @@ const AddStudent = ({ onStudentAdded }) => {
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            className="btn-primary"
           >
             {loading ? (
-              <div className="flex items-center">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
                 Creating...
               </div>
             ) : (

@@ -162,23 +162,23 @@ const AttendanceForm = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-3xl mx-auto">
+    <div className="space-y-6">
+      <div className="mx-auto max-w-3xl">
         {/* Header with back button */}
         <div className="mb-6 flex items-center">
           <button 
             onClick={() => navigate(-1)}
-            className="mr-4 p-2 rounded-full hover:bg-gray-100"
+            className="btn-icon mr-2"
           >
-            <svg className="h-5 w-5 text-gray-600 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
             </svg>
           </button>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Record Attendance</h1>
+          <h1 className="page-title">Record Attendance</h1>
         </div>
 
         {error && (
-          <div className="mb-6 bg-red-50 dark:bg-red-900/20 p-4 rounded-md">
+          <div className="alert-error mb-6">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -186,32 +186,32 @@ const AttendanceForm = () => {
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">{error}</h3>
+                <h3 className="text-sm font-medium">{error}</h3>
               </div>
             </div>
           </div>
         )}
 
         {success && (
-          <div className="mb-6 bg-green-50 dark:bg-green-900/20 p-4 rounded-md">
+          <div className="alert-success mb-6">
             <div className="flex">
               <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <svg className="h-5 w-5 text-emerald-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-green-800">Attendance recorded successfully!</h3>
+                <h3 className="text-sm font-medium">Attendance recorded successfully!</h3>
               </div>
             </div>
           </div>
         )}
 
-        <div className="bg-white dark:bg-slate-800 shadow rounded-lg overflow-hidden">
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="card overflow-hidden">
+          <form onSubmit={handleSubmit} className="card-pad space-y-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <label htmlFor="date" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label htmlFor="date" className="label">
                   Date <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -221,13 +221,13 @@ const AttendanceForm = () => {
                   value={formData.date}
                   onChange={handleInputChange}
                   max={new Date().toISOString().split('T')[0]} // Can't record future attendance
-                  className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="input"
                   required
                 />
               </div>
 
               <div>
-                <label htmlFor="sessionType" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label htmlFor="sessionType" className="label">
                   Session Type <span className="text-red-500">*</span>
                 </label>
                 <select
@@ -235,7 +235,7 @@ const AttendanceForm = () => {
                   name="sessionType"
                   value={formData.sessionType}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="select"
                   required
                 >
                   <option value="PHYSICAL">Physical Meeting</option>
@@ -247,7 +247,7 @@ const AttendanceForm = () => {
             </div>
 
             <div>
-              <label htmlFor="sessionTopic" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label htmlFor="sessionTopic" className="label">
                 Session Topic <span className="text-red-500">*</span>
               </label>
               <input
@@ -256,13 +256,13 @@ const AttendanceForm = () => {
                 id="sessionTopic"
                 value={formData.sessionTopic}
                 onChange={handleInputChange}
-                className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="input"
                 required
               />
             </div>
 
             <div>
-              <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label htmlFor="notes" className="label">
                 Session Notes
               </label>
               <textarea
@@ -271,53 +271,53 @@ const AttendanceForm = () => {
                 rows={3}
                 value={formData.notes}
                 onChange={handleInputChange}
-                className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="textarea"
               />
             </div>
 
             <div>
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Select Mentees</h3>
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="section-title">Select Mentees</h3>
                 <div className="flex items-center">
                   <input
                     id="select-all"
                     type="checkbox"
                     checked={selectedMentees.length === mentees.length && mentees.length > 0}
                     onChange={handleSelectAllMentees}
-                    className="h-4 w-4 text-indigo-600 dark:text-indigo-400 focus:ring-indigo-500 border-gray-300 dark:border-slate-600 rounded"
+                    className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500 dark:border-slate-600"
                   />
-                  <label htmlFor="select-all" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                  <label htmlFor="select-all" className="ml-2 text-sm text-gray-700 dark:text-slate-300">
                     Select All
                   </label>
                 </div>
               </div>
 
               {mentees.length === 0 ? (
-                <div className="text-center py-4 bg-gray-50 dark:bg-slate-900/50 rounded-md">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">No mentees available</p>
+                <div className="rounded-xl border border-dashed border-gray-300 py-8 text-center dark:border-slate-700">
+                  <p className="muted text-sm">No mentees available</p>
                 </div>
               ) : (
-                <div className="overflow-hidden border border-gray-200 dark:border-slate-700 rounded-md">
-                  <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
-                    <thead className="bg-gray-50 dark:bg-slate-900/50">
+                <div className="table-wrap">
+                  <table className="table">
+                    <thead>
                       <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        <th scope="col">
                           Select
                         </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        <th scope="col">
                           Name
                         </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        <th scope="col">
                           Status
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
+                    <tbody>
                       {mentees.map((mentee) => {
                         const menteeId = mentee._id || mentee.id;
                         return (
                           <tr key={menteeId}>
-                            <td className="px-6 py-4 whitespace-nowrap">
+                            <td>
                               <input
                                 type="checkbox"
                                 checked={selectedMentees.some(item => 
@@ -326,23 +326,23 @@ const AttendanceForm = () => {
                                     : item === menteeId
                                 )}
                                 onChange={(e) => handleMenteeSelect(e, menteeId)}
-                                className="h-4 w-4 text-indigo-600 dark:text-indigo-400 focus:ring-indigo-500 border-gray-300 dark:border-slate-600 rounded"
+                                className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500 dark:border-slate-600"
                               />
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
+                            <td>
                               <div className="flex items-center">
-                                <div className="flex-shrink-0 h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                                  <span className="text-indigo-800 dark:text-indigo-200 font-medium">
+                                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-700 dark:bg-brand-500/15 dark:text-brand-300">
+                                  <span className="font-medium">
                                     {(mentee.firstName || '?')[0]}{(mentee.lastName || '?')[0]}
                                   </span>
                                 </div>
                                 <div className="ml-4">
                                   <div className="text-sm font-medium text-gray-900 dark:text-white">{mentee.firstName || ''} {mentee.lastName || ''}</div>
-                                  <div className="text-sm text-gray-500 dark:text-gray-400">{mentee.email || ''}</div>
+                                  <div className="muted text-sm">{mentee.email || ''}</div>
                                 </div>
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
+                            <td>
                               <select
                                 disabled={!selectedMentees.some(item => 
                                   typeof item === 'object' 
@@ -350,13 +350,13 @@ const AttendanceForm = () => {
                                     : item === menteeId
                                 )}
                                 onChange={(e) => handleAttendanceChange(menteeId, e.target.value)}
-                                className={`text-sm rounded-full px-3 py-1 ${
+                                className={`rounded-lg border px-3 py-1 text-sm ${
                                   !selectedMentees.some(item => 
                                     typeof item === 'object' 
                                       ? (item.id === menteeId || item._id === menteeId) 
                                       : item === menteeId
-                                  ) ? 'bg-gray-100 text-gray-400' :
-                                  'bg-green-100 text-green-800'
+                                  ) ? 'border-gray-200 bg-gray-100 text-gray-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500' :
+                                  'border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-500/10 dark:text-emerald-300'
                                 }`}
                                 defaultValue="PRESENT"
                               >
@@ -375,18 +375,18 @@ const AttendanceForm = () => {
               )}
             </div>
 
-            <div className="flex justify-end space-x-3">
+            <div className="flex justify-end gap-3">
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="btn-secondary"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading || selectedMentees.length === 0}
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                className="btn-primary"
               >
                 {loading ? 'Saving...' : 'Record Attendance'}
               </button>

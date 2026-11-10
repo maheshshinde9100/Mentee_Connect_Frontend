@@ -87,74 +87,78 @@ const CertificateManagement = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-4">Loading certificates...</div>;
+    return (
+      <div className="flex justify-center py-4">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-brand-600 dark:border-slate-700 dark:border-t-brand-400" />
+      </div>
+    );
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
-      <h2 className="text-xl font-semibold mb-4">Certificate Management</h2>
+    <div className="card card-pad">
+      <h2 className="section-title mb-4">Certificate Management</h2>
       
       {/* Upload Form */}
-      <form onSubmit={handleUpload} className="mb-6 p-4 border rounded-lg">
+      <form onSubmit={handleUpload} className="mb-6 rounded-xl border border-gray-200 p-4 dark:border-slate-700/70">
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="label">
             Upload Certificate
           </label>
           <input
             type="file"
             onChange={handleFileChange}
-            className="block w-full text-sm text-gray-500 dark:text-gray-400
+            className="block w-full text-sm text-gray-500 dark:text-slate-400
               file:mr-4 file:py-2 file:px-4
               file:rounded-md file:border-0
               file:text-sm file:font-semibold
-              file:bg-blue-50 dark:bg-blue-900/20 file:text-blue-700
-              hover:file:bg-blue-100"
+              file:bg-brand-50 file:text-brand-700 dark:file:bg-brand-500/10 dark:file:text-brand-300
+              hover:file:bg-brand-100 dark:hover:file:bg-brand-500/20"
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="label">
             Description
           </label>
           <input
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 dark:border-slate-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            className="input"
             placeholder="Enter certificate description"
           />
         </div>
         <button
           type="submit"
           disabled={!selectedFile || uploading}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+          className="btn btn-primary"
         >
           {uploading ? 'Uploading...' : 'Upload Certificate'}
         </button>
       </form>
 
       {error && (
-        <div className="mb-4 p-4 text-red-700 bg-red-100 rounded-md">
+        <div className="alert-error mb-4">
           {error}
         </div>
       )}
 
       {/* Certificates List */}
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         {certificates.map((cert) => (
-          <div key={cert.id} className="flex items-center justify-between p-4 border rounded-lg">
+          <div key={cert.id} className="card card-pad card-hover flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <DocumentIcon className="h-8 w-8 text-gray-400" />
+              <DocumentIcon className="h-8 w-8 text-gray-400 dark:text-slate-500" />
               <div>
                 <h3 className="text-sm font-medium text-gray-900 dark:text-white">{cert.certificateName}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{cert.description}</p>
-                <p className="text-xs text-gray-400">
+                <p className="text-sm text-gray-500 dark:text-slate-400">{cert.description}</p>
+                <p className="text-xs text-gray-400 dark:text-slate-500">
                   Uploaded: {new Date(cert.uploadDate).toLocaleDateString()}
                 </p>
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  cert.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                  cert.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
-                  'bg-red-100 text-red-800'
-                }`}>
+                <span className={
+                  cert.status === 'PENDING' ? 'badge-warn' :
+                  cert.status === 'APPROVED' ? 'badge-success' :
+                  'badge-danger'
+                }>
                   {cert.status}
                 </span>
               </div>
@@ -162,14 +166,14 @@ const CertificateManagement = () => {
             <div className="flex space-x-2">
               <button
                 onClick={() => handleDownload(cert.certificateUrl)}
-                className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:text-blue-400"
+                className="btn-icon"
                 title="Download"
               >
                 <ArrowDownTrayIcon className="h-5 w-5" />
               </button>
               <button
                 onClick={() => handleDelete(cert.id)}
-                className="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:text-red-400"
+                className="btn-icon"
                 title="Delete"
               >
                 <TrashIcon className="h-5 w-5" />

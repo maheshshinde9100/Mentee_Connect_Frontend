@@ -72,19 +72,19 @@ const TaskManagement = () => {
   return (
     <div className="space-y-6">
       {/* Create Task Form */}
-      <div className="bg-white dark:bg-slate-800 shadow px-4 py-5 sm:rounded-lg sm:p-6">
+      <div className="card card-pad">
         <div className="md:grid md:grid-cols-3 md:gap-6">
           <div className="md:col-span-1">
-            <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white">Create New Task</h3>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            <h3 className="section-title">Create New Task</h3>
+            <p className="muted mt-1 text-sm">
               Assign tasks to your mentees and track their progress.
             </p>
           </div>
-          <div className="mt-5 md:mt-0 md:col-span-2">
+          <div className="mt-5 md:col-span-2 md:mt-0">
             <form onSubmit={handleCreateTask}>
               <div className="grid grid-cols-6 gap-6">
                 <div className="col-span-6 sm:col-span-4">
-                  <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label htmlFor="title" className="label">
                     Task Title
                   </label>
                   <input
@@ -94,12 +94,12 @@ const TaskManagement = () => {
                     required
                     value={newTask.title}
                     onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                    className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 dark:border-slate-600 rounded-md"
+                    className="input"
                   />
                 </div>
 
                 <div className="col-span-6">
-                  <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label htmlFor="description" className="label">
                     Description
                   </label>
                   <textarea
@@ -109,12 +109,12 @@ const TaskManagement = () => {
                     required
                     value={newTask.description}
                     onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                    className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 dark:border-slate-600 rounded-md"
+                    className="textarea"
                   />
                 </div>
 
                 <div className="col-span-6 sm:col-span-3">
-                  <label htmlFor="due-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label htmlFor="due-date" className="label">
                     Due Date
                   </label>
                   <input
@@ -124,16 +124,16 @@ const TaskManagement = () => {
                     required
                     value={newTask.dueDate}
                     onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
-                    className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 dark:border-slate-600 rounded-md"
+                    className="input"
                   />
                 </div>
 
                 <div className="col-span-6">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Assign To</label>
-                  <div className="mt-1 border border-gray-300 dark:border-slate-600 rounded-md max-h-48 overflow-y-auto">
+                  <label className="label">Assign To</label>
+                  <div className="mt-1 max-h-48 divide-y divide-gray-100 overflow-y-auto rounded-xl border border-gray-200 dark:divide-slate-700/60 dark:border-slate-700">
                     {assignedStudents.map((student) => (
                       <div key={student.id} className="relative flex items-start p-3">
-                        <div className="flex items-center h-5">
+                        <div className="flex h-5 items-center">
                           <input
                             type="checkbox"
                             checked={newTask.assignedTo.includes(student.id)}
@@ -150,12 +150,12 @@ const TaskManagement = () => {
                                 });
                               }
                             }}
-                            className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 dark:text-indigo-400 border-gray-300 dark:border-slate-600 rounded"
+                            className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500 dark:border-slate-600"
                           />
                         </div>
                         <div className="ml-3 text-sm">
-                          <label className="font-medium text-gray-700 dark:text-gray-300">{student.name}</label>
-                          <p className="text-gray-500 dark:text-gray-400">{student.email}</p>
+                          <label className="font-medium text-gray-900 dark:text-slate-200">{student.name}</label>
+                          <p className="muted">{student.email}</p>
                         </div>
                       </div>
                     ))}
@@ -166,7 +166,7 @@ const TaskManagement = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="btn-primary"
                 >
                   {loading ? 'Creating...' : 'Create Task'}
                 </button>
@@ -177,24 +177,24 @@ const TaskManagement = () => {
       </div>
 
       {/* Task List */}
-      <div className="bg-white dark:bg-slate-800 shadow overflow-hidden sm:rounded-md">
-        <ul className="divide-y divide-gray-200 dark:divide-slate-700">
+      <div className="card overflow-hidden">
+        <ul className="divide-y divide-gray-100 dark:divide-slate-700/60">
           {tasks.map((task) => (
             <li key={task.id}>
               <div className="px-4 py-4 sm:px-6">
                 <div className="flex items-center justify-between">
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">{task.title}</h4>
-                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{task.description}</p>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="truncate text-sm font-semibold text-gray-900 dark:text-white">{task.title}</h4>
+                    <p className="muted mt-1 text-sm">{task.description}</p>
                   </div>
-                  <div className="ml-4 flex-shrink-0 flex space-x-4">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <div className="ml-4 flex flex-shrink-0 items-center space-x-4">
+                    <p className="muted text-sm">
                       Due: {new Date(task.dueDate).toLocaleDateString()}
                     </p>
                     <select
                       value={task.status}
                       onChange={(e) => handleUpdateTaskStatus(task.id, e.target.value)}
-                      className="text-sm text-gray-500 dark:text-gray-400 border-gray-300 dark:border-slate-600 rounded-md"
+                      className="select h-auto w-auto py-1.5 pr-8 pl-2.5 text-sm"
                     >
                       <option value="PENDING">Pending</option>
                       <option value="IN_PROGRESS">In Progress</option>
@@ -207,7 +207,7 @@ const TaskManagement = () => {
                     {(task.assignedTo || []).map((student) => (
                       <span
                         key={student?.id || student}
-                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                        className="badge-neutral"
                       >
                         {student?.name || student?.firstName || student || 'Unknown'}
                       </span>

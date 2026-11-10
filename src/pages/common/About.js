@@ -88,37 +88,40 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto space-y-8">
         {/* Header Section */}
-        <div className="text-center mb-16">
+        <div className="text-center">
           <div className="mb-6">
             <img
               src={personalInfo.photo}
               alt={personalInfo.name}
               loading="lazy"
               decoding="async"
-              className="w-32 h-32 rounded-full mx-auto object-cover border-4 border-indigo-600 dark:border-indigo-500"
+              className="w-32 h-32 rounded-full mx-auto object-cover ring-1 ring-gray-200 dark:ring-slate-700"
             />
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{personalInfo.name}</h1>
-          <p className="text-xl text-indigo-600 dark:text-indigo-400 mb-4">{personalInfo.title}</p>
-          <p className="text-lg text-gray-600 dark:text-slate-400 max-w-2xl mx-auto">{personalInfo.bio}</p>
+          <p className="eyebrow">About</p>
+          <h1 className="page-title mt-2">{personalInfo.name}</h1>
+          <p className="mt-1 text-base font-medium text-brand-600 dark:text-brand-400">{personalInfo.title}</p>
+          <p className="page-subtitle max-w-2xl mx-auto">{personalInfo.bio}</p>
         </div>
 
         {/* Education Section */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 mb-8 border border-gray-100 dark:border-slate-700">
+        <div className="card card-pad">
           <div className="flex items-center mb-6">
-            <AcademicCapIcon className="h-8 w-8 text-indigo-600 dark:text-indigo-400 mr-3" />
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Education</h2>
+            <span className="mr-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+              <AcademicCapIcon className="h-6 w-6" />
+            </span>
+            <h2 className="section-title">Education</h2>
           </div>
           <div className="space-y-6">
             {education.map((edu, index) => (
-              <div key={index} className="ml-11">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">{edu.school}</h3>
-                <p className="text-indigo-600 dark:text-indigo-400">{edu.degree}</p>
-                {edu.score && <p className="text-gray-600 dark:text-slate-400">Score: {edu.score}</p>}
-                {edu.status && <p className="text-gray-600 dark:text-slate-400">{edu.status}</p>}
+              <div key={index}>
+                <h3 className="text-base font-medium text-gray-900 dark:text-white">{edu.school}</h3>
+                <p className="text-sm font-medium text-brand-600 dark:text-brand-400">{edu.degree}</p>
+                {edu.score && <p className="muted text-sm">Score: {edu.score}</p>}
+                {edu.status && <p className="muted text-sm">{edu.status}</p>}
                 {index < education.length - 1 && <hr className="my-4 border-gray-200 dark:border-slate-700" />}
               </div>
             ))}
@@ -126,20 +129,22 @@ const About = () => {
         </div>
 
         {/* Skills Section */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 mb-8 border border-gray-100 dark:border-slate-700">
+        <div className="card card-pad">
           <div className="flex items-center mb-6">
-            <CodeBracketIcon className="h-8 w-8 text-indigo-600 dark:text-indigo-400 mr-3" />
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Skills</h2>
+            <span className="mr-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+              <CodeBracketIcon className="h-6 w-6" />
+            </span>
+            <h2 className="section-title">Skills</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {skills.map((skillGroup) => (
               <div key={skillGroup.category}>
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-3">{skillGroup.category}</h3>
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">{skillGroup.category}</h3>
                 <div className="flex flex-wrap gap-2">
                   {skillGroup.items.map((skill) => (
                     <span
                       key={skill}
-                      className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300"
+                      className="badge-neutral"
                     >
                       {skill}
                     </span>
@@ -151,10 +156,12 @@ const About = () => {
         </div>
 
         {/* Links Section */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 border border-gray-100 dark:border-slate-700">
+        <div className="card card-pad">
           <div className="flex items-center mb-6">
-            <LinkIcon className="h-8 w-8 text-indigo-600 dark:text-indigo-400 mr-3" />
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Connect & Profile Links</h2>
+            <span className="mr-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+              <LinkIcon className="h-6 w-6" />
+            </span>
+            <h2 className="section-title">Connect & Profile Links</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {links.map((link) => (
@@ -163,10 +170,10 @@ const About = () => {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center p-4 rounded-lg border border-gray-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors duration-200"
+                className="card card-hover flex items-center px-4 py-3 text-gray-700 dark:text-slate-300"
               >
-                <GlobeAltIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400 mr-2" />
-                <span className="text-gray-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400">{link.name}</span>
+                <GlobeAltIcon className="h-5 w-5 mr-2 text-brand-600 dark:text-brand-400" />
+                <span className="font-medium">{link.name}</span>
               </a>
             ))}
           </div>

@@ -12,20 +12,20 @@ const VideoTile = ({ label, stream }) => {
   }, [stream]);
 
   return (
-    <div className="bg-black rounded-lg overflow-hidden relative min-h-[200px]">
+    <div className="relative min-h-[200px] overflow-hidden rounded-lg bg-black">
       <video
         ref={videoRef}
-        className="w-full h-full object-cover"
+        className="h-full w-full object-cover"
         autoPlay
         playsInline
         muted={label === 'You'}
       />
       {!stream && (
-        <div className="absolute inset-0 flex items-center justify-center text-white text-sm">
+        <div className="absolute inset-0 flex items-center justify-center text-sm text-white/70">
           No video
         </div>
       )}
-      <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs px-2 py-1">{label}</div>
+      <div className="absolute bottom-0 left-0 right-0 bg-black/50 px-2 py-1 text-xs text-white">{label}</div>
     </div>
   );
 };
@@ -65,52 +65,48 @@ const CallWindow = ({ localStream, remoteStreams, onEnd, minimized, onToggleSize
 
   return (
     <div
-      className={`fixed ${minimized ? 'bottom-4 right-4 w-64 h-40' : 'inset-0'} z-40 bg-gray-900/80 backdrop-blur`}
+      className={`fixed z-40 bg-slate-900/80 backdrop-blur ${minimized ? 'bottom-4 right-4 h-40 w-64' : 'inset-0'}`}
     >
-      <div className={`bg-white dark:bg-slate-800 shadow-lg ${minimized ? 'rounded-lg h-full' : 'h-full'} flex flex-col`}>
-        <div className="flex items-center justify-between px-4 py-2 border-b">
-          <div className="font-semibold text-gray-800 dark:text-gray-100">Live Call</div>
-          <div className="flex items-center space-x-2">
+      <div className={`flex h-full flex-col bg-white shadow-lg dark:bg-slate-800 ${minimized ? 'rounded-lg' : ''}`}>
+        <div className="flex items-center justify-between border-b border-gray-200 px-4 py-2.5 dark:border-slate-700">
+          <div className="text-sm font-semibold text-gray-800 dark:text-slate-100">Live Call</div>
+          <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={toggleVideo}
-              className={`text-xs px-2 py-1 rounded border ${
-                videoEnabled
-                  ? 'border-gray-300 dark:border-slate-600 hover:bg-gray-100'
-                  : 'border-yellow-500 bg-yellow-500/10 text-yellow-700 dark:text-yellow-300'
-              }`}
+              className={videoEnabled ? 'btn-secondary btn-sm' : 'btn-sm border border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300'}
               disabled={!localStream}
             >
               {videoEnabled ? 'Video On' : 'Video Off'}
             </button>
             <button
+              type="button"
               onClick={toggleAudio}
-              className={`text-xs px-2 py-1 rounded border ${
-                audioEnabled
-                  ? 'border-gray-300 dark:border-slate-600 hover:bg-gray-100'
-                  : 'border-yellow-500 bg-yellow-500/10 text-yellow-700 dark:text-yellow-300'
-              }`}
+              className={audioEnabled ? 'btn-secondary btn-sm' : 'btn-sm border border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300'}
               disabled={!localStream}
             >
               {audioEnabled ? 'Mic On' : 'Mic Off'}
             </button>
             <button
+              type="button"
               onClick={onToggleSize}
-              className="text-xs px-2 py-1 rounded border border-gray-300 dark:border-slate-600 hover:bg-gray-100"
+              className="btn-secondary btn-sm"
             >
               {minimized ? 'Maximize' : 'Minimize'}
             </button>
             <button
+              type="button"
               onClick={onEnd}
-              className="text-xs px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700"
+              className="btn-danger btn-sm"
             >
               End
             </button>
           </div>
         </div>
-        <div className="p-4 grid gap-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 overflow-auto flex-1">
+        <div className="grid flex-1 grid-cols-1 gap-3 overflow-auto p-4 md:grid-cols-2 lg:grid-cols-3">
           <VideoTile label="You" stream={localStream} />
           {remoteList.length === 0 && (
-            <div className="text-gray-500 dark:text-gray-400 text-sm flex items-center">Waiting for participants...</div>
+            <div className="flex items-center text-sm text-gray-500 dark:text-slate-400">Waiting for participants...</div>
           )}
           {remoteList.map(([id, stream]) => (
             <VideoTile key={id} label={`Participant ${id}`} stream={stream} />
@@ -122,4 +118,3 @@ const CallWindow = ({ localStream, remoteStreams, onEnd, minimized, onToggleSize
 };
 
 export default CallWindow;
-

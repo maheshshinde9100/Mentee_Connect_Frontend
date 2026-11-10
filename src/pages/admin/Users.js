@@ -48,22 +48,23 @@ const Users = () => {
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">User Management</h1>
-        
+        <h1 className="page-title mb-1">User Management</h1>
+        <p className="page-subtitle mb-6">Manage users, roles and account status.</p>
+
         {/* Search and Filter Section */}
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="flex-1 relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
             <input
               type="text"
               placeholder="Search by name or email..."
-              className="pl-10 pr-4 py-2 w-full border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              className="input pl-10"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <select
-            className="w-full sm:w-48 px-3 py-2 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            className="select w-full sm:w-48"
             value={searchRole}
             onChange={(e) => setSearchRole(e.target.value)}
           >
@@ -74,57 +75,55 @@ const Users = () => {
         </div>
 
         {/* Users Table */}
-        <div className="overflow-x-auto bg-white dark:bg-slate-800 shadow-md rounded-lg">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
-            <thead className="bg-gray-50 dark:bg-slate-900/50">
+        <div className="table-wrap">
+          <table className="table">
+            <thead>
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Email</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Role</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Department</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
+            <tbody>
               {filteredUsers.map((user) => (
                 <tr key={user.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</div>
+                  <td>
+                    <div className="font-medium text-gray-900 dark:text-white">{user.name}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500 dark:text-gray-400">{user.email}</div>
+                  <td>
+                    <div className="muted">{user.email}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      user.role === 'MENTOR' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
-                    }`}>
+                  <td>
+                    <span className={user.role === 'MENTOR' ? 'badge-brand' : 'badge-neutral'}>
                       {user.role}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  <td className="muted">
                     {user.department}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      user.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                    }`}>
+                  <td>
+                    <span className={user.status === 'Active' ? 'badge-success' : 'badge-danger'}>
                       {user.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button
-                      onClick={() => handleEdit(user)}
-                      className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 mr-4"
-                    >
-                      <FiEdit2 className="inline-block h-5 w-5" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(user.id)}
-                      className="text-red-600 dark:text-red-400 hover:text-red-900"
-                    >
-                      <FiTrash2 className="inline-block h-5 w-5" />
-                    </button>
+                  <td>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => handleEdit(user)}
+                        className="btn-icon"
+                      >
+                        <FiEdit2 className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(user.id)}
+                        className="btn-icon text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                      >
+                        <FiTrash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -135,50 +134,50 @@ const Users = () => {
 
       {/* Edit Modal */}
       {isEditModalOpen && editingUser && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-slate-800">
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/50 p-4 sm:p-6">
+          <div className="card card-pad relative mt-16 w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium">Edit User</h3>
+              <h3 className="section-title">Edit User</h3>
               <button
                 onClick={() => setIsEditModalOpen(false)}
-                className="text-gray-400 hover:text-gray-500 dark:text-gray-400"
+                className="btn-icon"
               >
                 ×
               </button>
             </div>
-            <form onSubmit={handleUpdate}>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <form onSubmit={handleUpdate} className="space-y-4">
+              <div>
+                <label className="label">
                   Name
                 </label>
                 <input
                   type="text"
                   value={editingUser.name}
                   onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-md"
+                  className="input"
                   required
                 />
               </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <div>
+                <label className="label">
                   Email
                 </label>
                 <input
                   type="email"
                   value={editingUser.email}
                   onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-md"
+                  className="input"
                   required
                 />
               </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <div>
+                <label className="label">
                   Department
                 </label>
                 <select
                   value={editingUser.department}
                   onChange={(e) => setEditingUser({ ...editingUser, department: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-md"
+                  className="select"
                 >
                   <option value="Computer Science">Computer Science</option>
                   <option value="Information Technology">Information Technology</option>
@@ -186,30 +185,30 @@ const Users = () => {
                   <option value="AIML">AIML</option>
                 </select>
               </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <div>
+                <label className="label">
                   Status
                 </label>
                 <select
                   value={editingUser.status}
                   onChange={(e) => setEditingUser({ ...editingUser, status: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-md"
+                  className="select"
                 >
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
                 </select>
               </div>
-              <div className="flex justify-end gap-4">
+              <div className="flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 rounded-md hover:bg-gray-200"
+                  className="btn-secondary"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
+                  className="btn-primary"
                 >
                   Save Changes
                 </button>

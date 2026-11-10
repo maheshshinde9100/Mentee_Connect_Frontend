@@ -55,27 +55,27 @@ const SendNotification = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Send Notification</h1>
+      <h1 className="page-title mb-6">Send Notification</h1>
       
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <div className="alert-error mb-4">
           {error}
         </div>
       )}
       
       {success && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+        <div className="alert-success mb-4">
           {success}
         </div>
       )}
       
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <form onSubmit={handleSubmit} className="card card-pad mb-4">
         <div className="mb-4">
-          <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="title">
+          <label className="label" htmlFor="title">
             Title
           </label>
           <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
+            className="input"
             id="title"
             type="text"
             name="title"
@@ -87,11 +87,11 @@ const SendNotification = () => {
         </div>
         
         <div className="mb-4">
-          <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="message">
+          <label className="label" htmlFor="message">
             Message
           </label>
           <textarea
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
+            className="textarea"
             id="message"
             name="message"
             value={formData.message}
@@ -103,7 +103,7 @@ const SendNotification = () => {
         </div>
         
         <div className="mb-6">
-          <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+          <label className="label">
             Recipients
           </label>
           <div className="flex items-center mb-2">
@@ -114,9 +114,9 @@ const SendNotification = () => {
               value="ALL"
               checked={formData.recipientType === 'ALL'}
               onChange={handleChange}
-              className="mr-2"
+              className="mr-2 h-4 w-4 accent-brand-600"
             />
-            <label htmlFor="ALL">All Users</label>
+            <label htmlFor="ALL" className="text-sm text-gray-700 dark:text-slate-300">All Users</label>
           </div>
           <div className="flex items-center mb-2">
             <input
@@ -126,9 +126,9 @@ const SendNotification = () => {
               value="MENTORS"
               checked={formData.recipientType === 'MENTORS'}
               onChange={handleChange}
-              className="mr-2"
+              className="mr-2 h-4 w-4 accent-brand-600"
             />
-            <label htmlFor="MENTORS">All Mentors</label>
+            <label htmlFor="MENTORS" className="text-sm text-gray-700 dark:text-slate-300">All Mentors</label>
           </div>
           <div className="flex items-center">
             <input
@@ -138,15 +138,15 @@ const SendNotification = () => {
               value="STUDENTS"
               checked={formData.recipientType === 'STUDENTS'}
               onChange={handleChange}
-              className="mr-2"
+              className="mr-2 h-4 w-4 accent-brand-600"
             />
-            <label htmlFor="STUDENTS">All Students</label>
+            <label htmlFor="STUDENTS" className="text-sm text-gray-700 dark:text-slate-300">All Students</label>
           </div>
         </div>
         
         <div className="flex items-center justify-between">
           <button
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="btn-primary"
             type="submit"
             disabled={isLoading}
           >
@@ -155,7 +155,7 @@ const SendNotification = () => {
           <button
             type="button"
             onClick={() => navigate('/admin/dashboard')}
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 dark:text-gray-100 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="btn-secondary"
           >
             Cancel
           </button>

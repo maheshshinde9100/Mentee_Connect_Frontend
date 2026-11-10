@@ -70,8 +70,12 @@ const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080';
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (!profile) return <p>Unable to load profile.</p>;
+  if (loading) return (
+    <div className="flex justify-center py-10">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-brand-600 dark:border-slate-700 dark:border-t-brand-400" />
+    </div>
+  );
+  if (!profile) return <p className="muted">Unable to load profile.</p>;
 
   const fields = [
     { label: 'First Name', key: 'firstName' },
@@ -89,21 +93,21 @@ const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080';
   return (
     <div className="space-y-6">
       {/* Profile Card */}
-      <div className="bg-white dark:bg-slate-800 shadow rounded-lg overflow-hidden">
-        <div className="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-slate-900/50">
-          <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Mentor Profile</h3>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">Personal and professional details</p>
+      <div className="card overflow-hidden">
+        <div className="card-pad border-b border-gray-200 dark:border-slate-700/70">
+          <h3 className="section-title">Mentor Profile</h3>
+          <p className="page-subtitle">Personal and professional details</p>
         </div>
-        <div className="border-t border-gray-200 dark:border-slate-700">
+        <div>
           <dl>
             {fields.map(({ label, key, readonly, type = 'text' }) => (
               <div
                 key={key}
                 className={`${
-                  key === 'email' || key === 'mentorId' ? 'bg-gray-50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-800'
-                } px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}
+                  key === 'email' || key === 'mentorId' ? 'bg-gray-50 dark:bg-slate-900/30' : 'bg-white dark:bg-slate-800/40'
+                } border-b border-gray-100 px-5 py-4 dark:border-slate-700/60 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}
               >
-                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</dt>
+                <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">{label}</dt>
                 <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
                   {editMode && !readonly ? (
                     <input
@@ -111,7 +115,7 @@ const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080';
                       name={key}
                       value={formData[key] || ''}
                       onChange={handleChange}
-                      className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm sm:text-sm px-3 py-1"
+                      className="input"
                     />
                   ) : key === 'role' ? (
                     profile.role
@@ -126,18 +130,18 @@ const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080';
       </div>
 
       {/* Action Buttons */}
-      <div className="flex justify-end space-x-4">
+      <div className="flex justify-end gap-3">
         {editMode ? (
           <>
             <button
               onClick={() => setEditMode(false)}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-md text-sm font-medium bg-white dark:bg-slate-800 hover:bg-gray-50 dark:bg-slate-900/50"
+              className="btn btn-secondary"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700"
+              className="btn btn-primary"
             >
               Save Changes
             </button>
@@ -145,7 +149,7 @@ const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080';
         ) : (
           <button
             onClick={() => setEditMode(true)}
-            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+            className="btn btn-primary"
           >
             Edit Profile
           </button>

@@ -30,26 +30,18 @@ const Communication = () => {
   };
 
   return (
-    <div className="min-h-[80vh] flex flex-col px-4 bg-gray-50 dark:bg-slate-900/50">
+    <div className="flex min-h-[80vh] flex-col px-4 py-6">
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 dark:border-slate-700 mb-6">
+      <div className="mb-6 flex border-b border-gray-200 dark:border-slate-700/70">
         <button 
           onClick={() => setActiveTab('overview')}
-          className={`py-4 px-6 text-sm font-medium ${
-            activeTab === 'overview' 
-              ? 'border-b-2 border-indigo-500 text-indigo-600 dark:text-indigo-400' 
-              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:border-slate-600'
-          }`}
+          className={`tab px-6 py-4 ${activeTab === 'overview' ? 'tab-active' : ''}`}
         >
           Overview
         </button>
         <button 
           onClick={() => setActiveTab('notifications')}
-          className={`py-4 px-6 text-sm font-medium flex items-center ${
-            activeTab === 'notifications' 
-              ? 'border-b-2 border-indigo-500 text-indigo-600 dark:text-indigo-400' 
-              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:border-slate-600'
-          }`}
+          className={`tab flex items-center px-6 py-4 ${activeTab === 'notifications' ? 'tab-active' : ''}`}
         >
           Notifications
           <BellIcon className="ml-1 h-4 w-4" />
@@ -58,50 +50,44 @@ const Communication = () => {
 
       {/* Tab Content */}
       {activeTab === 'overview' ? (
-        <div className="text-center max-w-2xl mx-auto">
+        <div className="mx-auto max-w-2xl text-center">
           {/* Icon */}
-          <div className="flex justify-center mb-8">
-            <div className="relative">
-              <ChatBubbleLeftRightIcon className="w-24 h-24 text-indigo-600 dark:text-indigo-400 animate-pulse" />
-              <div className="absolute -top-2 -right-2">
-                <span className="flex h-4 w-4">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-4 w-4 bg-indigo-500"></span>
-                </span>
-              </div>
+          <div className="mb-8 flex justify-center">
+            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+              <ChatBubbleLeftRightIcon className="h-10 w-10" />
             </div>
           </div>
 
           {/* Title */}
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="page-title mb-4">
             Communication Hub Coming Soon!
           </h1>
 
           {/* Description */}
-          <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
+          <p className="muted mb-8 text-lg">
             We're working hard to bring you an amazing communication experience. 
             Soon you'll be able to connect with mentors and mentees seamlessly.
           </p>
 
           {/* Features Preview */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Real-time Chat</h3>
-              <p className="text-gray-600 dark:text-gray-400">
+          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="card card-pad text-left">
+              <h3 className="section-title mb-2">Real-time Chat</h3>
+              <p className="muted">
                 Instant messaging between mentors and mentees with file sharing capabilities
               </p>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Group Discussions</h3>
-              <p className="text-gray-600 dark:text-gray-400">
+            <div className="card card-pad text-left">
+              <h3 className="section-title mb-2">Group Discussions</h3>
+              <p className="muted">
                 Create and manage topic-based group discussions for better collaboration
               </p>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Announcements</h3>
-              <p className="text-gray-600 dark:text-gray-400">
+            <div className="card card-pad text-left">
+              <h3 className="section-title mb-2">Announcements</h3>
+              <p className="muted">
                 Broadcast important messages and updates to specific groups or everyone
               </p>
             </div>
@@ -109,37 +95,37 @@ const Communication = () => {
           </div>
 
           {/* Timeline */}
-          <div className="mt-12 bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-gray-100">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Expected Timeline</h3>
+          <div className="card card-pad mt-12">
+            <h3 className="section-title mb-4">Expected Timeline</h3>
             <div className="flex justify-center space-x-8">
               <div className="text-center">
-                <div className="text-indigo-600 dark:text-indigo-400 font-semibold">Phase 1</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Basic Chat</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">Coming in 2 weeks</div>
+                <div className="font-semibold text-brand-600 dark:text-brand-400">Phase 1</div>
+                <div className="muted text-sm">Basic Chat</div>
+                <div className="mt-1 text-xs text-gray-400 dark:text-slate-500">Coming in 2 weeks</div>
               </div>
               <div className="text-center">
-                <div className="text-indigo-600 dark:text-indigo-400 font-semibold">Phase 2</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Group Chat</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">Coming in 1 month</div>
+                <div className="font-semibold text-brand-600 dark:text-brand-400">Phase 2</div>
+                <div className="muted text-sm">Group Chat</div>
+                <div className="mt-1 text-xs text-gray-400 dark:text-slate-500">Coming in 1 month</div>
               </div>
             </div>
           </div>
         </div>
       ) : (
-        <div className="max-w-3xl mx-auto w-full bg-white dark:bg-slate-800 rounded-lg shadow">
-          <h2 className="text-lg font-medium p-4 border-b">Recent Notifications</h2>
+        <div className="card mx-auto w-full max-w-3xl">
+          <h2 className="section-title border-b border-gray-200 p-4 dark:border-slate-700/70">Recent Notifications</h2>
           
           {loading ? (
             <div className="flex justify-center p-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-brand-600 dark:border-slate-700 dark:border-t-brand-400" />
             </div>
           ) : (
-            <div className="divide-y divide-gray-200 dark:divide-slate-700">
+            <div className="divide-y divide-gray-100 dark:divide-slate-700/60">
               {/* Embed the NotificationPanel content directly */}
               <NotificationPanel isOpen={true} embedded={true} onClose={() => {}} />
               
               {/* Mark all as read button */}
-              <div className="p-4 flex justify-center">
+              <div className="flex justify-center p-4">
                 <button 
                   onClick={async () => {
                     try {
@@ -149,7 +135,7 @@ const Communication = () => {
                       console.error('Error marking notifications as read:', error);
                     }
                   }}
-                  className="px-4 py-2 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:text-indigo-200 font-medium"
+                  className="btn-ghost btn-sm"
                 >
                   Mark all as read
                 </button>

@@ -96,14 +96,14 @@ bob.student,bob@example.com,password123,Bob,Williams,4445556666,S002,Computer Sc
   return (
     <div className="max-w-6xl mx-auto p-6">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Bulk Upload</h1>
-        <p className="text-gray-600 dark:text-gray-400">Upload Excel or CSV files to add multiple mentors or mentees at once</p>
+        <h1 className="page-title mb-2">Bulk Upload</h1>
+        <p className="page-subtitle">Upload Excel or CSV files to add multiple mentors or mentees at once</p>
       </div>
 
       {/* Upload Type Selection */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 mb-6">
-        <h2 className="text-xl font-semibold mb-4">Select Upload Type</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="card card-pad mb-6">
+        <h2 className="section-title mb-4">Select Upload Type</h2>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <button
             onClick={() => {
               setUploadType('mentors');
@@ -112,17 +112,17 @@ bob.student,bob@example.com,password123,Bob,Williams,4445556666,S002,Computer Sc
               setUploadResult(null);
               document.getElementById('file-upload').value = '';
             }}
-            className={`p-6 rounded-lg border-2 transition-all ${
+            className={`rounded-xl border p-6 text-center transition-colors ${
               uploadType === 'mentors'
-                ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
-                : 'border-gray-200 dark:border-slate-700 hover:border-indigo-300'
+                ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10'
+                : 'border-gray-200 hover:border-brand-300 dark:border-slate-700'
             }`}
           >
-            <div className="flex items-center justify-center mb-3">
-              <GraduationCap className={`w-12 h-12 ${uploadType === 'mentors' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400'}`} />
+            <div className="mb-3 flex items-center justify-center">
+              <GraduationCap className={`h-12 w-12 ${uploadType === 'mentors' ? 'text-brand-600 dark:text-brand-400' : 'text-gray-400'}`} />
             </div>
-            <h3 className="text-lg font-semibold text-center">Upload Mentors</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 text-center mt-2">
+            <h3 className="text-center text-lg font-semibold">Upload Mentors</h3>
+            <p className="muted mt-2 text-center">
               Add multiple mentors from Excel/CSV file
             </p>
           </button>
@@ -135,17 +135,17 @@ bob.student,bob@example.com,password123,Bob,Williams,4445556666,S002,Computer Sc
               setUploadResult(null);
               document.getElementById('file-upload').value = '';
             }}
-            className={`p-6 rounded-lg border-2 transition-all ${
+            className={`rounded-xl border p-6 text-center transition-colors ${
               uploadType === 'mentees'
-                ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
-                : 'border-gray-200 dark:border-slate-700 hover:border-indigo-300'
+                ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10'
+                : 'border-gray-200 hover:border-brand-300 dark:border-slate-700'
             }`}
           >
-            <div className="flex items-center justify-center mb-3">
-              <Users className={`w-12 h-12 ${uploadType === 'mentees' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400'}`} />
+            <div className="mb-3 flex items-center justify-center">
+              <Users className={`h-12 w-12 ${uploadType === 'mentees' ? 'text-brand-600 dark:text-brand-400' : 'text-gray-400'}`} />
             </div>
-            <h3 className="text-lg font-semibold text-center">Upload Mentees</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 text-center mt-2">
+            <h3 className="text-center text-lg font-semibold">Upload Mentees</h3>
+            <p className="muted mt-2 text-center">
               Add multiple students/mentees from Excel/CSV file
             </p>
           </button>
@@ -153,24 +153,24 @@ bob.student,bob@example.com,password123,Bob,Williams,4445556666,S002,Computer Sc
       </div>
 
       {/* Download Template Section */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 mb-6">
-        <h2 className="text-xl font-semibold mb-4">Download Template</h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-4">
+      <div className="card card-pad mb-6">
+        <h2 className="section-title mb-4">Download Template</h2>
+        <p className="muted mb-4">
           Download the template file to see the required format for {uploadType}
         </p>
         <button
           onClick={() => downloadTemplate(uploadType)}
-          className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+          className="btn-secondary"
         >
-          <Download className="w-5 h-5 mr-2" />
+          <Download className="h-5 w-5" />
           Download {uploadType === 'mentors' ? 'Mentors' : 'Mentees'} Template
         </button>
         
-        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+        <div className="mt-6 rounded-xl border border-brand-200 bg-brand-50 p-4 dark:border-brand-900/50 dark:bg-brand-950/30">
           <div className="flex items-start">
-            <AlertCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-2 flex-shrink-0" />
-            <div className="text-sm text-blue-800">
-              <p className="font-semibold mb-2">Required Fields for {uploadType === 'mentors' ? 'Mentors' : 'Mentees'}:</p>
+            <AlertCircle className="mr-2 mt-0.5 h-5 w-5 flex-shrink-0 text-brand-600 dark:text-brand-400" />
+            <div className="text-sm text-brand-800 dark:text-brand-200">
+              <p className="mb-2 font-semibold">Required Fields for {uploadType === 'mentors' ? 'Mentors' : 'Mentees'}:</p>
               {uploadType === 'mentors' ? (
                 <ul className="list-disc list-inside space-y-1 ml-2">
                   <li>username, email, password</li>
@@ -192,17 +192,17 @@ bob.student,bob@example.com,password123,Bob,Williams,4445556666,S002,Computer Sc
       </div>
 
       {/* File Upload Section */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 mb-6">
-        <h2 className="text-xl font-semibold mb-4">Upload File</h2>
+      <div className="card card-pad mb-6">
+        <h2 className="section-title mb-4">Upload File</h2>
         
-        <div className="border-2 border-dashed border-gray-300 dark:border-slate-600 rounded-lg p-8 text-center hover:border-indigo-400 transition-colors">
-          <FileSpreadsheet className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+        <div className="rounded-xl border border-dashed border-gray-300 p-8 text-center transition-colors hover:border-brand-400 dark:border-slate-600">
+          <FileSpreadsheet className="mx-auto mb-4 h-16 w-16 text-gray-400" />
           
           <label htmlFor="file-upload" className="cursor-pointer">
-            <span className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:text-indigo-300 font-medium">
+            <span className="font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400">
               Click to upload
             </span>
-            <span className="text-gray-600 dark:text-gray-400"> or drag and drop</span>
+            <span className="muted"> or drag and drop</span>
             <input
               id="file-upload"
               type="file"
@@ -212,17 +212,17 @@ bob.student,bob@example.com,password123,Bob,Williams,4445556666,S002,Computer Sc
             />
           </label>
           
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+          <p className="muted mt-2 text-sm">
             Excel (.xlsx, .xls) or CSV files only
           </p>
         </div>
 
         {selectedFile && (
-          <div className="mt-4 p-4 bg-gray-50 dark:bg-slate-900/50 rounded-md flex items-center justify-between">
+          <div className="mt-4 flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-slate-700/70 dark:bg-slate-800/50">
             <div className="flex items-center">
-              <FileSpreadsheet className="w-5 h-5 text-indigo-600 dark:text-indigo-400 mr-2" />
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{selectedFile.name}</span>
-              <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">
+              <FileSpreadsheet className="mr-2 h-5 w-5 text-brand-600 dark:text-brand-400" />
+              <span className="text-sm font-medium text-gray-700 dark:text-slate-300">{selectedFile.name}</span>
+              <span className="muted ml-2 text-sm">
                 ({(selectedFile.size / 1024).toFixed(2)} KB)
               </span>
             </div>
@@ -231,9 +231,9 @@ bob.student,bob@example.com,password123,Bob,Williams,4445556666,S002,Computer Sc
                 setSelectedFile(null);
                 document.getElementById('file-upload').value = '';
               }}
-              className="text-red-600 dark:text-red-400 hover:text-red-700"
+              className="text-red-600 hover:text-red-700 dark:text-red-400"
             >
-              <XCircle className="w-5 h-5" />
+              <XCircle className="h-5 w-5" />
             </button>
           </div>
         )}
@@ -241,20 +241,16 @@ bob.student,bob@example.com,password123,Bob,Williams,4445556666,S002,Computer Sc
         <button
           onClick={handleUpload}
           disabled={!selectedFile || loading}
-          className={`mt-6 w-full inline-flex items-center justify-center px-6 py-3 rounded-md font-medium transition-colors ${
-            !selectedFile || loading
-              ? 'bg-gray-300 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-              : 'bg-indigo-600 text-white hover:bg-indigo-700'
-          }`}
+          className="btn-primary btn-lg mt-6 w-full"
         >
           {loading ? (
             <>
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white"></div>
               Uploading...
             </>
           ) : (
             <>
-              <Upload className="w-5 h-5 mr-2" />
+              <Upload className="h-5 w-5" />
               Upload {uploadType === 'mentors' ? 'Mentors' : 'Mentees'}
             </>
           )}
@@ -263,12 +259,12 @@ bob.student,bob@example.com,password123,Bob,Williams,4445556666,S002,Computer Sc
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 rounded-lg p-4 mb-6">
+        <div className="alert-error mb-6">
           <div className="flex items-start">
-            <XCircle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 mr-2 flex-shrink-0" />
+            <XCircle className="mr-2 mt-0.5 h-5 w-5 flex-shrink-0" />
             <div>
-              <h3 className="text-sm font-medium text-red-800">Upload Failed</h3>
-              <p className="text-sm text-red-700 mt-1">{error}</p>
+              <h3 className="text-sm font-medium">Upload Failed</h3>
+              <p className="mt-1 text-sm">{error}</p>
             </div>
           </div>
         </div>
@@ -276,29 +272,29 @@ bob.student,bob@example.com,password123,Bob,Williams,4445556666,S002,Computer Sc
 
       {/* Success Result */}
       {uploadResult && (
-        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 rounded-lg p-6">
-          <div className="flex items-start mb-4">
-            <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400 mt-0.5 mr-2 flex-shrink-0" />
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 dark:border-emerald-900/50 dark:bg-emerald-950/40">
+          <div className="mb-4 flex items-start">
+            <CheckCircle className="mr-2 mt-0.5 h-6 w-6 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
             <div>
-              <h3 className="text-lg font-semibold text-green-800">Upload Successful!</h3>
-              <p className="text-sm text-green-700 mt-1">
+              <h3 className="text-lg font-semibold text-emerald-800 dark:text-emerald-200">Upload Successful!</h3>
+              <p className="mt-1 text-sm text-emerald-700 dark:text-emerald-300">
                 {uploadResult.message || `${uploadType} have been successfully added to the database.`}
               </p>
             </div>
           </div>
 
           {uploadResult.summary && (
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-white dark:bg-slate-800 rounded-md p-4">
-                <p className="text-sm text-gray-600 dark:text-gray-400">Total Records</p>
+            <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div className="card p-4">
+                <p className="muted text-sm">Total Records</p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">{uploadResult.summary.total || 0}</p>
               </div>
-              <div className="bg-white dark:bg-slate-800 rounded-md p-4">
-                <p className="text-sm text-gray-600 dark:text-gray-400">Successfully Added</p>
-                <p className="text-2xl font-bold text-green-600 dark:text-green-400">{uploadResult.summary.success || 0}</p>
+              <div className="card p-4">
+                <p className="muted text-sm">Successfully Added</p>
+                <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{uploadResult.summary.success || 0}</p>
               </div>
-              <div className="bg-white dark:bg-slate-800 rounded-md p-4">
-                <p className="text-sm text-gray-600 dark:text-gray-400">Failed</p>
+              <div className="card p-4">
+                <p className="muted text-sm">Failed</p>
                 <p className="text-2xl font-bold text-red-600 dark:text-red-400">{uploadResult.summary.failed || 0}</p>
               </div>
             </div>
@@ -306,9 +302,9 @@ bob.student,bob@example.com,password123,Bob,Williams,4445556666,S002,Computer Sc
 
           {uploadResult.errors && uploadResult.errors.length > 0 && (
             <div className="mt-4">
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Errors:</h4>
-              <div className="bg-white dark:bg-slate-800 rounded-md p-4 max-h-48 overflow-y-auto">
-                <ul className="text-sm text-red-700 space-y-1">
+              <h4 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">Errors:</h4>
+              <div className="max-h-48 overflow-y-auto rounded-xl border border-gray-200 bg-white p-4 dark:border-slate-700/70 dark:bg-slate-800">
+                <ul className="space-y-1 text-sm text-red-700 dark:text-red-400">
                   {uploadResult.errors.map((error, index) => (
                     <li key={index} className="flex items-start">
                       <span className="mr-2">•</span>

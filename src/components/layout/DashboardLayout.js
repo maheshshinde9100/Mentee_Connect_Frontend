@@ -8,7 +8,6 @@ import MenteeConnectLogo from '../../MenteeConnectLogo';
 import {
   Bars3Icon,
   XMarkIcon,
-  UserCircleIcon,
   ArrowRightOnRectangleIcon,
   ChartBarIcon,
   UsersIcon,
@@ -17,10 +16,10 @@ import {
   ChatBubbleLeftRightIcon,
   DocumentTextIcon,
   BuildingLibraryIcon,
-  EnvelopeIcon,
+  LifebuoyIcon,
   SunIcon,
   MoonIcon,
-  VideoCameraIcon
+  VideoCameraIcon,
 } from '@heroicons/react/24/outline';
 import NotificationIcon from './NotificationIcon';
 import { notificationService } from '../../services/notificationService';
@@ -42,7 +41,6 @@ const DashboardLayout = () => {
     navigate('/login');
   };
 
-  // Fetch unread notifications count
   useEffect(() => {
     const fetchUnreadCount = async () => {
       try {
@@ -57,75 +55,55 @@ const DashboardLayout = () => {
     };
 
     fetchUnreadCount();
-
-    // Refresh unread count every 30 seconds
     const intervalId = setInterval(fetchUnreadCount, 30000);
-
     return () => clearInterval(intervalId);
   }, []);
 
   const adminNavigation = [
-    { name: 'Dashboard', href: '/admin/dashboard', icon: ChartBarIcon, description: 'Overview' },
-    { name: 'User Management', href: '/admin/user-management', icon: UsersIcon, description: 'Manage users' },
-    { name: 'Department Management', href: '/admin/department-management', icon: BuildingLibraryIcon, description: 'Departments' },
-    { name: 'Batch Management', href: '/admin/batch-management', icon: AcademicCapIcon, description: 'Batches' },
-    { name: 'Mentor Allocation', href: '/admin/mentor-allocation', icon: UserGroupIcon, description: 'Allocations' },
-    { name: 'Communication', href: '/admin/communication', icon: ChatBubbleLeftRightIcon, description: 'Messages', badge: unreadCount > 0 ? unreadCount : null },
-    { name: 'Reports', href: '/admin/reports', icon: DocumentTextIcon, description: 'Analytics' },
-    { name: 'Video Calls', href: '/admin/video-calls', icon: VideoCameraIcon, description: 'Call history' },
-    { name: 'Add Mentors & Students', href: '/admin/manage-mentors-mentees', icon: UsersIcon, description: 'Create users' },
+    { name: 'Dashboard', href: '/admin/dashboard', icon: ChartBarIcon },
+    { name: 'User Management', href: '/admin/user-management', icon: UsersIcon },
+    { name: 'Departments', href: '/admin/department-management', icon: BuildingLibraryIcon },
+    { name: 'Batches', href: '/admin/batch-management', icon: AcademicCapIcon },
+    { name: 'Mentor Allocation', href: '/admin/mentor-allocation', icon: UserGroupIcon },
+    { name: 'Communication', href: '/admin/communication', icon: ChatBubbleLeftRightIcon, badge: unreadCount > 0 ? unreadCount : null },
+    { name: 'Add People', href: '/admin/manage-mentors-mentees', icon: UsersIcon },
+    { name: 'Video Calls', href: '/admin/video-calls', icon: VideoCameraIcon },
+    { name: 'Reports', href: '/admin/analytics', icon: DocumentTextIcon },
   ];
 
   const mentorNavigation = [
-    { name: 'Dashboard', href: '/mentor/dashboard', icon: ChartBarIcon, description: 'Overview' },
-    { name: 'My Mentees', href: '/mentor/mentees', icon: UsersIcon, description: 'Mentees' },
-    { name: 'Tasks', href: '/mentor/tasks', icon: DocumentTextIcon, description: 'Tasks' },
-    { name: 'Attendance', href: '/mentor/attendance/record', icon: AcademicCapIcon, description: 'Attendance' },
-    { name: 'Updates', href: '/mentor/updates', icon: ChatBubbleLeftRightIcon, description: 'Updates' },
-    { name: 'Video Calls', href: '/mentor/video-calls', icon: VideoCameraIcon, description: 'Call history' },
+    { name: 'Dashboard', href: '/mentor/dashboard', icon: ChartBarIcon },
+    { name: 'My Mentees', href: '/mentor/mentees', icon: UsersIcon },
+    { name: 'Tasks', href: '/mentor/tasks', icon: DocumentTextIcon },
+    { name: 'Attendance', href: '/mentor/attendance/record', icon: AcademicCapIcon },
+    { name: 'Updates', href: '/mentor/updates', icon: ChatBubbleLeftRightIcon },
+    { name: 'Video Calls', href: '/mentor/video-calls', icon: VideoCameraIcon },
   ];
 
   const studentNavigation = [
-    { name: 'Dashboard', href: '/student/dashboard', icon: ChartBarIcon, description: 'Overview' },
-    { name: 'My Progress', href: '/student/progress', icon: AcademicCapIcon, description: 'Progress' },
-    { name: 'Find Mentors', href: '/student/mentors', icon: UserGroupIcon, description: 'Mentors' },
-    { name: 'Certificates', href: '/student/certificates', icon: DocumentTextIcon, description: 'Certificates' },
+    { name: 'Dashboard', href: '/student/dashboard', icon: ChartBarIcon },
+    { name: 'My Progress', href: '/student/progress', icon: AcademicCapIcon },
+    { name: 'Find Mentors', href: '/student/mentors', icon: UserGroupIcon },
+    { name: 'Certificates', href: '/student/certificates', icon: DocumentTextIcon },
   ];
 
-  const navigation = user?.role === 'ADMIN'
-    ? adminNavigation
-    : user?.role === 'MENTOR'
-      ? mentorNavigation
-      : studentNavigation;
+  const navigation =
+    user?.role === 'ADMIN' ? adminNavigation : user?.role === 'MENTOR' ? mentorNavigation : studentNavigation;
+
+  const currentTitle = (() => {
+    const segment = location.pathname.split('/').filter(Boolean).pop() || 'Dashboard';
+    return segment.replace(/-/g, ' ');
+  })();
 
   const renderSidebarContent = () => (
     <>
-      <div className="flex items-center flex-shrink-0 px-6 pt-4 pb-2">
-        <MenteeConnectLogo size="sm" showText={true} variant={darkMode ? 'sidebar' : 'default'} />
+      <div className="flex h-16 flex-shrink-0 items-center border-b border-gray-200 px-5 dark:border-slate-700/70">
+        <Link to="/" className="flex items-center">
+          <MenteeConnectLogo size="sm" />
+        </Link>
       </div>
 
-      {/* User Profile Summary */}
-      <div className="mt-6 px-4 mb-6">
-        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700/50 backdrop-blur-sm transition-colors duration-200">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold shadow-lg">
-                {user?.firstName?.charAt(0) || 'U'}
-              </div>
-            </div>
-            <div className="ml-3 min-w-0">
-              <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
-                {user?.firstName} {user?.lastName}
-              </p>
-              <p className="text-xs text-slate-500 dark:text-indigo-300 truncate capitalize">
-                {user?.role?.toLowerCase()}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <nav className="flex-1 px-3 space-y-1 overflow-y-auto custom-scrollbar">
+      <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-4">
         {navigation.map((item) => {
           const isActive = location.pathname === item.href;
           return (
@@ -134,23 +112,23 @@ const DashboardLayout = () => {
               to={item.href}
               className={classNames(
                 isActive
-                  ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 border-indigo-600 dark:border-indigo-400'
-                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white border-transparent',
-                'group flex items-center px-3 py-3 text-sm font-medium rounded-xl border-l-4 transition-all duration-200 mb-1'
+                  ? 'bg-brand-50 font-semibold text-brand-700 dark:bg-brand-500/10 dark:text-brand-300'
+                  : 'font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-slate-400 dark:hover:bg-slate-700/40 dark:hover:text-white',
+                'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors'
               )}
             >
               <item.icon
                 className={classNames(
-                  isActive ? 'text-indigo-600 dark:text-indigo-300' : 'text-slate-400 dark:text-slate-500 group-hover:text-indigo-500 dark:group-hover:text-indigo-400',
-                  'mr-3 flex-shrink-0 h-6 w-6 transition-colors duration-200'
+                  'h-5 w-5 flex-shrink-0',
+                  isActive
+                    ? 'text-brand-600 dark:text-brand-400'
+                    : 'text-gray-400 group-hover:text-gray-600 dark:text-slate-500 dark:group-hover:text-slate-300'
                 )}
                 aria-hidden="true"
               />
-              <div className="flex-1">
-                <span className="block">{item.name}</span>
-              </div>
+              <span className="flex-1 truncate">{item.name}</span>
               {item.badge && (
-                <span className="bg-red-500 text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center ml-2 shadow-sm">
+                <span className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-brand-600 px-1.5 text-[10px] font-semibold text-white">
                   {item.badge > 9 ? '9+' : item.badge}
                 </span>
               )}
@@ -159,46 +137,46 @@ const DashboardLayout = () => {
         })}
       </nav>
 
-      <div className="flex-shrink-0 border-t border-slate-200 dark:border-slate-800 p-4 space-y-2 mt-auto bg-white dark:bg-slate-900 transition-colors duration-200">
-        {/* Quick Links */}
-        <div className="space-y-1 mb-4">
-          <Link
-            to="/about"
-            className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 rounded-xl hover:text-indigo-600 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all"
-          >
-            <UserCircleIcon className="mr-3 flex-shrink-0 h-5 w-5 text-slate-400 dark:text-slate-500 group-hover:text-indigo-500 dark:group-hover:text-indigo-400" />
-            About
-          </Link>
-          <Link
-            to="/contact"
-            className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 rounded-xl hover:text-indigo-600 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all"
-          >
-            <EnvelopeIcon className="mr-3 flex-shrink-0 h-5 w-5 text-slate-400 dark:text-slate-500 group-hover:text-indigo-500 dark:group-hover:text-indigo-400" />
-            Contact
-          </Link>
+      <div className="flex-shrink-0 space-y-3 border-t border-gray-200 p-3 dark:border-slate-700/70">
+        <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 dark:border-slate-700/70 dark:bg-slate-800">
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-brand-600 text-sm font-semibold text-white">
+            {user?.firstName?.charAt(0)?.toUpperCase() || 'U'}
+          </div>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
+              {user?.firstName} {user?.lastName}
+            </p>
+            <p className="truncate text-xs capitalize text-gray-500 dark:text-slate-400">
+              {user?.role?.toLowerCase()}
+            </p>
+          </div>
         </div>
 
-        {/* Sign Out Button */}
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center justify-center px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm text-sm font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 hover:border-red-200 dark:hover:border-red-800 transition-all duration-300 group"
-        >
-          <ArrowRightOnRectangleIcon className="mr-2 h-5 w-5 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
-          Sign Out
-        </button>
+        <div className="flex items-center gap-1">
+          <Link
+            to="/about"
+            className="flex flex-1 items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-medium text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-slate-400 dark:hover:bg-slate-700/40 dark:hover:text-white"
+          >
+            <LifebuoyIcon className="h-4 w-4" />
+            Help
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="flex flex-1 items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-medium text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:text-slate-400 dark:hover:bg-red-950/40 dark:hover:text-red-400"
+          >
+            <ArrowRightOnRectangleIcon className="h-4 w-4" />
+            Sign out
+          </button>
+        </div>
       </div>
     </>
   );
 
   return (
-    <div className="h-screen flex overflow-hidden bg-slate-50 dark:bg-slate-900 transition-colors duration-200">
+    <div className="flex h-screen overflow-hidden bg-gray-50 transition-colors duration-200 dark:bg-slate-900">
       {/* Mobile sidebar */}
       <Transition.Root show={sidebarOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="fixed inset-0 flex z-40 md:hidden"
-          onClose={setSidebarOpen}
-        >
+        <Dialog as="div" className="fixed inset-0 z-40 flex md:hidden" onClose={setSidebarOpen}>
           <Transition.Child
             as={Fragment}
             enter="transition-opacity ease-linear duration-300"
@@ -208,7 +186,7 @@ const DashboardLayout = () => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-slate-600 bg-opacity-75 dark:bg-slate-900/80 backdrop-blur-sm" />
+            <Dialog.Overlay className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm dark:bg-black/70" />
           </Transition.Child>
           <Transition.Child
             as={Fragment}
@@ -219,85 +197,67 @@ const DashboardLayout = () => {
             leaveFrom="translate-x-0"
             leaveTo="-translate-x-full"
           >
-            <div className="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-white dark:bg-slate-900 shadow-2xl">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-in-out duration-300"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leave="ease-in-out duration-300"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                <div className="absolute top-0 right-0 -mr-12 pt-2">
-                  <button
-                    type="button"
-                    className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                    onClick={() => setSidebarOpen(false)}
-                  >
-                    <span className="sr-only">Close sidebar</span>
-                    <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
-                  </button>
-                </div>
-              </Transition.Child>
+            <div className="relative flex w-full max-w-xs flex-1 flex-col bg-white shadow-xl dark:bg-slate-900">
+              <div className="absolute right-0 top-0 -mr-12 pt-3">
+                <button
+                  type="button"
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-white focus:outline-none"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <span className="sr-only">Close sidebar</span>
+                  <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                </button>
+              </div>
               {renderSidebarContent()}
             </div>
           </Transition.Child>
-          <div className="flex-shrink-0 w-14" aria-hidden="true">
-            {/* Dummy element to force sidebar to shrink to fit close icon */}
-          </div>
+          <div className="w-14 flex-shrink-0" aria-hidden="true" />
         </Dialog>
       </Transition.Root>
 
       {/* Static sidebar for desktop */}
       <div className="hidden md:flex md:flex-shrink-0">
-        <div className="flex flex-col w-72">
-          <div className="flex flex-col flex-grow bg-white dark:bg-slate-900 overflow-y-auto border-r border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-xl transition-colors duration-200">
-            {renderSidebarContent()}
-          </div>
+        <div className="flex w-64 flex-col border-r border-gray-200 bg-white transition-colors duration-200 dark:border-slate-700/70 dark:bg-slate-900">
+          {renderSidebarContent()}
         </div>
       </div>
 
       {/* Main content */}
-      <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        <div className="relative z-10 flex-shrink-0 flex h-16 bg-white dark:bg-slate-900/80 backdrop-blur-md shadow-sm border-b border-slate-200 dark:border-slate-800 transition-colors duration-200">
+      <div className="flex w-0 flex-1 flex-col overflow-hidden">
+        <header className="relative z-10 flex h-16 flex-shrink-0 items-center border-b border-gray-200 bg-white/80 backdrop-blur-md transition-colors duration-200 dark:border-slate-700/70 dark:bg-slate-900/80">
           <button
             type="button"
-            className="px-4 border-r border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            className="px-4 text-gray-500 focus:outline-none md:hidden dark:text-slate-400"
             onClick={() => setSidebarOpen(true)}
           >
             <span className="sr-only">Open sidebar</span>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
-          <div className="flex-1 px-4 flex justify-between">
-            <div className="flex-1 flex items-center">
-              <h1 className="text-xl font-semibold text-slate-800 dark:text-white capitalize transition-colors duration-200">
-                {location.pathname.split('/').pop().replace(/-/g, ' ')}
-              </h1>
-            </div>
-            <div className="ml-4 flex items-center md:ml-6 space-x-4">
-              {/* Dark Mode Toggle */}
+
+          <div className="flex flex-1 items-center justify-between px-4 sm:px-6">
+            <h1 className="text-base font-semibold capitalize text-gray-900 transition-colors duration-200 dark:text-white">
+              {currentTitle}
+            </h1>
+
+            <div className="flex items-center gap-2">
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-full text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                className="btn-icon"
+                title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+                aria-label="Toggle theme"
               >
-                {darkMode ? <SunIcon className="h-6 w-6" /> : <MoonIcon className="h-6 w-6" />}
+                {darkMode ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
               </button>
 
-              {/* Notifications */}
               <NotificationIcon />
 
-              {/* Profile dropdown */}
-              <Menu as="div" className="ml-3 relative">
-                <div>
-                  <Menu.Button className="max-w-xs bg-white dark:bg-slate-800 flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all hover:ring-2 hover:ring-indigo-200 dark:hover:ring-indigo-800">
-                    <span className="sr-only">Open user menu</span>
-                    <div className="h-9 w-9 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold shadow-md">
-                      {user?.firstName?.charAt(0) || 'U'}
-                    </div>
-                  </Menu.Button>
-                </div>
+              <Menu as="div" className="relative">
+                <Menu.Button className="flex items-center rounded-lg focus:outline-none">
+                  <span className="sr-only">Open user menu</span>
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-600 text-sm font-semibold text-white">
+                    {user?.firstName?.charAt(0)?.toUpperCase() || 'U'}
+                  </span>
+                </Menu.Button>
                 <Transition
                   as={Fragment}
                   enter="transition ease-out duration-100"
@@ -307,45 +267,53 @@ const DashboardLayout = () => {
                   leaveFrom="transform opacity-100 scale-100"
                   leaveTo="transform opacity-0 scale-95"
                 >
-                  <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-xl shadow-lg py-1 bg-white dark:bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none border border-slate-100 dark:border-slate-700">
-                    <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-700">
-                      <p className="text-sm text-slate-900 dark:text-white font-medium">{user?.firstName} {user?.lastName}</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user?.email}</p>
+                  <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right rounded-xl border border-gray-200 bg-white py-1 shadow-lg focus:outline-none dark:border-slate-700 dark:bg-slate-800">
+                    <div className="border-b border-gray-100 px-4 py-3 dark:border-slate-700">
+                      <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
+                        {user?.firstName} {user?.lastName}
+                      </p>
+                      <p className="truncate text-xs text-gray-500 dark:text-slate-400">{user?.email}</p>
                     </div>
                     <Menu.Item>
                       {({ active }) => (
                         <Link
                           to="/profile"
                           className={classNames(
-                            active ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' : 'text-slate-700 dark:text-slate-300',
+                            active
+                              ? 'bg-gray-100 text-gray-900 dark:bg-slate-700/60 dark:text-white'
+                              : 'text-gray-700 dark:text-slate-300',
                             'block px-4 py-2 text-sm transition-colors'
                           )}
                         >
-                          Your Profile
+                          Your profile
                         </Link>
                       )}
                     </Menu.Item>
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          to="/settings"
+                          to="/notifications"
                           className={classNames(
-                            active ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' : 'text-slate-700 dark:text-slate-300',
+                            active
+                              ? 'bg-gray-100 text-gray-900 dark:bg-slate-700/60 dark:text-white'
+                              : 'text-gray-700 dark:text-slate-300',
                             'block px-4 py-2 text-sm transition-colors'
                           )}
                         >
-                          Settings
+                          Notifications
                         </Link>
                       )}
                     </Menu.Item>
-                    <div className="border-t border-slate-100 dark:border-slate-700 mt-1">
+                    <div className="mt-1 border-t border-gray-100 dark:border-slate-700">
                       <Menu.Item>
                         {({ active }) => (
                           <button
                             onClick={handleLogout}
                             className={classNames(
-                              active ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400' : 'text-slate-700 dark:text-slate-300',
-                              'block w-full text-left px-4 py-2 text-sm transition-colors'
+                              active
+                                ? 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-400'
+                                : 'text-gray-700 dark:text-slate-300',
+                              'block w-full px-4 py-2 text-left text-sm transition-colors'
                             )}
                           >
                             Sign out
@@ -358,15 +326,13 @@ const DashboardLayout = () => {
               </Menu>
             </div>
           </div>
-        </div>
+        </header>
 
-        <main className="flex-1 relative overflow-y-auto focus:outline-none bg-slate-50 dark:bg-slate-900 transition-colors duration-200">
-          <div className="py-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-              <Suspense fallback={<PageLoader />}>
-                <Outlet />
-              </Suspense>
-            </div>
+        <main className="relative flex-1 overflow-y-auto bg-gray-50 focus:outline-none dark:bg-slate-900">
+          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 md:px-8">
+            <Suspense fallback={<PageLoader />}>
+              <Outlet />
+            </Suspense>
           </div>
         </main>
       </div>

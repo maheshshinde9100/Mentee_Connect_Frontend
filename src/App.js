@@ -13,6 +13,7 @@ import './App.css';
 
 // ─── Route-level code splitting ──────────────────────────────────────────────
 const Login = React.lazy(() => import('./pages/authentication/Login'));
+const Register = React.lazy(() => import('./pages/authentication/Register'));
 const AdminDashboard = React.lazy(() => import('./pages/admin/AdminDashboard'));
 const VideoCallHistory = React.lazy(() => import('./pages/admin/VideoCallHistory'));
 const MentorDashboard = React.lazy(() => import('./pages/mentor/MentorDashboard'));
@@ -94,6 +95,16 @@ function App() {
                   <LazyPage>
                     <PublicRoute>
                       <Login />
+                    </PublicRoute>
+                  </LazyPage>
+                }
+              />
+              <Route
+                path="/register"
+                element={
+                  <LazyPage>
+                    <PublicRoute>
+                      <Register />
                     </PublicRoute>
                   </LazyPage>
                 }

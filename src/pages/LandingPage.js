@@ -3,33 +3,7 @@ import { User, Users, Shield, MessageSquare, Calendar, Target, TrendingUp, Check
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
-
-const MenteeConnectLogo = ({ size = "md", animate = false, showText = true }) => {
-  const sizes = {
-    sm: "h-8 w-8",
-    md: "h-12 w-12",
-    lg: "h-16 w-16",
-    xl: "h-24 w-24"
-  };
-
-  return (
-    <div className="flex items-center">
-      <div className="relative">
-        <div className={`${sizes[size]} bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-12 ${animate ? 'animate-pulse' : ''}`}>
-          <div className={`${size === 'sm' ? 'h-6 w-6' : size === 'md' ? 'h-8 w-8' : size === 'lg' ? 'h-12 w-12' : 'h-16 w-16'} bg-white rounded-lg flex items-center justify-center transform -rotate-12`}>
-            <span className={`text-indigo-600 font-bold ${size === 'sm' ? 'text-sm' : size === 'md' ? 'text-lg' : size === 'lg' ? 'text-xl' : 'text-2xl'}`}>M</span>
-          </div>
-        </div>
-        <div className="absolute -top-2 -right-2 h-6 w-6 bg-gradient-to-r from-pink-400 to-orange-400 rounded-full"></div>
-      </div>
-      {showText && (
-        <span className={`ml-3 font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent ${size === 'sm' ? 'text-lg' : size === 'md' ? 'text-2xl' : size === 'lg' ? 'text-3xl' : 'text-4xl'}`}>
-          MenteeConnect
-        </span>
-      )}
-    </div>
-  );
-};
+import MenteeConnectLogo from '../MenteeConnectLogo';
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -43,43 +17,45 @@ const LandingPage = () => {
     photo: '/mahesh.png',
   };
 
+  const navLinks = ['Features', 'How it Works', 'Roles', 'About', 'Contact'];
+
   const features = [
     {
       title: 'Task & Goal Assignment',
       description: 'Create, assign, and track personalized tasks and goals for each mentee.',
-      icon: <Target className="h-8 w-8 text-purple-600 dark:text-purple-400" />,
+      icon: Target,
     },
     {
       title: 'Real-time Chat & Notifications',
       description: 'Instant messaging and smart notifications to keep everyone connected.',
-      icon: <MessageSquare className="h-8 w-8 text-indigo-600 dark:text-indigo-400" />,
+      icon: MessageSquare,
     },
     {
       title: 'Progress Tracking',
       description: 'Comprehensive analytics and progress monitoring for mentees.',
-      icon: <TrendingUp className="h-8 w-8 text-indigo-600 dark:text-indigo-400" />,
+      icon: TrendingUp,
     },
     {
       title: 'Offline Meeting Attendance',
       description: 'Track and manage offline meeting attendance with ease.',
-      icon: <Calendar className="h-8 w-8 text-purple-600 dark:text-purple-400" />,
+      icon: Calendar,
     },
     {
       title: 'Admin Management System',
       description: 'Complete administrative control over users, departments, and batches.',
-      icon: <Shield className="h-8 w-8 text-indigo-600 dark:text-indigo-400" />,
+      icon: Shield,
     },
     {
       title: 'Certificate Management',
       description: 'Upload and manage student certificates and achievements.',
-      icon: <Award className="h-8 w-8 text-purple-600 dark:text-purple-400" />,
+      icon: Award,
     },
   ];
 
   const roles = [
     {
       title: 'Admin',
-      icon: <Shield className="h-12 w-12 text-purple-600 dark:text-purple-400" />,
+      icon: Shield,
       features: [
         'Manage mentors and students',
         'Organize departments and batches',
@@ -90,7 +66,7 @@ const LandingPage = () => {
     },
     {
       title: 'Mentor',
-      icon: <Users className="h-12 w-12 text-indigo-600 dark:text-indigo-400" />,
+      icon: Users,
       features: [
         'Assign tasks and goals',
         'Real-time communication',
@@ -100,7 +76,7 @@ const LandingPage = () => {
     },
     {
       title: 'Student',
-      icon: <User className="h-12 w-12 text-purple-600 dark:text-purple-400" />,
+      icon: User,
       features: [
         'View assigned tasks',
         'Chat with mentors',
@@ -124,85 +100,93 @@ const LandingPage = () => {
       number: '01',
       title: 'Sign Up & Setup',
       description: 'Create your account and set up your profile with your academic details.',
-      icon: <User className="h-6 w-6 text-white" />
+      icon: User
     },
     {
       number: '02',
       title: 'Get Matched',
       description: 'Students are assigned to mentors based on their department and batch.',
-      icon: <Users className="h-6 w-6 text-white" />
+      icon: Users
     },
     {
       number: '03',
       title: 'Start Collaborating',
       description: 'Begin communicating, assigning tasks, and tracking progress immediately.',
-      icon: <MessageCircle className="h-6 w-6 text-white" />
+      icon: MessageCircle
     }
   ];
 
+  const dashboardPath = isAuthenticated && user && user.role
+    ? `/${user.role.toLowerCase()}/dashboard`
+    : '/login';
+
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 font-sans min-h-screen transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 font-sans transition-colors duration-150 dark:bg-slate-900">
       {/* Navigation */}
-      <nav className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-lg border-b border-indigo-100 dark:border-slate-800 fixed w-full z-50 transition-colors duration-150">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center">
-              <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                <MenteeConnectLogo size="md" showText={true} />
-              </div>
-            </div>
+      <nav className="fixed top-0 z-50 w-full border-b border-gray-200 bg-white/90 backdrop-blur dark:border-slate-700/70 dark:bg-slate-900/90">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            <button
+              type="button"
+              className="flex items-center"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
+              <MenteeConnectLogo size="md" showText={true} />
+            </button>
 
-            <div className="hidden md:block">
-              <div className="ml-10 flex items-center space-x-8">
-                {['Features', 'How it Works', 'Roles', 'About', 'Contact'].map((item) => (
-                  <a
-                    key={item}
-                    href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
-                    className="text-slate-700 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 px-3 py-2 text-sm font-medium transition-all duration-300 relative group"
-                  >
-                    {item}
-                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
-                  </a>
-                ))}
-
-                <button
-                  onClick={toggleTheme}
-                  className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors focus:outline-none"
-                  title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            <div className="hidden items-center gap-1 md:flex">
+              {navLinks.map((item) => (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
+                  className="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                 >
-                  {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                </button>
+                  {item}
+                </a>
+              ))}
 
-                {isAuthenticated ? (
-                  <Link
-                    to={`/${user.role.toLowerCase()}/dashboard`}
-                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2.5 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-colors shadow-lg font-medium flex items-center"
-                  >
-                    Go to Dashboard <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                ) : (
-                  <Link
-                    to="/login"
-                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2.5 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-colors shadow-lg font-medium"
-                  >
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="btn-icon ml-2"
+                title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              >
+                {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </button>
+
+              {isAuthenticated ? (
+                <Link to={dashboardPath} className="btn-primary ml-2">
+                  Go to Dashboard
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              ) : (
+                <>
+                  <Link to="/login" className="btn-secondary ml-2">
                     Log in
                   </Link>
-                )}
-              </div>
+                  <Link to="/register" className="btn-primary ml-2">
+                    Create account
+                  </Link>
+                </>
+              )}
             </div>
 
-            <div className="md:hidden flex items-center gap-4">
+            <div className="flex items-center gap-2 md:hidden">
               <button
+                type="button"
                 onClick={toggleTheme}
-                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors focus:outline-none"
+                className="btn-icon"
+                title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
               >
                 {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </button>
               <button
+                type="button"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-slate-700 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 p-2 rounded-lg hover:bg-purple-50 dark:hover:bg-slate-800 transition-all"
+                className="btn-icon"
+                aria-label="Toggle navigation"
               >
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </button>
             </div>
           </div>
@@ -210,33 +194,32 @@ const LandingPage = () => {
 
         {/* Mobile menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-lg border-t border-indigo-100 dark:border-slate-800 absolute w-full">
-            <div className="px-4 pt-2 pb-4 space-y-2">
-              {['Features', 'How it Works', 'Roles', 'About', 'Contact'].map((item) => (
+          <div className="border-t border-gray-200 bg-white md:hidden dark:border-slate-700/70 dark:bg-slate-900">
+            <div className="space-y-1 px-4 py-3">
+              {navLinks.map((item) => (
                 <a
                   key={item}
                   href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
-                  className="block px-3 py-2 text-slate-700 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-slate-800 rounded-lg transition-all font-medium"
+                  className="block rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item}
                 </a>
               ))}
-              {isAuthenticated ? (
+              <Link
+                to={dashboardPath}
+                className="btn-primary mt-3 w-full"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {isAuthenticated ? 'Go to Dashboard' : 'Log in'}
+              </Link>
+              {!isAuthenticated && (
                 <Link
-                  to={`/${user.role.toLowerCase()}/dashboard`}
-                  className="block w-full text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-3 py-3 rounded-xl mt-4 font-medium shadow-md"
+                  to="/register"
+                  className="btn-secondary mt-2 w-full"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Go to Dashboard
-                </Link>
-              ) : (
-                <Link
-                  to="/login"
-                  className="block w-full text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-3 py-3 rounded-xl mt-4 font-medium shadow-md"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Log in
+                  Create account
                 </Link>
               )}
             </div>
@@ -245,49 +228,36 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 overflow-hidden relative min-h-screen flex items-center transition-colors duration-300">
-        {/* Animated background elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-indigo-300/20 to-purple-300/20 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-r from-purple-300/20 to-pink-300/20 rounded-full blur-3xl"></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="text-left">
-              <div className="inline-flex items-center px-4 py-2 rounded-full bg-indigo-100/50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-sm font-semibold mb-6 border border-indigo-200 dark:border-indigo-800">
-                <span className="flex h-2 w-2 rounded-full bg-indigo-600 dark:bg-indigo-400 mr-2"></span>
-                Revolutionizing Academic Mentorship
-              </div>
-              <h1 className="text-5xl md:text-7xl font-bold text-slate-900 dark:text-white mb-6 leading-tight tracking-tight">
-                Empowering <br />
-                <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                  Future Leaders
-                </span>
+      <section className="border-b border-gray-200 bg-white pt-32 pb-20 dark:border-slate-700/70 dark:bg-slate-900 sm:pt-36">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+            <div>
+              <span className="badge badge-brand">Academic mentorship platform</span>
+              <h1 className="page-title mt-5 text-4xl sm:text-5xl lg:text-6xl">
+                Empowering
+                <span className="block text-brand-600 dark:text-brand-400">Future Leaders</span>
               </h1>
-              <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 max-w-xl leading-relaxed">
+              <p className="page-subtitle mt-5 max-w-xl text-base sm:text-lg">
                 A comprehensive platform bridging the gap between mentors and students.
                 Streamline communication, track progress, and achieve academic excellence together.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  to="/login"
-                  className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition-colors shadow-xl flex items-center justify-center"
-                >
-                  Get Started <ArrowRight className="ml-2 h-5 w-5" />
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Link to="/login" className="btn-primary btn-lg">
+                  Get Started
+                  <ArrowRight className="h-5 w-5" />
                 </Link>
-                <a
-                  href="#features"
-                  className="border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-8 py-4 rounded-xl text-lg font-semibold hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-slate-800 transition-colors flex items-center justify-center"
-                >
+                <a href="#features" className="btn-secondary btn-lg">
                   Learn More
                 </a>
               </div>
 
-              <div className="mt-10 flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
+              <div className="mt-10 flex items-center gap-4 text-sm text-gray-500 dark:text-slate-400">
                 <div className="flex -space-x-2">
                   {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className={`w-8 h-8 rounded-full border-2 border-white dark:border-slate-900 bg-indigo-${i * 100} flex items-center justify-center text-xs text-white font-bold`}>
+                    <div
+                      key={i}
+                      className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-brand-600 text-xs font-semibold text-white dark:border-slate-900"
+                    >
                       {String.fromCharCode(64 + i)}
                     </div>
                   ))}
@@ -296,215 +266,208 @@ const LandingPage = () => {
               </div>
             </div>
 
+            {/* Product preview */}
             <div className="relative hidden lg:block">
-              <div className="relative z-10 bg-white/40 dark:bg-slate-800/40 backdrop-blur-xl rounded-3xl p-6 border border-white/50 dark:border-slate-700/50 shadow-2xl">
-                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-inner overflow-hidden border border-slate-100 dark:border-slate-700">
-                  {/* Mock UI Header */}
-                  <div className="bg-slate-50 dark:bg-slate-900 p-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-3 h-3 rounded-full bg-red-400"></div>
-                      <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-                      <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                    </div>
-                    <div className="h-2 w-32 bg-slate-200 dark:bg-slate-700 rounded-full"></div>
+              <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-800">
+                {/* Preview header */}
+                <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-3 w-3 rounded-full bg-gray-300 dark:bg-slate-600"></span>
+                    <span className="h-3 w-3 rounded-full bg-gray-300 dark:bg-slate-600"></span>
+                    <span className="h-3 w-3 rounded-full bg-gray-300 dark:bg-slate-600"></span>
                   </div>
-                  {/* Mock UI Body */}
-                  <div className="p-6 space-y-6">
-                    {/* Header */}
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <div className="h-3 w-20 bg-slate-200 dark:bg-slate-700 rounded mb-2"></div>
-                        <div className="h-5 w-32 bg-slate-800 dark:bg-slate-600 rounded"></div>
+                  <span className="h-2 w-32 rounded-full bg-gray-200 dark:bg-slate-700"></span>
+                </div>
+                {/* Preview body */}
+                <div className="space-y-6 p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="mb-2 h-3 w-20 rounded bg-gray-200 dark:bg-slate-700"></div>
+                      <div className="h-5 w-32 rounded bg-gray-800 dark:bg-slate-500"></div>
+                    </div>
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-50 dark:bg-brand-500/10">
+                      <User className="h-5 w-5 text-brand-600 dark:text-brand-400" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-slate-700 dark:bg-slate-900">
+                      <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500 dark:text-slate-400">Tasks</div>
+                      <div className="text-xl font-bold text-gray-900 dark:text-white">12</div>
+                    </div>
+                    <div className="rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-slate-700 dark:bg-slate-900">
+                      <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500 dark:text-slate-400">Meetings</div>
+                      <div className="text-xl font-bold text-gray-900 dark:text-white">5</div>
+                    </div>
+                    <div className="rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-slate-700 dark:bg-slate-900">
+                      <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500 dark:text-slate-400">Progress</div>
+                      <div className="text-xl font-bold text-gray-900 dark:text-white">85%</div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="flex-1 space-y-3">
+                      <div className="h-3 w-24 rounded bg-gray-200 dark:bg-slate-700"></div>
+                      <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-2.5 dark:border-slate-700 dark:bg-slate-900">
+                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-brand-50 dark:bg-brand-500/10">
+                          <MessageSquare className="h-4 w-4 text-brand-600 dark:text-brand-400" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="mb-1.5 h-2.5 w-3/4 rounded bg-gray-300 dark:bg-slate-600"></div>
+                          <div className="h-2 w-1/2 rounded bg-gray-100 dark:bg-slate-700"></div>
+                        </div>
                       </div>
-                      <div className="h-10 w-10 bg-indigo-100 dark:bg-indigo-900/50 rounded-full flex items-center justify-center">
-                        <User className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                      <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-2.5 dark:border-slate-700 dark:bg-slate-900">
+                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-500/10">
+                          <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="mb-1.5 h-2.5 w-2/3 rounded bg-gray-300 dark:bg-slate-600"></div>
+                          <div className="h-2 w-1/3 rounded bg-gray-100 dark:bg-slate-700"></div>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Stats Cards */}
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-xl border border-indigo-100 dark:border-indigo-800">
-                        <div className="text-[10px] uppercase tracking-wider text-indigo-600 dark:text-indigo-400 font-semibold mb-1">Tasks</div>
-                        <div className="text-xl font-bold text-slate-800 dark:text-white">12</div>
-                      </div>
-                      <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-xl border border-purple-100 dark:border-purple-800">
-                        <div className="text-[10px] uppercase tracking-wider text-purple-600 dark:text-purple-400 font-semibold mb-1">Meetings</div>
-                        <div className="text-xl font-bold text-slate-800 dark:text-white">5</div>
-                      </div>
-                      <div className="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-xl border border-emerald-100 dark:border-emerald-800">
-                        <div className="text-[10px] uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-semibold mb-1">Progress</div>
-                        <div className="text-xl font-bold text-slate-800 dark:text-white">85%</div>
-                      </div>
-                    </div>
-
-                    {/* Main Content Area */}
-                    <div className="flex gap-4">
-                      {/* Left Column: Recent Activity */}
-                      <div className="flex-1 space-y-3">
-                        <div className="h-3 w-24 bg-slate-200 dark:bg-slate-700 rounded"></div>
-                        <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-700 p-2.5 rounded-lg shadow-sm flex items-center gap-3">
-                          <div className="h-8 w-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center flex-shrink-0">
-                            <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="h-2.5 w-3/4 bg-slate-300 dark:bg-slate-600 rounded mb-1.5"></div>
-                            <div className="h-2 w-1/2 bg-slate-100 dark:bg-slate-700 rounded"></div>
-                          </div>
-                        </div>
-                        <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-700 p-2.5 rounded-lg shadow-sm flex items-center gap-3">
-                          <div className="h-8 w-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center flex-shrink-0">
-                            <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="h-2.5 w-2/3 bg-slate-300 dark:bg-slate-600 rounded mb-1.5"></div>
-                            <div className="h-2 w-1/3 bg-slate-100 dark:bg-slate-700 rounded"></div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Right Column: Chart Placeholder */}
-                      <div className="w-1/3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col items-center justify-center p-2 relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-t from-indigo-50 to-transparent dark:from-indigo-900/20 opacity-50"></div>
-                        <div className="w-14 h-14 rounded-full border-4 border-indigo-500 border-t-transparent mb-2 z-10"></div>
-                        <div className="h-2 w-10 bg-slate-200 dark:bg-slate-700 rounded z-10"></div>
-                      </div>
+                    <div className="flex w-1/3 flex-col items-center justify-center rounded-xl border border-gray-200 bg-gray-50 p-2 dark:border-slate-700 dark:bg-slate-900">
+                      <div className="mb-2 h-14 w-14 rounded-full border-4 border-brand-500 border-t-transparent"></div>
+                      <div className="h-2 w-10 rounded bg-gray-200 dark:bg-slate-700"></div>
                     </div>
                   </div>
                 </div>
               </div>
-
-              {/* Floating decorative elements */}
-              <div className="absolute -top-10 -right-10 w-24 h-24 bg-gradient-to-br from-pink-400 to-purple-500 rounded-2xl rotate-12 opacity-20"></div>
-              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-gradient-to-br from-indigo-400 to-blue-500 rounded-full opacity-20"></div>
             </div>
           </div>
         </div>
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 bg-white dark:bg-slate-900 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="text-indigo-600 dark:text-indigo-400 font-semibold tracking-wider uppercase text-sm">Process</span>
-            <h2 className="mt-2 text-4xl font-bold text-slate-900 dark:text-white">How MenteeConnect Works</h2>
-            <p className="mt-4 text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+      <section id="how-it-works" className="border-b border-gray-200 bg-gray-50 py-20 dark:border-slate-700/70 dark:bg-slate-900">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <p className="eyebrow">Process</p>
+            <h2 className="page-title mt-2">How MenteeConnect Works</h2>
+            <p className="page-subtitle mt-3">
               Getting started is easy. Follow these simple steps to begin your mentorship journey.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-            {/* Connecting line for desktop */}
-            <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-indigo-100 dark:bg-slate-800 -z-10 transform -translate-y-1/2"></div>
-
-            {steps.map((step, index) => (
-              <div key={index} className="relative bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 text-center group hover:-translate-y-1 transition-transform duration-200">
-                <div className="h-16 w-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
-                  {step.icon}
+          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+            {steps.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <div key={index} className="card card-pad">
+                  <div className="flex items-center justify-between">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <span className="text-sm font-semibold text-gray-400 dark:text-slate-500">Step {step.number}</span>
+                  </div>
+                  <h3 className="section-title mt-4">{step.title}</h3>
+                  <p className="muted mt-2 text-sm">{step.description}</p>
                 </div>
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-white dark:bg-slate-800 px-4 py-1 rounded-full border border-indigo-100 dark:border-slate-700 text-indigo-600 dark:text-indigo-400 font-bold text-sm shadow-sm">
-                  Step {step.number}
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">{step.title}</h3>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{step.description}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* Key Features */}
-      <section id="features" className="py-20 bg-slate-50 dark:bg-slate-800 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="text-purple-600 dark:text-purple-400 font-semibold tracking-wider uppercase text-sm">Features</span>
-            <h2 className="mt-2 text-4xl font-bold text-slate-900 dark:text-white">Everything You Need</h2>
-            <p className="mt-4 text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
-              Comprehensive tools designed to enhance mentorship experience for everyone involved
+      <section id="features" className="border-b border-gray-200 bg-white py-20 dark:border-slate-700/70 dark:bg-slate-800">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <p className="eyebrow">Features</p>
+            <h2 className="page-title mt-2">Everything You Need</h2>
+            <p className="page-subtitle mt-3">
+              Comprehensive tools designed to enhance the mentorship experience for everyone involved.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <div key={index} className="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-200 border border-slate-100 dark:border-slate-700 group">
-                <div className="flex items-center justify-center w-14 h-14 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl mb-6 group-hover:bg-indigo-600 transition-colors duration-200">
-                  {React.cloneElement(feature.icon, { className: "h-7 w-7 text-indigo-600 dark:text-indigo-400 group-hover:text-white transition-colors duration-200" })}
+          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {features.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <div key={index} className="card card-pad card-hover">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <h3 className="section-title mt-4">{feature.title}</h3>
+                  <p className="muted mt-2 text-sm">{feature.description}</p>
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">{feature.title}</h3>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{feature.description}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* Role-Based Access */}
-      <section id="roles" className="py-20 bg-white dark:bg-slate-900 overflow-hidden transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="text-indigo-600 dark:text-indigo-400 font-semibold tracking-wider uppercase text-sm">Ecosystem</span>
-            <h2 className="mt-2 text-4xl font-bold text-slate-900 dark:text-white">Tailored for Everyone</h2>
-            <p className="mt-4 text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
-              Specific tools and dashboards for every role in your institution
+      <section id="roles" className="border-b border-gray-200 bg-gray-50 py-20 dark:border-slate-700/70 dark:bg-slate-900">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <p className="eyebrow">Ecosystem</p>
+            <h2 className="page-title mt-2">Tailored for Everyone</h2>
+            <p className="page-subtitle mt-3">
+              Specific tools and dashboards for every role in your institution.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {roles.map((role, index) => (
-              <div key={index} className="relative bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 h-full flex flex-col">
-                <div className="text-center mb-8">
-                  <div className="inline-flex p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl mb-4">
-                    {role.icon}
+          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+            {roles.map((role, index) => {
+              const Icon = role.icon;
+              return (
+                <div key={index} className="card card-pad flex h-full flex-col">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <h3 className="section-title">{role.title}</h3>
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{role.title}</h3>
+                  <ul className="mt-5 flex-grow space-y-3">
+                    {role.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start text-sm text-gray-600 dark:text-slate-400">
+                        <CheckCircle className="mr-2.5 mt-0.5 h-4 w-4 flex-shrink-0 text-brand-600 dark:text-brand-400" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-6 border-t border-gray-200 pt-5 dark:border-slate-700">
+                    <Link to="/login" className="link inline-flex items-center text-sm font-semibold">
+                      Access Portal
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </div>
                 </div>
-                <ul className="space-y-4 flex-grow">
-                  {role.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-start text-slate-600 dark:text-slate-400">
-                      <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-700">
-                  <Link to="/login" className="text-indigo-600 dark:text-indigo-400 font-semibold hover:text-purple-600 dark:hover:text-purple-400 flex items-center justify-center transition-all">
-                    Access Portal <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* About the Application */}
-      <section id="about" className="py-20 bg-slate-50 dark:bg-slate-800 relative transition-colors duration-300">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-700">
+      <section id="about" className="border-b border-gray-200 bg-white py-20 dark:border-slate-700/70 dark:bg-slate-800">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
             <div className="grid grid-cols-1 md:grid-cols-2">
-              <div className="p-12 flex flex-col justify-center">
-                <span className="text-purple-600 dark:text-purple-400 font-semibold tracking-wider uppercase text-sm mb-2">About Us</span>
-                <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-6">Bridging the Gap in Education</h2>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+              <div className="flex flex-col justify-center p-8 sm:p-12">
+                <p className="eyebrow">About Us</p>
+                <h2 className="page-title mt-2">Bridging the Gap in Education</h2>
+                <p className="muted mt-5 leading-relaxed">
                   MenteeConnect is a comprehensive mentor-mentee management system designed specifically for colleges and educational institutions.
                   This platform bridges the gap between mentors and students by providing intuitive tools for communication, task management,
                   and progress tracking.
                 </p>
-                <div className="flex items-center space-x-4">
-                  <div className="flex -space-x-4">
+                <div className="mt-6 flex items-center gap-4">
+                  <div className="flex -space-x-3">
                     {[1, 2, 3].map((i) => (
-                      <div key={i} className="w-10 h-10 rounded-full border-2 border-white dark:border-slate-900 bg-slate-200 dark:bg-slate-700"></div>
+                      <div key={i} className="h-10 w-10 rounded-full border-2 border-white bg-gray-200 dark:border-slate-900 dark:bg-slate-700"></div>
                     ))}
                   </div>
-                  <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">Join our growing community</span>
+                  <span className="text-sm font-medium text-gray-500 dark:text-slate-400">Join our growing community</span>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-12 text-white flex flex-col justify-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                <h3 className="text-2xl font-bold mb-8 relative z-10">Why Choose MenteeConnect?</h3>
-                <ul className="space-y-4 relative z-10">
+              <div className="bg-brand-600 p-8 text-white sm:p-12">
+                <h3 className="text-xl font-semibold">Why Choose MenteeConnect?</h3>
+                <ul className="mt-6 space-y-4">
                   {benefits.map((benefit, index) => (
-                    <li key={index} className="flex items-center">
-                      <div className="bg-white/20 p-1 rounded-full mr-3">
-                        <CheckCircle className="h-4 w-4 text-white" />
-                      </div>
+                    <li key={index} className="flex items-center text-sm">
+                      <CheckCircle className="mr-3 h-4 w-4 flex-shrink-0 text-white" />
                       <span className="font-medium">{benefit}</span>
                     </li>
                   ))}
@@ -516,41 +479,46 @@ const LandingPage = () => {
       </section>
 
       {/* Developer Section */}
-      <section className="py-20 bg-white dark:bg-slate-900 transition-colors duration-300">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <span className="text-indigo-600 dark:text-indigo-400 font-semibold tracking-wider uppercase text-sm">The Mind Behind</span>
-          <h2 className="mt-2 text-4xl font-bold text-slate-900 dark:text-white mb-12">Meet the Developer</h2>
+      <section className="border-b border-gray-200 bg-gray-50 py-20 dark:border-slate-700/70 dark:bg-slate-900">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <p className="eyebrow">The Mind Behind</p>
+            <h2 className="page-title mt-2">Meet the Developer</h2>
+          </div>
 
-          <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-xl border border-slate-100 dark:border-slate-700 relative overflow-hidden group hover:border-indigo-200 dark:hover:border-indigo-800 transition-all">
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
-            <div className="flex flex-col md:flex-row items-center gap-8">
-              <div className="relative">
-                <div className="w-40 h-40 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full p-1 shadow-xl">
-                  <img src={devInfo.photo} alt={devInfo.name} loading="lazy" decoding="async" className="w-full h-full object-cover rounded-full bg-white" />
-                </div>
-                <div className="absolute bottom-2 right-2 bg-green-500 w-6 h-6 rounded-full border-4 border-white dark:border-slate-800"></div>
+          <div className="card card-pad mt-10">
+            <div className="flex flex-col items-center gap-8 md:flex-row">
+              <div className="relative flex-shrink-0">
+                <img
+                  src={devInfo.photo}
+                  alt={devInfo.name}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-32 w-32 rounded-full border border-gray-200 object-cover dark:border-slate-700"
+                />
+                <span className="absolute bottom-2 right-2 h-5 w-5 rounded-full border-4 border-white bg-emerald-500 dark:border-slate-800"></span>
               </div>
 
-              <div className="text-left flex-1">
-                <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{devInfo.name}</h3>
-                <p className="text-indigo-600 dark:text-indigo-400 font-medium mb-4">{devInfo.title}</p>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+              <div className="flex-1 text-center md:text-left">
+                <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">{devInfo.name}</h3>
+                <p className="mt-1 font-medium text-brand-600 dark:text-brand-400">{devInfo.title}</p>
+                <p className="muted mt-4 leading-relaxed">
                   {devInfo.bio}
                   <br />
                   MenteeConnect represents my commitment to improving academic mentorship through modern web technologies.
                 </p>
 
-                <div className="flex flex-wrap gap-4">
-                  <a href="https://github.com/coder-mahi" target="_blank" rel="noopener noreferrer" className="flex items-center px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-white rounded-lg transition-colors">
-                    <Github className="h-5 w-5 mr-2" />
+                <div className="mt-6 flex flex-wrap justify-center gap-3 md:justify-start">
+                  <a href="https://github.com/coder-mahi" target="_blank" rel="noopener noreferrer" className="btn-secondary btn-sm">
+                    <Github className="h-4 w-4" />
                     GitHub
                   </a>
-                  <a href="https://www.linkedin.com/in/mahesh-shinde-0a666b23b" target="_blank" rel="noopener noreferrer" className="flex items-center px-4 py-2 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 text-blue-700 dark:text-blue-400 rounded-lg transition-colors">
-                    <Linkedin className="h-5 w-5 mr-2" />
+                  <a href="https://www.linkedin.com/in/mahesh-shinde-0a666b23b" target="_blank" rel="noopener noreferrer" className="btn-secondary btn-sm">
+                    <Linkedin className="h-4 w-4" />
                     LinkedIn
                   </a>
-                  <a href="https://shindemaheshportfolio.netlify.app" target="_blank" rel="noopener noreferrer" className="flex items-center px-4 py-2 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/40 text-purple-700 dark:text-purple-400 rounded-lg transition-colors">
-                    <User className="h-5 w-5 mr-2" />
+                  <a href="https://shindemaheshportfolio.netlify.app" target="_blank" rel="noopener noreferrer" className="btn-secondary btn-sm">
+                    <User className="h-4 w-4" />
                     Portfolio
                   </a>
                 </div>
@@ -561,56 +529,58 @@ const LandingPage = () => {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-20 bg-slate-50 dark:bg-slate-800 transition-colors duration-300">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-4">Get in Touch</h2>
-            <p className="text-xl text-slate-600 dark:text-slate-400">Have questions? Want to collaborate? Let's connect!</p>
+      <section id="contact" className="border-b border-gray-200 bg-white py-20 dark:border-slate-700/70 dark:bg-slate-800">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <p className="eyebrow">Contact</p>
+            <h2 className="page-title mt-2">Get in Touch</h2>
+            <p className="page-subtitle mt-3">Have questions? Want to collaborate? Let's connect.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 hover:shadow-xl transition-all">
-              <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center mb-6">
-                <Mail className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Email Us</h3>
-              <p className="text-slate-600 dark:text-slate-400 mb-4">For inquiries and support</p>
-              <a href="mailto:contact.shindemahesh2112@gmail.com" className="text-indigo-600 dark:text-indigo-400 font-medium hover:text-indigo-700 dark:hover:text-indigo-300">
+          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="card card-pad card-hover">
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+                <Mail className="h-5 w-5" />
+              </span>
+              <h3 className="section-title mt-4">Email Us</h3>
+              <p className="muted mt-1 text-sm">For inquiries and support</p>
+              <a href="mailto:contact.shindemahesh2112@gmail.com" className="link mt-3 inline-block text-sm font-medium">
                 contact.shindemahesh2112@gmail.com
               </a>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 hover:shadow-xl transition-all">
-              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mb-6">
-                <MapPin className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Visit Us</h3>
-              <p className="text-slate-600 dark:text-slate-400 mb-4">Sanjivani College of Engineering</p>
-              <span className="text-purple-600 dark:text-purple-400 font-medium">
-                Kopargaon, Maharashtra
+            <div className="card card-pad card-hover">
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+                <MapPin className="h-5 w-5" />
               </span>
+              <h3 className="section-title mt-4">Visit Us</h3>
+              <p className="muted mt-1 text-sm">Sanjivani College of Engineering</p>
+              <p className="mt-3 text-sm font-medium text-brand-600 dark:text-brand-400">
+                Kopargaon, Maharashtra
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-16 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+      <footer className="bg-slate-900 py-14 text-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
             <div className="col-span-1 md:col-span-2">
-              <div className="flex items-center mb-6">
-                <MenteeConnectLogo size="md" showText={false} />
-                <span className="ml-4 text-2xl font-bold text-white">
-                  MenteeConnect
-                </span>
+              <div className="flex items-center gap-3">
+                <MenteeConnectLogo size="md" showText={false} variant="white" />
+                <span className="text-xl font-semibold text-white">MenteeConnect</span>
               </div>
-              <p className="text-slate-400 max-w-md text-lg leading-relaxed mb-8">
+              <p className="mt-5 max-w-md text-sm leading-relaxed text-slate-400">
                 Empowering mentorship through technology. Built by students, for students to create meaningful connections.
               </p>
-              <div className="flex space-x-4">
+              <div className="mt-6 flex gap-3">
                 {[Github, Linkedin, Mail].map((Icon, i) => (
-                  <button key={i} className="h-10 w-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-indigo-600 transition-all">
+                  <button
+                    key={i}
+                    type="button"
+                    className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 transition-colors hover:bg-brand-600"
+                  >
                     <Icon className="h-5 w-5 text-white" />
                   </button>
                 ))}
@@ -618,12 +588,11 @@ const LandingPage = () => {
             </div>
 
             <div>
-              <h4 className="text-lg font-bold mb-6 text-white">Quick Links</h4>
-              <ul className="space-y-3">
+              <h4 className="text-sm font-semibold uppercase tracking-wider text-white">Quick Links</h4>
+              <ul className="mt-5 space-y-3">
                 {['Features', 'Roles', 'About', 'Contact'].map((item) => (
                   <li key={item}>
-                    <a href={`#${item.toLowerCase()}`} className="text-slate-400 hover:text-white transition-colors flex items-center group">
-                      <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                    <a href={`#${item.toLowerCase()}`} className="text-sm text-slate-400 transition-colors hover:text-white">
                       {item}
                     </a>
                   </li>
@@ -632,11 +601,11 @@ const LandingPage = () => {
             </div>
 
             <div>
-              <h4 className="text-lg font-bold mb-6 text-white">Legal</h4>
-              <ul className="space-y-3">
+              <h4 className="text-sm font-semibold uppercase tracking-wider text-white">Legal</h4>
+              <ul className="mt-5 space-y-3">
                 {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map((item) => (
                   <li key={item}>
-                    <button className="text-slate-400 hover:text-white transition-colors">
+                    <button type="button" className="text-sm text-slate-400 transition-colors hover:text-white">
                       {item}
                     </button>
                   </li>
@@ -645,13 +614,13 @@ const LandingPage = () => {
             </div>
           </div>
 
-          <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-slate-500 text-center md:text-left">
-              © 2025 MenteeConnect. Developed by <span className="text-white font-medium">Mahesh Shinde</span>
+          <div className="mt-12 flex flex-col items-center justify-between border-t border-slate-800 pt-8 md:flex-row">
+            <p className="text-center text-sm text-slate-500 md:text-left">
+              © 2025 MenteeConnect. Developed by <span className="font-medium text-white">Mahesh Shinde</span>
             </p>
-            <div className="flex items-center mt-4 md:mt-0 space-x-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-slate-500 text-sm">All systems operational</span>
+            <div className="mt-4 flex items-center gap-2 md:mt-0">
+              <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
+              <span className="text-sm text-slate-500">All systems operational</span>
             </div>
           </div>
         </div>

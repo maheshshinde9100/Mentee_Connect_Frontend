@@ -20,11 +20,11 @@ const Pagination = memo(({
   const canNext = page < totalPages - 1;
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 px-2">
-      <p className="text-sm text-gray-600 dark:text-slate-400">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 px-2 text-sm">
+      <p className="muted">
         Page {currentPage} of {totalPages}
         {typeof totalElements === 'number' && (
-          <span className="ml-2 text-gray-500 dark:text-slate-500">
+          <span className="ml-2">
             ({totalElements} total)
           </span>
         )}
@@ -35,7 +35,7 @@ const Pagination = memo(({
             value={pageSize}
             onChange={(e) => onPageSizeChange(Number(e.target.value))}
             disabled={disabled}
-            className="text-sm border border-gray-300 dark:border-slate-600 rounded-md px-2 py-1 bg-white dark:bg-slate-800 text-gray-900 dark:text-white"
+            className="input w-auto py-1.5"
             aria-label="Items per page"
           >
             {pageSizeOptions.map((size) => (
@@ -49,7 +49,7 @@ const Pagination = memo(({
           type="button"
           onClick={() => onPageChange(page - 1)}
           disabled={disabled || !canPrev}
-          className="px-3 py-1 text-sm rounded-md border border-gray-300 dark:border-slate-600 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-slate-700"
+          className="btn-secondary btn-sm"
         >
           Previous
         </button>
@@ -57,7 +57,7 @@ const Pagination = memo(({
           type="button"
           onClick={() => onPageChange(page + 1)}
           disabled={disabled || !canNext}
-          className="px-3 py-1 text-sm rounded-md border border-gray-300 dark:border-slate-600 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-slate-700"
+          className="btn-secondary btn-sm"
         >
           Next
         </button>

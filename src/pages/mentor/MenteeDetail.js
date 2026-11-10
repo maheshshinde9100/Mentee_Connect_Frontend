@@ -265,15 +265,15 @@ const MenteeDetail = () => {
 
   if (loading && !mentee) {
     return (
-      <div className="h-full flex justify-center items-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      <div className="flex h-full items-center justify-center py-12">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-brand-600 dark:border-slate-700 dark:border-t-brand-400" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-md">
+      <div className="alert-error">
         <div className="flex">
           <div className="flex-shrink-0">
             <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -281,7 +281,7 @@ const MenteeDetail = () => {
             </svg>
           </div>
           <div className="ml-3">
-            <h3 className="text-sm font-medium text-red-800">{error}</h3>
+            <h3 className="text-sm font-medium">{error}</h3>
           </div>
         </div>
       </div>
@@ -289,41 +289,38 @@ const MenteeDetail = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="space-y-6">
       {/* Header with back button */}
-      <div className="mb-6 flex items-center">
+      <div className="flex items-center">
         <button 
           onClick={() => navigate('/mentor/mentees')}
-          className="mr-4 p-2 rounded-full hover:bg-gray-100"
+          className="btn-icon mr-2"
         >
-          <svg className="h-5 w-5 text-gray-600 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
           </svg>
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 className="page-title">
             {mentee?.firstName || ''} {mentee?.lastName || ''}
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">{mentee?.email || ''}</p>
+          <p className="page-subtitle">{mentee?.email || ''}</p>
         </div>
       </div>
 
       {saveSuccess && (
-        <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/20 text-green-800 rounded-md">
+        <div className="alert-success">
           Mentee information updated successfully!
         </div>
       )}
 
       <Tab.Group>
-        <Tab.List className="flex space-x-1 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 p-1 mb-6">
+        <Tab.List className="mb-6 flex gap-8 border-b border-gray-200 dark:border-slate-700">
           <Tab
             className={({ selected }) =>
               classNames(
-                'w-full rounded-lg py-2.5 text-sm font-medium leading-5',
-                'ring-white ring-opacity-60 ring-offset-2 ring-offset-indigo-400 focus:outline-none focus:ring-2',
-                selected
-                  ? 'bg-white dark:bg-slate-800 shadow text-indigo-700 dark:text-indigo-300'
-                  : 'text-indigo-500 hover:bg-white dark:bg-slate-800/[0.12] hover:text-indigo-700 dark:text-indigo-300'
+                'tab',
+                selected && 'tab-active'
               )
             }
           >
@@ -332,11 +329,8 @@ const MenteeDetail = () => {
           <Tab
             className={({ selected }) =>
               classNames(
-                'w-full rounded-lg py-2.5 text-sm font-medium leading-5',
-                'ring-white ring-opacity-60 ring-offset-2 ring-offset-indigo-400 focus:outline-none focus:ring-2',
-                selected
-                  ? 'bg-white dark:bg-slate-800 shadow text-indigo-700 dark:text-indigo-300'
-                  : 'text-indigo-500 hover:bg-white dark:bg-slate-800/[0.12] hover:text-indigo-700 dark:text-indigo-300'
+                'tab',
+                selected && 'tab-active'
               )
             }
           >
@@ -345,11 +339,8 @@ const MenteeDetail = () => {
           <Tab
             className={({ selected }) =>
               classNames(
-                'w-full rounded-lg py-2.5 text-sm font-medium leading-5',
-                'ring-white ring-opacity-60 ring-offset-2 ring-offset-indigo-400 focus:outline-none focus:ring-2',
-                selected
-                  ? 'bg-white dark:bg-slate-800 shadow text-indigo-700 dark:text-indigo-300'
-                  : 'text-indigo-500 hover:bg-white dark:bg-slate-800/[0.12] hover:text-indigo-700 dark:text-indigo-300'
+                'tab',
+                selected && 'tab-active'
               )
             }
           >
@@ -358,14 +349,14 @@ const MenteeDetail = () => {
         </Tab.List>
         <Tab.Panels>
           <Tab.Panel>
-            <div className="bg-white dark:bg-slate-800 shadow rounded-lg overflow-hidden">
-              <div className="p-6">
-                <div className="flex justify-between mb-6">
-                  <h2 className="text-lg font-medium text-gray-900 dark:text-white">Mentee Information</h2>
+            <div className="card overflow-hidden">
+              <div className="card-pad">
+                <div className="mb-6 flex justify-between">
+                  <h2 className="section-title">Mentee Information</h2>
                   <button
                     type="button"
                     onClick={() => setEditMode(!editMode)}
-                    className="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="btn-secondary btn-sm"
                   >
                     {editMode ? 'Cancel' : 'Edit'}
                   </button>
@@ -375,7 +366,7 @@ const MenteeDetail = () => {
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                       <div className="sm:col-span-3">
-                        <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label htmlFor="firstName" className="label">
                           First name <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -384,18 +375,16 @@ const MenteeDetail = () => {
                           id="firstName"
                           value={formData.firstName}
                           onChange={handleInputChange}
-                          className={`mt-1 block w-full border ${
-                            validationErrors.firstName ? 'border-red-300' : 'border-gray-300 dark:border-slate-600'
-                          } rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                          className={`input ${validationErrors.firstName ? 'border-red-400' : ''}`}
                           required
                         />
                         {validationErrors.firstName && (
-                          <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.firstName}</p>
+                          <p className="form-error">{validationErrors.firstName}</p>
                         )}
                       </div>
 
                       <div className="sm:col-span-3">
-                        <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label htmlFor="lastName" className="label">
                           Last name <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -404,18 +393,16 @@ const MenteeDetail = () => {
                           id="lastName"
                           value={formData.lastName}
                           onChange={handleInputChange}
-                          className={`mt-1 block w-full border ${
-                            validationErrors.lastName ? 'border-red-300' : 'border-gray-300 dark:border-slate-600'
-                          } rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                          className={`input ${validationErrors.lastName ? 'border-red-400' : ''}`}
                           required
                         />
                         {validationErrors.lastName && (
-                          <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.lastName}</p>
+                          <p className="form-error">{validationErrors.lastName}</p>
                         )}
                       </div>
 
                       <div className="sm:col-span-3">
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label htmlFor="email" className="label">
                           Email <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -424,20 +411,18 @@ const MenteeDetail = () => {
                           id="email"
                           value={formData.email}
                           onChange={handleInputChange}
-                          className={`mt-1 block w-full border ${
-                            validationErrors.email ? 'border-red-300' : 'border-gray-300 dark:border-slate-600'
-                          } rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                          className={`input ${validationErrors.email ? 'border-red-400' : ''}`}
                           required
                         />
                         {validationErrors.email && (
-                          <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.email}</p>
+                          <p className="form-error">{validationErrors.email}</p>
                         )}
                       </div>
 
                       <div className="sm:col-span-3">
-                        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label htmlFor="phone" className="label">
                           Phone
-                          <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">(optional)</span>
+                          <span className="ml-1 text-xs font-normal text-gray-500 dark:text-slate-400">(optional)</span>
                         </label>
                         <input
                           type="tel"
@@ -445,17 +430,15 @@ const MenteeDetail = () => {
                           id="phone"
                           value={formData.phone}
                           onChange={handleInputChange}
-                          className={`mt-1 block w-full border ${
-                            validationErrors.phone ? 'border-red-300' : 'border-gray-300 dark:border-slate-600'
-                          } rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                          className={`input ${validationErrors.phone ? 'border-red-400' : ''}`}
                         />
                         {validationErrors.phone && (
-                          <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.phone}</p>
+                          <p className="form-error">{validationErrors.phone}</p>
                         )}
                       </div>
 
                       <div className="sm:col-span-6">
-                        <label htmlFor="department" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label htmlFor="department" className="label">
                           Department
                         </label>
                         <input
@@ -464,20 +447,20 @@ const MenteeDetail = () => {
                           id="department"
                           value={formData.department}
                           onChange={handleInputChange}
-                          className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                          className="input"
                         />
                       </div>
 
                       <div className="sm:col-span-6">
-                        <label htmlFor="skills" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label htmlFor="skills" className="label">
                           Skills
                         </label>
-                        <div className="mt-1">
-                          <div className="flex flex-wrap gap-2 mb-2">
+                        <div>
+                          <div className="mb-2 flex flex-wrap gap-2">
                             {formData.skills.map((skill, index) => (
                               <span
                                 key={index}
-                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:text-indigo-200"
+                                className="badge-brand"
                               >
                                 {skill}
                                 <button
@@ -486,7 +469,7 @@ const MenteeDetail = () => {
                                     e.preventDefault();
                                     handleRemoveSkill(skill);
                                   }}
-                                  className="ml-1 inline-flex items-center p-0.5 rounded-full text-indigo-400 hover:bg-indigo-200 hover:text-indigo-500 focus:outline-none"
+                                  className="ml-1 inline-flex items-center rounded-full p-0.5 text-brand-500 hover:bg-brand-100 hover:text-brand-700 dark:hover:bg-brand-500/20"
                                 >
                                   <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -501,12 +484,12 @@ const MenteeDetail = () => {
                               value={newSkill}
                               onChange={(e) => setNewSkill(e.target.value)}
                               placeholder="Add a skill"
-                              className="flex-1 border border-gray-300 dark:border-slate-600 rounded-l-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                              className="input flex-1 rounded-r-none"
                             />
                             <button
                               type="button"
                               onClick={handleAddSkill}
-                              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                              className="btn-primary rounded-l-none"
                             >
                               Add
                             </button>
@@ -515,7 +498,7 @@ const MenteeDetail = () => {
                       </div>
 
                       <div className="sm:col-span-6">
-                        <label htmlFor="interests" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label htmlFor="interests" className="label">
                           Interests
                         </label>
                         <input
@@ -524,14 +507,14 @@ const MenteeDetail = () => {
                           id="interests"
                           value={formData.interests}
                           onChange={handleInputChange}
-                          className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                          className="input"
                         />
                       </div>
 
                       <div className="sm:col-span-6">
-                        <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label htmlFor="notes" className="label">
                           Mentor Notes
-                          <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">(private to you)</span>
+                          <span className="ml-1 text-xs font-normal text-gray-500 dark:text-slate-400">(private to you)</span>
                         </label>
                         <textarea
                           id="notes"
@@ -539,16 +522,16 @@ const MenteeDetail = () => {
                           rows={3}
                           value={formData.notes}
                           onChange={handleInputChange}
-                          className="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                          className="textarea"
                         />
                       </div>
                     </div>
 
-                    <div className="flex justify-end space-x-3">
+                    <div className="flex justify-end gap-3">
                       <button
                         type="button"
                         onClick={() => setEditMode(false)}
-                        className="inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="btn-secondary"
                       >
                         Cancel
                       </button>
@@ -556,7 +539,7 @@ const MenteeDetail = () => {
                         type="button"
                         onClick={() => setShowConfirmDialog(true)}
                         disabled={loading}
-                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="btn-primary"
                       >
                         {loading ? 'Saving...' : 'Save Changes'}
                       </button>
@@ -564,38 +547,38 @@ const MenteeDetail = () => {
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Full name</h3>
+                        <h3 className="text-sm font-medium muted">Full name</h3>
                         <p className="mt-1 text-sm text-gray-900 dark:text-white">{mentee?.firstName || ''} {mentee?.lastName || ''}</p>
                       </div>
                       
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Email address</h3>
+                        <h3 className="text-sm font-medium muted">Email address</h3>
                         <p className="mt-1 text-sm text-gray-900 dark:text-white">{mentee?.email || ''}</p>
                       </div>
                       
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</h3>
+                        <h3 className="text-sm font-medium muted">Phone</h3>
                         <p className="mt-1 text-sm text-gray-900 dark:text-white">{mentee?.phone || 'Not provided'}</p>
                       </div>
                       
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Department</h3>
+                        <h3 className="text-sm font-medium muted">Department</h3>
                         <p className="mt-1 text-sm text-gray-900 dark:text-white">{mentee?.department || 'Not assigned'}</p>
                       </div>
                       
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Status</h3>
+                        <h3 className="text-sm font-medium muted">Status</h3>
                         <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          <span className="badge-success">
                             ACTIVE
                           </span>
                         </p>
                       </div>
                       
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Joined</h3>
+                        <h3 className="text-sm font-medium muted">Joined</h3>
                         <p className="mt-1 text-sm text-gray-900 dark:text-white">
                           {mentee?.joinedDate ? new Date(mentee.joinedDate).toLocaleDateString() : 'Unknown'}
                         </p>
@@ -603,26 +586,26 @@ const MenteeDetail = () => {
                     </div>
                     
                     <div>
-                      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Skills</h3>
+                      <h3 className="text-sm font-medium muted">Skills</h3>
                       <div className="mt-1 flex flex-wrap gap-2">
                         {mentee?.skills && mentee.skills.length > 0 ? 
                           mentee.skills.map((skill, index) => (
-                            <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:text-indigo-200">
+                            <span key={index} className="badge-brand">
                               {skill}
                             </span>
                           )) : 
-                          <p className="text-sm text-gray-500 dark:text-gray-400">No skills listed</p>
+                          <p className="muted text-sm">No skills listed</p>
                         }
                       </div>
                     </div>
 
                     <div>
-                      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Interests</h3>
+                      <h3 className="text-sm font-medium muted">Interests</h3>
                       <p className="mt-1 text-sm text-gray-900 dark:text-white">{mentee?.interests || 'Not provided'}</p>
                     </div>
 
                     <div>
-                      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Mentor Notes</h3>
+                      <h3 className="text-sm font-medium muted">Mentor Notes</h3>
                       <p className="mt-1 text-sm text-gray-900 dark:text-white">{mentee?.notes || 'No notes yet'}</p>
                     </div>
                   </div>
@@ -632,14 +615,14 @@ const MenteeDetail = () => {
           </Tab.Panel>
           
           <Tab.Panel>
-            <div className="bg-white dark:bg-slate-800 shadow rounded-lg overflow-hidden">
-              <div className="p-6">
-                <div className="flex justify-between mb-6">
-                  <h2 className="text-lg font-medium text-gray-900 dark:text-white">Assigned Tasks</h2>
+            <div className="card overflow-hidden">
+              <div className="card-pad">
+                <div className="mb-6 flex justify-between">
+                  <h2 className="section-title">Assigned Tasks</h2>
                   <button
                     type="button"
                     onClick={() => navigate(`/mentor/tasks/new?menteeId=${menteeId}`)}
-                    className="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="btn-primary"
                   >
                     <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
@@ -649,24 +632,24 @@ const MenteeDetail = () => {
                 </div>
 
                 {tasks.length === 0 ? (
-                  <div className="text-center py-12">
+                  <div className="py-12 text-center">
                     <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                     <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No tasks assigned</h3>
-                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by assigning a new task.</p>
+                    <p className="muted mt-1 text-sm">Get started by assigning a new task.</p>
                   </div>
                 ) : (
-                  <ul className="divide-y divide-gray-200 dark:divide-slate-700">
+                  <ul className="divide-y divide-gray-100 dark:divide-slate-700/60">
                     {tasks.map((task) => (
                       <li key={task.id} className="py-4">
                         <div className="flex items-center justify-between">
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">{task.title}</p>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{task.description}</p>
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-semibold text-gray-900 dark:text-white">{task.title}</p>
+                            <p className="muted text-sm">{task.description}</p>
                             <div className="mt-2 flex">
-                              <p className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                                <svg className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                              <p className="muted flex items-center text-sm">
+                                <svg className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                   <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                                 </svg>
                                 Due: {new Date(task.dueDate).toLocaleDateString()}
@@ -677,10 +660,10 @@ const MenteeDetail = () => {
                             <select
                               value={task.status}
                               onChange={(e) => handleTaskStatusChange(task.id, e.target.value)}
-                              className={`inline-flex rounded-full text-xs font-semibold py-1 px-2 ${
-                                task.status === 'COMPLETED' ? 'bg-green-100 text-green-800' : 
-                                task.status === 'IN_PROGRESS' ? 'bg-yellow-100 text-yellow-800' : 
-                                'bg-gray-100 text-gray-800 dark:text-gray-100'
+                              className={`select h-auto w-auto py-1 pr-8 pl-2.5 text-xs font-medium ${
+                                task.status === 'COMPLETED' ? 'border-emerald-300 text-emerald-700 dark:border-emerald-900/50 dark:text-emerald-300' :
+                                task.status === 'IN_PROGRESS' ? 'border-amber-300 text-amber-700 dark:border-amber-900/50 dark:text-amber-300' :
+                                'text-gray-700 dark:text-slate-300'
                               }`}
                             >
                               <option value="PENDING">Pending</option>
@@ -698,14 +681,14 @@ const MenteeDetail = () => {
           </Tab.Panel>
           
           <Tab.Panel>
-            <div className="bg-white dark:bg-slate-800 shadow rounded-lg overflow-hidden">
-              <div className="p-6">
-                <div className="flex justify-between mb-6">
-                  <h2 className="text-lg font-medium text-gray-900 dark:text-white">Attendance Record</h2>
+            <div className="card overflow-hidden">
+              <div className="card-pad">
+                <div className="mb-6 flex justify-between">
+                  <h2 className="section-title">Attendance Record</h2>
                   <button
                     type="button"
                     onClick={() => navigate(`/mentor/attendance/record?menteeId=${menteeId}`)}
-                    className="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="btn-primary"
                   >
                     <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -715,43 +698,43 @@ const MenteeDetail = () => {
                 </div>
 
                 {attendance.length === 0 ? (
-                  <div className="text-center py-12">
+                  <div className="py-12 text-center">
                     <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No attendance records</h3>
-                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Start tracking attendance for this mentee.</p>
+                    <p className="muted mt-1 text-sm">Start tracking attendance for this mentee.</p>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
-                      <thead className="bg-gray-50 dark:bg-slate-900/50">
+                  <div className="table-wrap">
+                    <table className="table">
+                      <thead>
                         <tr>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Session Type</th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Notes</th>
+                          <th scope="col">Date</th>
+                          <th scope="col">Status</th>
+                          <th scope="col">Session Type</th>
+                          <th scope="col">Notes</th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
+                      <tbody>
                         {attendance.map((record) => (
                           <tr key={record.id}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            <td>
                               {new Date(record.date).toLocaleDateString()}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                record.status === 'PRESENT' ? 'bg-green-100 text-green-800' : 
-                                record.status === 'ABSENT' ? 'bg-red-100 text-red-800' : 
-                                'bg-yellow-100 text-yellow-800'
+                            <td>
+                              <span className={`${
+                                record.status === 'PRESENT' ? 'badge-success' : 
+                                record.status === 'ABSENT' ? 'badge-danger' : 
+                                'badge-warn'
                               }`}>
                                 {record.status}
                               </span>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            <td>
                               {record.sessionType}
                             </td>
-                            <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                            <td>
                               {record.notes || '-'}
                             </td>
                           </tr>
@@ -768,40 +751,40 @@ const MenteeDetail = () => {
 
       {/* Confirmation Dialog */}
       {showConfirmDialog && (
-        <div className="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div className="inline-block align-bottom bg-white dark:bg-slate-800 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+        <div className="fixed inset-0 z-10 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+          <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity dark:bg-black/70" aria-hidden="true"></div>
+            <span className="hidden sm:inline-block sm:h-screen sm:align-middle" aria-hidden="true">&#8203;</span>
+            <div className="card inline-block overflow-hidden px-4 pt-5 pb-4 text-left align-bottom sm:my-8 sm:w-full sm:max-w-lg sm:align-middle sm:p-6">
               <div>
-                <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100">
-                  <svg className="h-6 w-6 text-indigo-600 dark:text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 dark:bg-brand-500/10">
+                  <svg className="h-6 w-6 text-brand-600 dark:text-brand-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
                 <div className="mt-3 text-center sm:mt-5">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">
+                  <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white" id="modal-title">
                     Save Changes?
                   </h3>
                   <div className="mt-2">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="muted text-sm">
                       Are you sure you want to save these changes? This action will update the mentee's information.
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
+              <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                 <button
                   type="button"
                   onClick={handleSave}
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm"
+                  className="btn-primary w-full sm:col-start-2"
                 >
                   Save Changes
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowConfirmDialog(false)}
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-slate-600 shadow-sm px-4 py-2 bg-white dark:bg-slate-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+                  className="btn-secondary mt-3 w-full sm:col-start-1 sm:mt-0"
                 >
                   Cancel
                 </button>

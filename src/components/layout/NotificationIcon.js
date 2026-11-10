@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { BellIcon } from '@heroicons/react/24/outline';
 import { notificationService } from '../../services/notificationService';
 import NotificationPanel from './NotificationPanel';
-import { useLocation } from 'react-router-dom';
 
 const NotificationIcon = () => {
   const [unreadCount, setUnreadCount] = useState(0);
@@ -9,18 +10,10 @@ const NotificationIcon = () => {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const location = useLocation();
 
-  // Determine if we're in the dashboard layout by checking the path
-  const isDashboard = location.pathname.includes('/admin') ||
+  const isDashboard =
+    location.pathname.includes('/admin') ||
     location.pathname.includes('/mentor') ||
     location.pathname.includes('/student');
-
-  // Remove automatic polling and only fetch initially
-  useEffect(() => {
-    // Initial fetch on mount - we could remove this too if you don't want any automatic fetching
-    // fetchUnreadCount();
-
-    // No more interval polling
-  }, []);
 
   const fetchUnreadCount = async () => {
     try {
@@ -28,14 +21,10 @@ const NotificationIcon = () => {
       const response = await notificationService.getUnreadCount();
       if (response && response.data) {
         setUnreadCount(response.data.count || 0);
-
       } else {
-
         setUnreadCount(0);
       }
     } catch (error) {
-
-      // Set to 0 on error to prevent displaying incorrect counts
       setUnreadCount(0);
     } finally {
       setIsLoading(false);
@@ -44,62 +33,25 @@ const NotificationIcon = () => {
 
   const toggleNotificationPanel = () => {
     setIsPanelOpen(!isPanelOpen);
-    // Always fetch when toggling
     fetchUnreadCount();
   };
 
   const handleClosePanel = () => {
     setIsPanelOpen(false);
-    fetchUnreadCount(); // Refresh count after closing
+    fetchUnreadCount();
   };
 
   return (
     <div className="relative">
       <button
         onClick={toggleNotificationPanel}
-        className={`relative focus:outline-none transition-colors ${isDashboard
-            ? 'p-1 text-slate-400 hover:text-slate-500 dark:text-slate-400 dark:hover:text-slate-300 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-            : 'text-white hover:bg-indigo-700 p-2 rounded-full'
-          }`}
+        className={isDashboard ? 'btn-icon relative' : 'relative rounded-lg p-2 text-white transition-colors hover:bg-white/10'}
         aria-label="Notifications"
       >
-        {isLoading ? (
-          <div className="animate-pulse">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-              />
-            </svg>
-          </div>
-        ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-            />
-          </svg>
-        )}
+        <BellIcon className={`h-5 w-5 ${isLoading ? 'animate-pulse' : ''}`} />
 
         {unreadCount > 0 && (
-          <span className={`absolute -top-1 -right-1 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center ${isDashboard ? 'bg-red-500 ring-2 ring-white dark:ring-slate-800' : 'bg-red-500'
-            }`}>
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white ring-2 ring-white dark:ring-slate-900">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}

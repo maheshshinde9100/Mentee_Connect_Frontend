@@ -1,52 +1,50 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HomeIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import MenteeConnectLogo from '../MenteeConnectLogo';
 
 const NotFound = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col justify-center items-center px-4">
-      <div className="max-w-lg w-full text-center">
-        {/* 404 Text */}
-        <h1 className="text-9xl font-bold text-indigo-600 dark:text-indigo-400 animate-bounce">404</h1>
-        
-        {/* Main Message */}
-        <h2 className="mt-8 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">Page not found</h2>
-        <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
-          Sorry, we couldn't find the page you're looking for. The URL might be incorrect, or the page may have been moved or deleted.
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 dark:bg-slate-900">
+      <div className="w-full max-w-md text-center">
+        <div className="mb-8 flex justify-center">
+          <MenteeConnectLogo size="md" showText={false} />
+        </div>
+
+        <p className="eyebrow">Error 404</p>
+        <h1 className="mt-3 text-3xl font-semibold text-gray-900 dark:text-white">
+          Page not found
+        </h1>
+        <p className="mt-3 text-sm leading-relaxed text-gray-500 dark:text-slate-400">
+          The page you are looking for doesn't exist or may have been moved. Check the URL or head
+          back to a known page.
         </p>
 
-        {/* MenteeConnect Logo/Text */}
-        <div className="mt-6 text-xl font-semibold text-indigo-600 dark:text-indigo-400">
-          MenteeConnect
-        </div>
-
-        {/* Back to Home Button */}
-        <div className="mt-10">
-          <button
-            onClick={() => navigate('/')}
-            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
-          >
-            <HomeIcon className="w-5 h-5 mr-2" />
-            Back to Home
+        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <button onClick={() => navigate('/')} className="btn-primary">
+            <ArrowLeftIcon className="h-4 w-4" />
+            Back to home
+          </button>
+          <button onClick={() => navigate(-1)} className="btn-secondary">
+            Go back
           </button>
         </div>
 
-        {/* Additional Links */}
-        <div className="mt-8 space-x-4">
+        <div className="mt-8 flex items-center justify-center gap-4 text-sm">
           <button
-            onClick={() => navigate('/admin/dashboard')}
-            className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500"
+            onClick={() => navigate('/login')}
+            className="font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-slate-400 dark:hover:text-white"
           >
-            Go to Dashboard
+            Sign in
           </button>
-          <span className="text-gray-400">|</span>
+          <span className="text-gray-300 dark:text-slate-600">•</span>
           <button
             onClick={() => navigate('/contact')}
-            className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500"
+            className="font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-slate-400 dark:hover:text-white"
           >
-            Contact Support
+            Contact support
           </button>
         </div>
       </div>
@@ -54,4 +52,4 @@ const NotFound = () => {
   );
 };
 
-export default NotFound; 
+export default NotFound;

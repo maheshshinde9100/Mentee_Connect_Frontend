@@ -22,29 +22,24 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-900/50 flex items-center justify-center px-4">
-          <div className="max-w-lg w-full bg-white dark:bg-slate-800 shadow-lg rounded-lg p-8">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Oops! Something went wrong</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                We're sorry for the inconvenience. Please try refreshing the page or contact support if the problem persists.
-              </p>
-              <button
-                onClick={() => window.location.reload()}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-150"
-              >
-                Refresh Page
-              </button>
-            </div>
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center px-4">
+          <div className="card card-pad max-w-lg w-full text-center">
+            <h2 className="page-title">Oops! Something went wrong</h2>
+            <p className="muted mt-2 mb-6">
+              We're sorry for the inconvenience. Please try refreshing the page or contact support if the problem persists.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="btn-primary"
+            >
+              Refresh Page
+            </button>
             {process.env.NODE_ENV === 'development' && (
-              <div className="mt-6 p-4 bg-gray-100 rounded-md">
-                <p className="text-sm font-mono text-gray-800 dark:text-gray-100 whitespace-pre-wrap">
-                  {this.state.error && this.state.error.toString()}
-                </p>
-                <p className="text-sm font-mono text-gray-600 dark:text-gray-400 mt-2 whitespace-pre-wrap">
-                  {this.state.errorInfo && this.state.errorInfo.componentStack}
-                </p>
-              </div>
+              <pre className="mt-6 overflow-x-auto whitespace-pre-wrap rounded-xl bg-gray-100 p-4 text-left text-xs text-gray-800 dark:bg-slate-900 dark:text-slate-200">
+                {this.state.error && this.state.error.toString()}
+                {'\n'}
+                {this.state.errorInfo && this.state.errorInfo.componentStack}
+              </pre>
             )}
           </div>
         </div>
@@ -55,4 +50,4 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-export default ErrorBoundary; 
+export default ErrorBoundary;

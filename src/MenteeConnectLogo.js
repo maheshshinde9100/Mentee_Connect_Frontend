@@ -57,13 +57,13 @@ const MenteeConnectLogo = ({
       {/* Logo Icon */}
       <div className="relative">
         <div className={`
-          ${config.container} 
+          ${config.container}
           ${colors.container}
-          rounded-2xl flex items-center justify-center shadow-lg 
+          rounded-2xl flex items-center justify-center shadow-lg
           ${animate ? 'transform rotate-12 hover:rotate-0 transition-transform duration-300' : 'transform rotate-12'}
         `}>
           <div className={`
-            ${config.inner} 
+            ${config.inner}
             ${colors.inner}
             rounded-xl flex items-center justify-center transform -rotate-12
           `}>
@@ -73,10 +73,10 @@ const MenteeConnectLogo = ({
           </div>
         </div>
         <div className={`
-          absolute -top-1 -right-1 
-          ${config.dot} 
+          absolute -top-1 -right-1
+          ${config.dot}
           ${colors.dot}
-          rounded-full 
+          rounded-full
           ${animate ? 'animate-pulse' : ''}
         `}></div>
       </div>
@@ -84,8 +84,8 @@ const MenteeConnectLogo = ({
       {/* Brand Text */}
       {showText && (
         <span className={`
-          ml-3 font-bold 
-          ${config.text} 
+          ml-3 font-bold
+          ${config.text}
           ${colors.brandText}
         `}>
           MenteeConnect

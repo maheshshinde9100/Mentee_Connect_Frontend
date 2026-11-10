@@ -46,12 +46,12 @@ const Analytics = () => {
 
   useFetchGuard(fetchAnalytics, []);
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+  const COLORS = ['#7065f0', '#475569', '#94a3b8', '#a5b4fc', '#cbd5e1'];
 
   if (loading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <div className="text-lg">Loading analytics data...</div>
+      <div className="flex h-full items-center justify-center p-6">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-brand-600 dark:border-slate-700 dark:border-t-brand-400" />
       </div>
     );
   }
@@ -59,7 +59,7 @@ const Analytics = () => {
   if (error) {
     return (
       <div className="p-6">
-        <div className="rounded-md bg-red-50 dark:bg-red-900/20 p-4 text-red-700">
+        <div className="alert-error">
           {error}
         </div>
       </div>
@@ -97,20 +97,20 @@ const Analytics = () => {
   }));
 
   return (
-    <div className="p-6">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Analytics Dashboard</h1>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+    <div className="space-y-8 p-6">
+      <div>
+        <h1 className="page-title">Analytics Dashboard</h1>
+        <p className="page-subtitle">
           Overview of mentorship program metrics and performance indicators
         </p>
       </div>
 
       {/* Time Frame Selector */}
-      <div className="mb-6">
+      <div>
         <select
           value={selectedTimeframe}
           onChange={(e) => setSelectedTimeframe(e.target.value)}
-          className="mt-1 block w-48 rounded-md border-gray-300 dark:border-slate-600 pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="select w-48"
         >
           <option value="7days">Last 7 Days</option>
           <option value="1month">Last Month</option>
@@ -121,30 +121,30 @@ const Analytics = () => {
       </div>
 
       {/* Metrics Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
-          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Users</h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900 dark:text-white">{userCounts.totalUsers}</p>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="card card-pad">
+          <h3 className="text-sm font-medium muted">Total Users</h3>
+          <p className="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">{userCounts.totalUsers}</p>
         </div>
-        <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
-          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Users</h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900 dark:text-white">{userCounts.activeUsers}</p>
+        <div className="card card-pad">
+          <h3 className="text-sm font-medium muted">Active Users</h3>
+          <p className="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">{userCounts.activeUsers}</p>
         </div>
-        <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
-          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Mentors</h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900 dark:text-white">{userCounts.totalMentors}</p>
+        <div className="card card-pad">
+          <h3 className="text-sm font-medium muted">Total Mentors</h3>
+          <p className="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">{userCounts.totalMentors}</p>
         </div>
-        <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
-          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Students</h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900 dark:text-white">{userCounts.totalStudents}</p>
+        <div className="card card-pad">
+          <h3 className="text-sm font-medium muted">Total Students</h3>
+          <p className="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">{userCounts.totalStudents}</p>
         </div>
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* User Distribution */}
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">User Distribution</h2>
+        <div className="card card-pad">
+          <h2 className="section-title mb-4">User Distribution</h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -152,7 +152,7 @@ const Analytics = () => {
                 cx="50%"
                 cy="50%"
                 outerRadius={100}
-                fill="#8884d8"
+                fill="#7065f0"
                 dataKey="value"
                 label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
               >
@@ -167,8 +167,8 @@ const Analytics = () => {
         </div>
 
         {/* Department Distribution */}
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Department Distribution</h2>
+        <div className="card card-pad">
+          <h2 className="section-title mb-4">Department Distribution</h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={departmentData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -176,29 +176,29 @@ const Analytics = () => {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="students" fill="#8884d8" name="Students" />
-              <Bar dataKey="mentors" fill="#82ca9d" name="Mentors" />
+              <Bar dataKey="students" fill="#7065f0" name="Students" />
+              <Bar dataKey="mentors" fill="#94a3b8" name="Mentors" />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Students per Semester */}
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Students per Semester</h2>
+        <div className="card card-pad">
+          <h2 className="section-title mb-4">Students per Semester</h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={semesterData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="students" fill="#8884d8" name="Students" />
+              <Bar dataKey="students" fill="#7065f0" name="Students" />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Mentor Experience Distribution */}
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Mentor Experience</h2>
+        <div className="card card-pad">
+          <h2 className="section-title mb-4">Mentor Experience</h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -206,7 +206,7 @@ const Analytics = () => {
                 cx="50%"
                 cy="50%"
                 outerRadius={100}
-                fill="#8884d8"
+                fill="#7065f0"
                 dataKey="value"
                 label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
               >
@@ -222,20 +222,20 @@ const Analytics = () => {
       </div>
 
       {/* Top Performing Mentors */}
-      <div className="mt-8">
-        <div className="bg-white dark:bg-slate-800 rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700">
-            <h2 className="text-lg font-medium text-gray-900 dark:text-white">Top Performing Mentors</h2>
+      <div>
+        <div className="card">
+          <div className="border-b border-gray-200 px-5 py-4 dark:border-slate-700/70">
+            <h2 className="section-title">Top Performing Mentors</h2>
           </div>
-          <div className="divide-y divide-gray-200 dark:divide-slate-700">
+          <div className="divide-y divide-gray-100 dark:divide-slate-700/60">
             {mentorStats.topPerformingMentors.map((mentor) => (
-              <div key={mentor.mentorId} className="px-6 py-4">
-                <div className="flex items-center justify-between">
+              <div key={mentor.mentorId} className="px-5 py-4">
+                <div className="flex items-center justify-between gap-4">
                   <div>
                     <h3 className="text-sm font-medium text-gray-900 dark:text-white">{mentor.mentorName}</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">ID: {mentor.mentorId}</p>
+                    <p className="text-sm muted">ID: {mentor.mentorId}</p>
                   </div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                  <div className="text-right text-sm muted">
                     <p>Students: {mentor.studentCount}</p>
                     <p>Avg. CGPA: {mentor.averageStudentCgpa.toFixed(2)}</p>
                     <p>Attendance: {(mentor.averageStudentAttendance * 100).toFixed(1)}%</p>
