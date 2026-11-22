@@ -277,7 +277,7 @@ export const adminService = {
   searchUsers: (name) => api.get('/admin/users/search', { params: { name } }),
   deleteUser: (userId) => api.delete(`/admin/users/${userId}`),
   updateUser: (userId, userData) => api.put(`/admin/users/${userId}`, userData),
-  getAnalytics: () => api.get('/admin/analytics', { skipCache: true }),
+  getAnalytics: () => api.get('/admin/analytics', { skipCache: true, timeout: 60000 }),
 
   getAdminStudents: (page = 0, size = 20) =>
     api.get('/admin/students', { params: { page, size } }),

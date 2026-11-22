@@ -79,7 +79,7 @@ export const adminService = {
   deleteUser: (userId) => api.delete(`/admin/users/${userId}`),
 
   // Analytics
-  getAnalytics: () => api.get('/admin/analytics'),
+  getAnalytics: () => api.get('/admin/analytics', { timeout: 60000 }),
 
   // Departments
   getAllDepartments: () => api.get('/admin/departments')
