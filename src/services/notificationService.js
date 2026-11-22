@@ -1,34 +1,21 @@
 import api from './api';
 
 export const notificationService = {
-  // Get notifications for the current user
   getUserNotifications: () => api.get('/notifications/my-notifications'),
+  getNotifications: () => api.get('/notifications/my-notifications'),
+  getAllNotifications: () => api.get('/notifications/my-notifications'),
 
-  // Mark a notification as read
   markAsRead: (notificationId) => api.put(`/notifications/${notificationId}/read`),
+  markAllAsRead: () => api.put('/notifications/read-all'),
 
-  // Send a notification (admin only)
-  sendNotification: (notificationData) => api.post('/notifications/admin/send', notificationData),
+  getUnreadNotifications: () => api.get('/notifications/unread'),
+  getUnreadCount: () => api.get('/notifications/unread-count'),
 
-  // Get unread notification count
-  getUnreadCount: () => api.get('/notifications/unread'),
+  sendNotification: (notificationData) =>
+    api.post('/notifications/admin/send', notificationData),
 
-
-  // For backward compatibility, keeping these methods but using the available endpoints
-  markAllAsRead: async () => {
-    return Promise.resolve({ data: { success: true } });
-  },
-
-  deleteNotification: async (id) => {
-    return Promise.resolve({ data: { success: true } });
-  },
-
-  getAllNotifications: async () => {
-    const response = await api.get('/notifications/my-notifications');
-    return response;
-  }
+  deleteNotification: (notificationId) =>
+    api.delete(`/notifications/${notificationId}`),
 };
 
-
-
-export default notificationService; 
+export default notificationService;

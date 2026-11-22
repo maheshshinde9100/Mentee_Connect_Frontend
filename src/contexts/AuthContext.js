@@ -83,11 +83,13 @@ export const AuthProvider = ({ children }) => {
       if (user.role === 'MENTOR') {
         response = await mentorService.updateProfile(user.id, profileData);
       } else if (user.role === 'MENTEE') {
-        response = await studentService.updateProfile(user.id, profileData);
+        response = await studentService.updateProfile(profileData);
       }
-      
-      setUser(response.data);
-      return response.data;
+
+      const updated = { ...user, ...(response?.data || {}) };
+      setUser(updated);
+      localStorage.setItem('user', JSON.stringify(updated));
+      return updated;
     } catch (error) {
       setError(error.response?.data?.message || 'Profile update failed');
       throw error;

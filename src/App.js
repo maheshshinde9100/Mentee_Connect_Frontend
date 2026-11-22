@@ -28,6 +28,7 @@ const Communication = React.lazy(() => import('./pages/admin/Communication'));
 const SendNotification = React.lazy(() => import('./pages/admin/SendNotification'));
 const NotificationManagement = React.lazy(() => import('./pages/admin/NotificationManagement'));
 const ManageMentorsMentees = React.lazy(() => import('./pages/admin/ManageMentorsMentees'));
+const BulkUpload = React.lazy(() => import('./pages/admin/BulkUpload'));
 const Notifications = React.lazy(() => import('./pages/user/Notifications'));
 const NotFound = React.lazy(() => import('./pages/NotFound'));
 const Profile = React.lazy(() => import('./pages/profile/Profile'));
@@ -37,6 +38,7 @@ const CertificateManagement = React.lazy(() => import('./components/CertificateM
 const StudentDashboard = React.lazy(() => import('./pages/student/StudentDashboard'));
 const MentorDetails = React.lazy(() => import('./pages/student/MentorDetails'));
 const SkillsManagement = React.lazy(() => import('./pages/student/SkillsManagement'));
+const StudentVideoCallHistory = React.lazy(() => import('./pages/student/VideoCallHistory'));
 
 const About = React.lazy(() => import('./pages/common/About'));
 const Contact = React.lazy(() => import('./pages/common/Contact'));
@@ -211,6 +213,14 @@ function App() {
                   }
                 />
                 <Route
+                  path="/admin/bulk-upload"
+                  element={
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                      <BulkUpload />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
                   path="/admin/communication"
                   element={
                     <ProtectedRoute allowedRoles={['ADMIN']}>
@@ -355,6 +365,14 @@ function App() {
                   element={
                     <ProtectedRoute allowedRoles={['STUDENT', 'MENTEE']}>
                       <CertificateManagement />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/student/video-calls"
+                  element={
+                    <ProtectedRoute allowedRoles={['STUDENT', 'MENTEE']}>
+                      <StudentVideoCallHistory />
                     </ProtectedRoute>
                   }
                 />

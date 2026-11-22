@@ -131,8 +131,9 @@ api.interceptors.response.use(
       error.response?.status === 401 &&
       originalConfig &&
       !originalConfig._retry &&
-      !originalConfig.url?.includes('/api/auth/login') &&
-      !originalConfig.url?.includes('/api/auth/refresh-token')
+      !originalConfig.url?.includes('/auth/login') &&
+      !originalConfig.url?.includes('/auth/register') &&
+      !originalConfig.url?.includes('/auth/refresh-token')
     ) {
       const token = localStorage.getItem('token');
       const refreshToken = localStorage.getItem('refreshToken') || token;
@@ -228,8 +229,9 @@ export const studentService = {
   getCurrentStudent: () => api.get('/students/me'),
   getStudentsByMentor: (mentorId, page = 0, size = 20) =>
     api.get(`/students/mentor/${mentorId}`, { params: { page, size } }),
-  updateStudentProgress: (id, progressData) => api.put(`/students/${id}/progress`, progressData),
-  getMyMentor: () => api.get('/students/my-mentor'),
+  updateStudentProgress: (id, attendance, cgpa) =>
+    api.put(`/students/${id}/progress`, null, { params: { attendance, cgpa } }),
+  getMyMentor: () => api.get('/students/me/mentor'),
   getProgressReports: () => api.get('/students/progress-reports')
 };
 
@@ -272,7 +274,7 @@ export const mentorService = {
 
 export const adminService = {
   getAllUsers: () => api.get('/admin/users'),
-  searchUsers: (name) => api.get(`/admin/users/search?name=${name}`),
+  searchUsers: (name) => api.get('/admin/users/search', { params: { name } }),
   deleteUser: (userId) => api.delete(`/admin/users/${userId}`),
   updateUser: (userId, userData) => api.put(`/admin/users/${userId}`, userData),
   getAnalytics: () => api.get('/admin/analytics', { skipCache: true }),
@@ -296,57 +298,8 @@ export const adminService = {
   createBatch: (batchData) => api.post('/admin/batches', batchData),
   getBatchStudents: (batchId) => api.get(`/admin/batches/${batchId}/students`),
   getBatchMentors: async (batchId) => {
-    try {
-      const response = await api.get(`/admin/batches/${batchId}/mentors?size=100`);
-
-      if (Array.isArray(response.data)) {
-        return { data: response.data };
-      }
-
-      if (response.data && response.data.content && Array.isArray(response.data.content)) {
-        return {
-          data: response.data.content,
-          pagination: {
-            totalElements: response.data.totalElements,
-            totalPages: response.data.totalPages,
-            currentPage: response.data.number,
-            pageSize: response.data.size
-          }
-        };
-      }
-
-      if (response.data && response.data.mentors && Array.isArray(response.data.mentors)) {
-        return { data: response.data.mentors };
-      }
-
-      if (response.data && typeof response.data === 'object') {
-        const keys = Object.keys(response.data);
-        for (const key of keys) {
-          if (Array.isArray(response.data[key])) {
-            return { data: response.data[key] };
-          }
-        }
-      }
-
-      return { data: [] };
-    } catch (error) {
-      if (error.response?.status === 401 || error.response?.status === 404) {
-        try {
-          const batchService = require('./batchService').default;
-          if (batchService.isMockModeEnabled && batchService.isMockModeEnabled()) {
-            return {
-              data: [
-                { id: '1', firstName: 'Alice', lastName: 'Williams', email: 'alice@example.com', specialization: 'Web Development' },
-                { id: '2', firstName: 'David', lastName: 'Brown', email: 'david@example.com', specialization: 'Data Science' }
-              ]
-            };
-          }
-        } catch (err) {
-        }
-      }
-
-      return { data: [] };
-    }
+    const response = await api.get(`/admin/batches/${batchId}/mentors`);
+    return { data: Array.isArray(response.data) ? response.data : [] };
   },
   assignStudentsToBatch: (batchId, studentIds) =>
     api.post('/admin/batches/assign-students', { batchId, studentIds }),
@@ -354,9 +307,6 @@ export const adminService = {
     api.post('/admin/batches/assign-mentor', { batchId, mentorIds }),
   updateBatch: (batchId, batchData) =>
     api.put(`/admin/batches/${batchId}`, batchData),
-
-  getMentorEngagement: () => api.get('/admin/analytics/mentor-engagement'),
-  getStudentProgress: () => api.get('/admin/analytics/student-progress'),
 };
 
 export default api; 

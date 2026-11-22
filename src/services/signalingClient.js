@@ -1,47 +1,54 @@
 const getWsUrl = () => {
-  // Use the WebSocket URL from environment variable if available
   const wsUrl = process.env.REACT_APP_SIGNAL_URL;
   if (wsUrl) {
     return wsUrl;
   }
 
-  // Fallback to constructing from API URL
+  // The backend exposes the signaling endpoint at /api/signal (context-path /api).
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080';
   try {
     const url = new URL(apiUrl);
-    const host = url.host;
-    return `${protocol}//${host}/signal`;
+    return `${protocol}//${url.host}/api/signal`;
   } catch (e) {
     const host = apiUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
-    return `${protocol}//${host}/signal`;
+    return `${protocol}//${host}/api/signal`;
   }
 };
 
 export const createSignalingClient = (userId, onMessage, onOpen, onClose) => {
   const token = localStorage.getItem('token');
-  const url = `${getWsUrl()}?userId=${encodeURIComponent(userId)}${token ? `&token=${encodeURIComponent(token)}` : ''}`;
+  const url = `${getWsUrl()}?userId=${encodeURIComponent(userId)}${
+    token ? `&token=${encodeURIComponent(token)}` : ''
+  }`;
   const ws = new WebSocket(url);
 
+  let closed = false;
+  const notifyClose = () => {
+    if (closed) return;
+    closed = true;
+    if (onClose) onClose();
+  };
+
   ws.onopen = () => {
+    closed = false;
     if (onOpen) onOpen();
   };
-  
-  ws.onerror = (error) => {
-    // Log error without sensitive details
-    if (onClose) onClose();
+
+  ws.onerror = () => {
+    notifyClose();
   };
-  
-  ws.onclose = (event) => {
-    if (onClose) onClose();
+
+  ws.onclose = () => {
+    notifyClose();
   };
-  
+
   ws.onmessage = (event) => {
     try {
       const data = JSON.parse(event.data);
-      onMessage && onMessage(data);
+      if (onMessage) onMessage(data);
     } catch (e) {
-      // Silently handle invalid messages
+      // Ignore malformed messages
     }
   };
 
@@ -55,4 +62,3 @@ export const createSignalingClient = (userId, onMessage, onOpen, onClose) => {
 };
 
 export default createSignalingClient;
-

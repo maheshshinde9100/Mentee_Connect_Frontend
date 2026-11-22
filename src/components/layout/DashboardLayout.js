@@ -20,6 +20,7 @@ import {
   SunIcon,
   MoonIcon,
   VideoCameraIcon,
+  ArrowUpTrayIcon,
 } from '@heroicons/react/24/outline';
 import NotificationIcon from './NotificationIcon';
 import { notificationService } from '../../services/notificationService';
@@ -67,6 +68,7 @@ const DashboardLayout = () => {
     { name: 'Mentor Allocation', href: '/admin/mentor-allocation', icon: UserGroupIcon },
     { name: 'Communication', href: '/admin/communication', icon: ChatBubbleLeftRightIcon, badge: unreadCount > 0 ? unreadCount : null },
     { name: 'Add People', href: '/admin/manage-mentors-mentees', icon: UsersIcon },
+    { name: 'Bulk Upload', href: '/admin/bulk-upload', icon: ArrowUpTrayIcon },
     { name: 'Video Calls', href: '/admin/video-calls', icon: VideoCameraIcon },
     { name: 'Reports', href: '/admin/analytics', icon: DocumentTextIcon },
   ];
@@ -82,8 +84,9 @@ const DashboardLayout = () => {
 
   const studentNavigation = [
     { name: 'Dashboard', href: '/student/dashboard', icon: ChartBarIcon },
-    { name: 'My Progress', href: '/student/progress', icon: AcademicCapIcon },
-    { name: 'Find Mentors', href: '/student/mentors', icon: UserGroupIcon },
+    { name: 'My Mentor', href: '/student/mentor', icon: UserGroupIcon },
+    { name: 'Skills', href: '/student/skills', icon: AcademicCapIcon },
+    { name: 'Video Calls', href: '/student/video-calls', icon: VideoCameraIcon },
     { name: 'Certificates', href: '/student/certificates', icon: DocumentTextIcon },
   ];
 

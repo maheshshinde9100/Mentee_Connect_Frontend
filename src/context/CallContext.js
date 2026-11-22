@@ -1,37 +1,38 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { createSignalingClient } from '../services/signalingClient';
 import { useWebRTC } from '../hooks/useWebRTC';
+import api from '../services/api';
+
 const makeRoomId = () => `room-${Date.now()}-${Math.floor(Math.random() * 100000)}`;
 
 const CallContext = createContext(null);
 
 export const CallProvider = ({ user, children }) => {
-  const [wsClient, setWsClient] = useState(null);
   const [incoming, setIncoming] = useState(null);
   const [activeRoom, setActiveRoom] = useState(null);
   const [minimized, setMinimized] = useState(false);
   const [currentCallId, setCurrentCallId] = useState(null);
   const [callStartedAt, setCallStartedAt] = useState(null);
+
+  const wsRef = useRef(null);
   const targetsRef = useRef([]);
   const incomingRef = useRef(null);
   const activeRoomRef = useRef(null);
+  const callIdRef = useRef(null);
   const startWithTargetsRef = useRef(null);
   const handleSignalRef = useRef(null);
   const leaveRef = useRef(null);
 
   const sendSignal = useCallback((payload) => {
-    if (wsClient && wsClient.ws && wsClient.ws.readyState === WebSocket.OPEN) {
-      wsClient.send(payload);
+    const client = wsRef.current;
+    if (client && client.ws && client.ws.readyState === WebSocket.OPEN) {
+      client.send(payload);
     }
-  }, [wsClient]);
+  }, []);
 
-  const { localStream, remoteStreams, startWithTargets, handleSignal, leave, ensureLocalStream } = useWebRTC({
-    sendSignal,
-    roomId: activeRoom,
-    selfId: user?.id,
-  });
+  const { localStream, remoteStreams, startWithTargets, handleSignal, leave, ensureLocalStream } =
+    useWebRTC({ sendSignal, selfId: user?.id });
 
-  // Keep refs in sync with state/callbacks
   useEffect(() => {
     activeRoomRef.current = activeRoom;
   }, [activeRoom]);
@@ -39,6 +40,10 @@ export const CallProvider = ({ user, children }) => {
   useEffect(() => {
     incomingRef.current = incoming;
   }, [incoming]);
+
+  useEffect(() => {
+    callIdRef.current = currentCallId;
+  }, [currentCallId]);
 
   useEffect(() => {
     startWithTargetsRef.current = startWithTargets;
@@ -52,218 +57,232 @@ export const CallProvider = ({ user, children }) => {
     leaveRef.current = leave;
   }, [leave]);
 
-  // Establish websocket connection when user is present
+  const endCallRecord = useCallback(() => {
+    const callId = callIdRef.current;
+    if (!callId) return;
+    api.post(`/video-calls/${callId}/end`).catch(() => {});
+  }, []);
+
+  const resetCallState = useCallback(() => {
+    if (leaveRef.current) {
+      leaveRef.current();
+    }
+    setActiveRoom(null);
+    activeRoomRef.current = null;
+    setMinimized(false);
+    setIncoming(null);
+    incomingRef.current = null;
+    targetsRef.current = [];
+    setCurrentCallId(null);
+    callIdRef.current = null;
+    setCallStartedAt(null);
+  }, []);
+
+  // WebSocket lifecycle
   useEffect(() => {
-    if (!user?.id) return;
-    
+    if (!user?.id) return undefined;
+
     let client = null;
     let reconnectTimeout = null;
     let isMounted = true;
     let isConnecting = false;
-    
+
+    const scheduleReconnect = () => {
+      if (reconnectTimeout) clearTimeout(reconnectTimeout);
+      reconnectTimeout = setTimeout(() => {
+        if (isMounted && !isConnecting) connect();
+      }, 3000);
+    };
+
     const connect = () => {
-      if (!isMounted || !user?.id || isConnecting) {
-        return;
-      }
-      
-      if (client?.ws && client.ws.readyState === WebSocket.OPEN) {
-        return;
-      }
-      
+      if (!isMounted || isConnecting) return;
+      if (client?.ws && client.ws.readyState === WebSocket.OPEN) return;
+
       isConnecting = true;
-      
+
       try {
         client = createSignalingClient(
           user.id,
           (msg) => {
-            if (!isMounted) return;
-            if (msg.type === 'call-invite' && msg.roomId) {
-              // Use ref to check current activeRoom value
-              if (!activeRoomRef.current) {
-                setIncoming({ roomId: msg.roomId, from: msg.from, title: msg.title || 'Mentor Call' });
-              }
-              return;
-            }
-            // Handle ready signal (when student accepts)
-            // Note: The mentor should already have created peer connections as initiators
-            // The mentee will handle the offer when it arrives, so we don't need to create peers here
-            if (msg.type === 'ready' && msg.roomId) {
-              const currentRoom = activeRoomRef.current;
-              if (currentRoom === msg.roomId) {
-                // Participant ready
-              }
-              return;
-            }
-            // Process WebRTC signaling for active room
+            if (!isMounted || !msg || !msg.type) return;
             const currentRoom = activeRoomRef.current;
+
+            if (msg.type === 'call-invite') {
+              if (!msg.roomId) return;
+              if (currentRoom || incomingRef.current) {
+                sendSignal({ type: 'busy', to: msg.from, roomId: msg.roomId });
+                return;
+              }
+              setIncoming({
+                roomId: msg.roomId,
+                from: msg.from,
+                title: msg.title || 'Video Call',
+                callId: msg.callId || null,
+              });
+              return;
+            }
+
+            if (msg.type === 'ready') {
+              if (currentRoom && msg.roomId === currentRoom && msg.from) {
+                if (!targetsRef.current.includes(msg.from)) {
+                  targetsRef.current = [...targetsRef.current, msg.from];
+                }
+                if (startWithTargetsRef.current) {
+                  startWithTargetsRef.current([msg.from], currentRoom).catch(() => {});
+                }
+              }
+              return;
+            }
+
+            if (msg.type === 'reject-call' || msg.type === 'busy') {
+              if (currentRoom && msg.roomId === currentRoom) {
+                if (msg.type === 'busy') {
+                  window.alert('The person you are calling is in another call right now.');
+                }
+                endCallRecord();
+                resetCallState();
+              }
+              return;
+            }
+
+            if (msg.type === 'end-call') {
+              if (currentRoom && msg.roomId === currentRoom) {
+                endCallRecord();
+                resetCallState();
+              }
+              return;
+            }
+
             if (currentRoom && msg.roomId === currentRoom && handleSignalRef.current) {
               handleSignalRef.current(msg);
-            } else if (msg.type === 'offer' && incomingRef.current && incomingRef.current.roomId === msg.roomId) {
-              if (handleSignalRef.current) {
-                handleSignalRef.current(msg);
-              }
-            } else if (msg.type === 'end-call' && currentRoom && msg.roomId === currentRoom) {
-              if (leaveRef.current) {
-                leaveRef.current();
-              }
-              setActiveRoom(null);
-              setMinimized(false);
-              targetsRef.current = [];
-              setCurrentCallId(null);
-              setCallStartedAt(null);
             }
           },
           () => {
             if (!isMounted) return;
             isConnecting = false;
-            setWsClient(client);
+            wsRef.current = client;
           },
           () => {
             if (!isMounted) return;
             isConnecting = false;
-            setWsClient(null);
-            reconnectTimeout = setTimeout(() => {
-              if (isMounted && user?.id && !isConnecting) {
-                connect();
-              }
-            }, 3000);
+            wsRef.current = null;
+            scheduleReconnect();
           }
         );
+        wsRef.current = client;
       } catch (error) {
         isConnecting = false;
-        // Retry after error
-        reconnectTimeout = setTimeout(() => {
-          if (isMounted && user?.id) {
-            connect();
-          }
-        }, 3000);
+        scheduleReconnect();
       }
     };
-    
+
     connect();
-    
+
     return () => {
       isMounted = false;
       isConnecting = false;
       if (reconnectTimeout) clearTimeout(reconnectTimeout);
       if (client?.ws) {
         try {
-          if (client.ws.readyState === WebSocket.OPEN || client.ws.readyState === WebSocket.CONNECTING) {
-            client.ws.close();
-          }
+          client.ws.close();
         } catch (e) {
-          console.error('Error closing WebSocket:', e);
+          // Ignore
         }
       }
+      wsRef.current = null;
     };
-  }, [user?.id]);
+  }, [user?.id, resetCallState, endCallRecord, sendSignal]);
 
-  const startCall = async (targetIds, title = 'Mentor Call') => {
+  const startCall = async (targetIds, title = 'Video Call') => {
     if (!targetIds || targetIds.length === 0) {
-      alert('Please select at least one mentee to start a call.');
+      window.alert('Select at least one person to call.');
       return;
     }
-    
-    // Check WebSocket connection state
-    const wsState = wsClient?.ws?.readyState;
-    if (!wsClient || !wsClient.ws || wsState !== WebSocket.OPEN) {
-      const stateMessages = {
-        [WebSocket.CONNECTING]: 'WebSocket is connecting...',
-        [WebSocket.CLOSING]: 'WebSocket is closing...',
-        [WebSocket.CLOSED]: 'WebSocket is closed',
-        [undefined]: 'WebSocket client not initialized'
-      };
-      const message = stateMessages[wsState] || 'WebSocket not connected';
-      alert(`Cannot start call: ${message}. Please wait a moment and try again.`);
+
+    const client = wsRef.current;
+    if (!client || !client.ws || client.ws.readyState !== WebSocket.OPEN) {
+      window.alert('Calling service is still connecting. Please try again in a moment.');
       return;
     }
-    
+
     const roomId = makeRoomId();
-    targetsRef.current = targetIds;
+    targetsRef.current = [...targetIds];
     setActiveRoom(roomId);
     activeRoomRef.current = roomId;
     setMinimized(false);
-    const startedAt = new Date();
-    setCallStartedAt(startedAt);
-    sendSignal({ type: 'call-invite', from: user?.id, targets: targetIds, roomId, title });
+    setCallStartedAt(new Date());
+    setIncoming(null);
+    incomingRef.current = null;
 
-    // Create backend record for mentor call history (only for mentors)
-    if (user?.role === 'MENTOR') {
-      try {
-        const { mentorService } = await import('../services/mentorService');
-        const response = await mentorService.startVideoCall(user.id, {
-          title,
-          menteeIds: targetIds,
-        });
-        if (response && response.data && response.data.id) {
-          setCurrentCallId(response.data.id);
-        }
-      } catch (err) {
-        // Handle error silently
-      }
+    let callId = null;
+    try {
+      const payload =
+        user?.role === 'MENTOR'
+          ? { title, menteeIds: targetIds }
+          : { title, mentorId: targetIds[0] };
+      const response = await api.post('/video-calls/start', payload);
+      callId = response.data?.id || null;
+    } catch (err) {
+      // Call history is best-effort; the live call can still proceed.
     }
 
-    // Wait a bit for invites to be sent before starting WebRTC
-    setTimeout(async () => {
-      // Use ref to ensure we call the latest startWithTargets
-      if (startWithTargetsRef.current) {
-        await startWithTargetsRef.current(targetIds);
-      }
-    }, 500);
+    setCurrentCallId(callId);
+    callIdRef.current = callId;
+
+    sendSignal({
+      type: 'call-invite',
+      from: user?.id,
+      targets: targetIds,
+      roomId,
+      title,
+      callId,
+    });
   };
 
   const acceptCall = async () => {
-    if (!incoming) return;
-    setActiveRoom(incoming.roomId);
-    setMinimized(false);
+    const call = incoming;
+    if (!call) return;
+
     setIncoming(null);
-    // Ensure local stream is ready
-    await ensureLocalStream();
-    // Send ready signal - mentor will send offer, mentee will handle it via handleSignal
-    sendSignal({ type: 'ready', to: incoming.from, from: user?.id, roomId: incoming.roomId });
-    // Don't create peer connection as initiator - wait for offer from mentor
-    // The offer will be handled by handleSignal when it arrives
+    incomingRef.current = null;
+    setActiveRoom(call.roomId);
+    activeRoomRef.current = call.roomId;
+    setMinimized(false);
+    targetsRef.current = call.from ? [call.from] : [];
+    setCurrentCallId(call.callId || null);
+    callIdRef.current = call.callId || null;
+    setCallStartedAt(new Date());
+
+    try {
+      await ensureLocalStream();
+    } catch (err) {
+      window.alert('Unable to access camera/microphone. Please allow permissions and try again.');
+      sendSignal({ type: 'reject-call', to: call.from, roomId: call.roomId });
+      resetCallState();
+      return;
+    }
+
+    sendSignal({ type: 'ready', to: call.from, from: user?.id, roomId: call.roomId });
   };
 
   const rejectCall = () => {
+    const call = incoming;
+    if (call) {
+      sendSignal({ type: 'reject-call', to: call.from, roomId: call.roomId });
+    }
     setIncoming(null);
+    incomingRef.current = null;
   };
 
   const endCall = () => {
-    // Notify remote participants that the call has ended
     const room = activeRoomRef.current;
-    if (room && targetsRef.current && targetsRef.current.length > 0) {
+    if (room) {
       targetsRef.current.forEach((targetId) => {
-        sendSignal({
-          type: 'end-call',
-          to: targetId,
-          from: user?.id,
-          roomId: room,
-        });
+        sendSignal({ type: 'end-call', to: targetId, roomId: room });
       });
     }
-
-    if (leaveRef.current) {
-      leaveRef.current();
-    } else {
-      leave();
-    }
-
-    // Persist video call end for mentor
-    if (user?.role === 'MENTOR' && currentCallId) {
-      import('../services/mentorService')
-        .then(({ mentorService }) => mentorService.endVideoCall(user.id, currentCallId))
-        .catch((err) => {
-          // Handle error silently
-        });
-    }
-
-    setActiveRoom(null);
-    activeRoomRef.current = null;
-    setMinimized(false);
-    targetsRef.current = [];
-    setCurrentCallId(null);
-    setCallStartedAt(null);
+    endCallRecord();
+    resetCallState();
   };
 
   const value = useMemo(
@@ -281,11 +300,22 @@ export const CallProvider = ({ user, children }) => {
       endCall,
       setMinimized,
     }),
-    [incoming, activeRoom, minimized, localStream, remoteStreams, currentCallId, callStartedAt, startCall, acceptCall, endCall]
+    [
+      incoming,
+      activeRoom,
+      minimized,
+      localStream,
+      remoteStreams,
+      currentCallId,
+      callStartedAt,
+      startCall,
+      acceptCall,
+      rejectCall,
+      endCall,
+    ]
   );
 
   return <CallContext.Provider value={value}>{children}</CallContext.Provider>;
 };
 
 export const useCall = () => useContext(CallContext);
-

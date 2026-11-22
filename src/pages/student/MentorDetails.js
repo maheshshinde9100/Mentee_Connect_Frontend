@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { studentService } from '../../services/api';
+import { VideoCameraIcon } from '@heroicons/react/24/outline';
+import studentService from '../../services/studentService';
+import { useCall } from '../../context/CallContext';
 
 const MentorDetails = () => {
   const [mentor, setMentor] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [calling, setCalling] = useState(false);
+  const { startCall } = useCall() || {};
 
   useEffect(() => {
     fetchMentorDetails();
@@ -12,18 +17,31 @@ const MentorDetails = () => {
   const fetchMentorDetails = async () => {
     try {
       setLoading(true);
-      const response = await studentService.getAssignedMentor();
+      const response = await studentService.getMyMentor();
       setMentor(response.data);
-    } catch (error) {
-      console.error('Error fetching mentor details:', error);
+      setError(null);
+    } catch (err) {
+      setError('Could not load your mentor details.');
+      setMentor(null);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleCallMentor = async () => {
+    if (!mentor?.id || !startCall) return;
+    try {
+      setCalling(true);
+      const name = [mentor.firstName, mentor.lastName].filter(Boolean).join(' ');
+      await startCall([mentor.id], `Call with ${name || 'mentor'}`);
+    } finally {
+      setCalling(false);
+    }
+  };
+
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-48">
+      <div className="flex h-48 items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-brand-600 dark:border-slate-700 dark:border-t-brand-400" />
       </div>
     );
@@ -32,66 +50,54 @@ const MentorDetails = () => {
   if (!mentor) {
     return (
       <div className="alert-warn">
-        <svg className="h-5 w-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-        </svg>
-        <p className="text-sm">
-          No mentor has been assigned to you yet.
-        </p>
+        <p className="text-sm">{error || 'No mentor has been assigned to you yet.'}</p>
       </div>
     );
   }
 
+  const fullName = [mentor.firstName, mentor.lastName].filter(Boolean).join(' ') || 'Mentor';
+
   return (
     <div className="card">
-      <div className="card-pad border-b border-gray-200 dark:border-slate-700/70">
-        <h3 className="section-title">Mentor Information</h3>
-        <p className="page-subtitle">Details about your assigned mentor.</p>
+      <div className="card-pad flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 dark:border-slate-700/70">
+        <div>
+          <h3 className="section-title">Mentor Information</h3>
+          <p className="page-subtitle">Details about your assigned mentor.</p>
+        </div>
+        <button
+          type="button"
+          onClick={handleCallMentor}
+          disabled={!mentor.id || calling}
+          className="btn-primary inline-flex items-center gap-2"
+        >
+          <VideoCameraIcon className="h-5 w-5" />
+          {calling ? 'Starting...' : 'Start video call'}
+        </button>
       </div>
       <dl className="divide-y divide-gray-100 px-5 dark:divide-slate-700/60 sm:px-6">
         <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
           <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">Full name</dt>
-          <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{mentor.name}</dd>
+          <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:col-span-2 sm:mt-0">{fullName}</dd>
         </div>
         <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
           <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">Email address</dt>
-          <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{mentor.email}</dd>
+          <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:col-span-2 sm:mt-0">{mentor.email || 'Not specified'}</dd>
         </div>
         <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
-          <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">Expertise</dt>
-          <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-            {mentor.expertise?.join(', ') || 'Not specified'}
-          </dd>
+          <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">Phone number</dt>
+          <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:col-span-2 sm:mt-0">{mentor.phoneNumber || 'Not specified'}</dd>
         </div>
         <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
-          <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">Experience</dt>
-          <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-            {mentor.experience || 'Not specified'}
-          </dd>
+          <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">Department</dt>
+          <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:col-span-2 sm:mt-0">{mentor.department || 'Not specified'}</dd>
         </div>
         <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
-          <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">Office hours</dt>
-          <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-            {mentor.officeHours || 'Not specified'}
-          </dd>
-        </div>
-        <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
-          <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">Contact information</dt>
-          <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-            <ul className="divide-y divide-gray-200 rounded-xl border border-gray-200 dark:divide-slate-700 dark:border-slate-700">
-              {mentor.contactMethods?.map((contact, index) => (
-                <li key={index} className="flex items-center justify-between py-3 pl-3 pr-4 text-sm">
-                  <div className="flex w-0 flex-1 items-center">
-                    <span className="ml-2 w-0 flex-1 truncate">{contact.type}: {contact.value}</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </dd>
+          <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">Specialization</dt>
+          <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:col-span-2 sm:mt-0">{mentor.specialization || 'Not specified'}</dd>
         </div>
       </dl>
     </div>
   );
 };
 
-export default MentorDetails; 
+export default MentorDetails;

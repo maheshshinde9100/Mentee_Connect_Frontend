@@ -4,22 +4,29 @@ import {
   AcademicCapIcon,
   UserGroupIcon,
   ClockIcon,
-  CheckCircleIcon,
   ChartBarIcon,
-  CalendarIcon,
-  ClipboardDocumentListIcon,
   BookOpenIcon,
+  VideoCameraIcon,
 } from '@heroicons/react/24/outline';
 import studentService from '../../services/studentService';
+import { useCall } from '../../context/CallContext';
 
 import CertificateManagement from '../../components/CertificateManagement';
 
 const StudentDashboard = () => {
-  const { user, isAuthenticated } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
   const [profile, setProfile] = useState(null);
   const [mentor, setMentor] = useState(null);
-  const [error, setError] = useState(null);
+  const { startCall } = useCall() || {};
+
+  const handleCallMentor = () => {
+    if (!mentor?.id || !startCall) {
+      window.alert('Your mentor is not available for a call yet.');
+      return;
+    }
+    const name = [mentor.firstName, mentor.lastName].filter(Boolean).join(' ');
+    startCall([mentor.id], `Call with ${name || 'mentor'}`);
+  };
   
   useEffect(() => {
     if (user && user.id) {
@@ -33,7 +40,6 @@ const StudentDashboard = () => {
       const response = await studentService.getCurrentProfile();
       setProfile(response.data);
     } catch (err) {
-      setError('Failed to fetch profile');
       console.error('Error fetching profile:', err);
     }
   };
@@ -43,7 +49,6 @@ const StudentDashboard = () => {
       const response = await studentService.getMyMentor();
       setMentor(response.data);
     } catch (err) {
-      setError('Failed to fetch mentor details');
       console.error('Error fetching mentor:', err);
     }
   };
@@ -146,7 +151,17 @@ const StudentDashboard = () => {
       {mentor && (
         <div className="px-4 sm:px-6 md:px-8 mb-6">
           <div className="card card-pad">
-            <h2 className="section-title mb-4">Mentor Information</h2>
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <h2 className="section-title">Mentor Information</h2>
+              <button
+                type="button"
+                onClick={handleCallMentor}
+                className="btn-primary inline-flex items-center gap-2"
+              >
+                <VideoCameraIcon className="h-5 w-5" />
+                Start video call
+              </button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <p className="text-sm text-gray-500 dark:text-slate-400">

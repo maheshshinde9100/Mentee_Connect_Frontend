@@ -12,15 +12,8 @@ const BulkUpload = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Validate file type
-      const validTypes = [
-        'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'text/csv'
-      ];
-      
-      if (!validTypes.includes(file.type) && !file.name.match(/\.(xlsx|xls|csv)$/)) {
-        setError('Please upload a valid Excel file (.xlsx, .xls) or CSV file');
+      if (!file.name.toLowerCase().endsWith('.csv')) {
+        setError('Please upload a CSV file (.csv). In Excel, use File → Save As → CSV.');
         setSelectedFile(null);
         return;
       }
@@ -72,13 +65,13 @@ const BulkUpload = () => {
     let csvContent = '';
     
     if (type === 'mentors') {
-      csvContent = `username,email,password,firstName,lastName,phoneNumber,mentorId,department,specialization,designation,yearsOfExperience,maxStudents
-john.doe,john.doe@example.com,password123,John,Doe,1234567890,M001,Computer Science,AI/ML,Professor,10,5
-jane.smith,jane.smith@example.com,password123,Jane,Smith,0987654321,M002,Electronics,IoT,Associate Professor,8,4`;
+      csvContent = `firstName,lastName,email,phoneNumber,department,specialization,designation,yearsOfExperience,maxStudents
+John,Doe,john.doe@example.com,1234567890,Computer Science,AI/ML,Professor,10,5
+Jane,Smith,jane.smith@example.com,0987654321,Electronics,IoT,Associate Professor,8,4`;
     } else {
-      csvContent = `username,email,password,firstName,lastName,phoneNumber,studentId,department,semester,rollNumber,batch
-alice.student,alice@example.com,password123,Alice,Johnson,1112223333,S001,Computer Science,6,CS2021001,2021
-bob.student,bob@example.com,password123,Bob,Williams,4445556666,S002,Computer Science,6,CS2021002,2021`;
+      csvContent = `firstName,lastName,email,phoneNumber,department,course,batch,semester,attendance,cgpa
+Alice,Johnson,alice@example.com,1112223333,Computer Science,B.Tech CS,2021-2025,6,92.5,8.6
+Bob,Williams,bob@example.com,4445556666,Computer Science,B.Tech CS,2021-2025,6,88.0,8.1`;
     }
 
     // Create blob and download
@@ -97,7 +90,7 @@ bob.student,bob@example.com,password123,Bob,Williams,4445556666,S002,Computer Sc
     <div className="max-w-6xl mx-auto p-6">
       <div className="mb-8">
         <h1 className="page-title mb-2">Bulk Upload</h1>
-        <p className="page-subtitle">Upload Excel or CSV files to add multiple mentors or mentees at once</p>
+        <p className="page-subtitle">Upload a CSV file to add multiple mentors or mentees at once</p>
       </div>
 
       {/* Upload Type Selection */}
@@ -123,7 +116,7 @@ bob.student,bob@example.com,password123,Bob,Williams,4445556666,S002,Computer Sc
             </div>
             <h3 className="text-center text-lg font-semibold">Upload Mentors</h3>
             <p className="muted mt-2 text-center">
-              Add multiple mentors from Excel/CSV file
+              Add multiple mentors from a CSV file
             </p>
           </button>
 
@@ -146,7 +139,7 @@ bob.student,bob@example.com,password123,Bob,Williams,4445556666,S002,Computer Sc
             </div>
             <h3 className="text-center text-lg font-semibold">Upload Mentees</h3>
             <p className="muted mt-2 text-center">
-              Add multiple students/mentees from Excel/CSV file
+              Add multiple students/mentees from a CSV file
             </p>
           </button>
         </div>
@@ -173,19 +166,20 @@ bob.student,bob@example.com,password123,Bob,Williams,4445556666,S002,Computer Sc
               <p className="mb-2 font-semibold">Required Fields for {uploadType === 'mentors' ? 'Mentors' : 'Mentees'}:</p>
               {uploadType === 'mentors' ? (
                 <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li>username, email, password</li>
-                  <li>firstName, lastName, phoneNumber</li>
-                  <li>mentorId, department, specialization</li>
-                  <li>designation, yearsOfExperience, maxStudents</li>
+                  <li>Required: firstName, lastName, email</li>
+                  <li>Optional: phoneNumber, department, specialization</li>
+                  <li>Optional: designation, yearsOfExperience, maxStudents</li>
+                  <li>username and mentorId are generated automatically</li>
                 </ul>
               ) : (
                 <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li>username, email, password</li>
-                  <li>firstName, lastName, phoneNumber</li>
-                  <li>studentId, department, semester</li>
-                  <li>rollNumber, batch</li>
+                  <li>Required: firstName, lastName, email</li>
+                  <li>Optional: phoneNumber, department, course, batch</li>
+                  <li>Optional: semester, attendance, cgpa</li>
+                  <li>username and studentId are generated automatically</li>
                 </ul>
               )}
+              <p className="mt-2">New accounts use the default password <span className="font-semibold">Mentee@123</span>.</p>
             </div>
           </div>
         </div>
@@ -206,14 +200,14 @@ bob.student,bob@example.com,password123,Bob,Williams,4445556666,S002,Computer Sc
             <input
               id="file-upload"
               type="file"
-              accept=".xlsx,.xls,.csv"
+              accept=".csv"
               onChange={handleFileChange}
               className="hidden"
             />
           </label>
           
           <p className="muted mt-2 text-sm">
-            Excel (.xlsx, .xls) or CSV files only
+            CSV files only (.csv)
           </p>
         </div>
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { studentService } from '../../services/api';
+import studentService from '../../services/studentService';
 
 const SkillsManagement = () => {
   const [skills, setSkills] = useState([]);
@@ -18,7 +18,7 @@ const SkillsManagement = () => {
     try {
       setLoading(true);
       const response = await studentService.getSkills();
-      setSkills(response.data);
+      setSkills(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Error fetching skills:', error);
     } finally {
@@ -35,6 +35,19 @@ const SkillsManagement = () => {
       fetchSkills();
     } catch (error) {
       console.error('Error adding skill:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteSkill = async (skillId) => {
+    if (!window.confirm('Remove this skill from your profile?')) return;
+    try {
+      setLoading(true);
+      await studentService.deleteSkill(skillId);
+      setSkills((prev) => prev.filter((skill) => skill.id !== skillId));
+    } catch (error) {
+      console.error('Error deleting skill:', error);
     } finally {
       setLoading(false);
     }
@@ -142,14 +155,17 @@ const SkillsManagement = () => {
                   <h4 className="truncate text-sm font-medium text-brand-600 dark:text-brand-400">{skill.name}</h4>
                   <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">{skill.description}</p>
                 </div>
-                <div className="ml-4">
-                  <span
-                    className={`${getProficiencyColor(
-                      skill.proficiency
-                    )}`}
-                  >
-                    {skill.proficiency.toLowerCase()}
+                <div className="ml-4 flex items-center gap-3">
+                  <span className={`${getProficiencyColor(skill.proficiency)}`}>
+                    {(skill.proficiency || 'BEGINNER').toLowerCase()}
                   </span>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteSkill(skill.id)}
+                    className="text-xs font-medium text-red-600 hover:text-red-700 dark:text-red-400"
+                  >
+                    Remove
+                  </button>
                 </div>
               </div>
             </li>

@@ -18,11 +18,19 @@ export const studentService = {
   }),
   getMyCertificates: () => api.get('/students/me/certificates'),
   deleteCertificate: (certificateId) => api.delete(`/students/me/certificates/${certificateId}`),
-  getCertificateFile: (filename) => api.get(`/certificates/${filename}`),
+  getCertificateFile: (certificateUrl) => {
+    const filename = String(certificateUrl || '').split('/').filter(Boolean).pop() || '';
+    return api.get(`/certificates/${filename}`, { responseType: 'blob' });
+  },
+
+  // Skills
+  getSkills: () => api.get('/students/me/skills'),
+  addSkill: (skill) => api.post('/students/me/skills', skill),
+  deleteSkill: (skillId) => api.delete(`/students/me/skills/${skillId}`),
 
   // Progress Management
-  updateProgress: (id, progressData) =>
-    api.put(`/students/${id}/progress`, progressData),
+  updateProgress: (id, { attendance, cgpa }) =>
+    api.put(`/students/${id}/progress`, null, { params: { attendance, cgpa } }),
 
   // Batch Related
   getAllStudents: () => api.get('/students'),

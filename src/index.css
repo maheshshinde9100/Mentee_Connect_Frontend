@@ -18,6 +18,14 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     @apply bg-gray-50 text-gray-900 dark:bg-slate-900 dark:text-slate-100;
+    background-image: radial-gradient(60rem 32rem at 8% -8%, rgb(112 101 240 / 0.08), transparent 60%),
+      radial-gradient(48rem 28rem at 100% 0%, rgb(138 118 238 / 0.06), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  .dark body {
+    background-image: radial-gradient(60rem 32rem at 8% -8%, rgb(112 101 240 / 0.12), transparent 60%),
+      radial-gradient(48rem 28rem at 100% 0%, rgb(122 94 227 / 0.08), transparent 60%);
   }
 
   h1,
@@ -93,7 +101,12 @@
   }
 
   .page-title {
-    @apply text-2xl font-semibold text-gray-900 dark:text-white sm:text-3xl;
+    @apply text-2xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-3xl;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-brand-600 via-brand-500 to-purple-500 bg-clip-text text-transparent
+      dark:from-brand-300 dark:via-brand-400 dark:to-purple-300;
   }
 
   .page-subtitle {
@@ -121,7 +134,9 @@
   }
 
   .btn-primary {
-    @apply btn bg-brand-600 text-white shadow-sm hover:bg-brand-700 active:bg-brand-800;
+    @apply btn bg-gradient-to-r from-brand-600 to-purple-600 text-white shadow-sm
+      hover:from-brand-700 hover:to-purple-700 hover:shadow-md
+      active:from-brand-800 active:to-purple-800;
   }
 
   .btn-secondary {

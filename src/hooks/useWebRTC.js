@@ -1,36 +1,66 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 
-const iceServers = [{ urls: 'stun:stun.l.google.com:19302' }];
+const iceServers = [
+  { urls: 'stun:stun.l.google.com:19302' },
+  { urls: 'stun:stun1.l.google.com:19302' },
+  {
+    urls: 'turn:openrelay.metered.ca:80',
+    username: 'openrelayproject',
+    credential: 'openrelayproject',
+  },
+  {
+    urls: 'turn:openrelay.metered.ca:443',
+    username: 'openrelayproject',
+    credential: 'openrelayproject',
+  },
+  {
+    urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+    username: 'openrelayproject',
+    credential: 'openrelayproject',
+  },
+];
 
-export const useWebRTC = ({ sendSignal, roomId, selfId }) => {
+export const useWebRTC = ({ sendSignal, selfId }) => {
   const peerRef = useRef({});
   const localStreamRef = useRef(null);
-  const remoteStreamsMapRef = useRef({}); // Map to collect tracks by peer ID
+  const remoteStreamsMapRef = useRef({});
+  const pendingCandidatesRef = useRef({});
+  const roomIdRef = useRef(null);
   const [localStream, setLocalStream] = useState(null);
   const [remoteStreams, setRemoteStreams] = useState({});
-  
 
   const ensureLocalStream = useCallback(async () => {
     if (localStreamRef.current) {
       return localStreamRef.current;
     }
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      localStreamRef.current = stream;
-      setLocalStream(stream);
-      return stream;
-    } catch (error) {
-      throw error;
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    localStreamRef.current = stream;
+    setLocalStream(stream);
+    return stream;
+  }, []);
+
+  const flushPendingCandidates = useCallback(async (remoteId) => {
+    const pc = peerRef.current[remoteId];
+    const pending = pendingCandidatesRef.current[remoteId] || [];
+    if (!pc || !pc.remoteDescription) return;
+    pendingCandidatesRef.current[remoteId] = [];
+    for (const candidate of pending) {
+      try {
+        await pc.addIceCandidate(candidate);
+      } catch (err) {
+        // Ignore a candidate that can no longer be applied
+      }
     }
   }, []);
 
   const createPeer = useCallback(
-    async (remoteId, isInitiator = false) => {
+    async (remoteId, isInitiator = false, room = roomIdRef.current) => {
       if (peerRef.current[remoteId]) {
         return peerRef.current[remoteId];
       }
       const pc = new RTCPeerConnection({ iceServers });
       peerRef.current[remoteId] = pc;
+      pendingCandidatesRef.current[remoteId] = [];
 
       const stream = await ensureLocalStream();
       stream.getTracks().forEach((track) => {
@@ -38,151 +68,123 @@ export const useWebRTC = ({ sendSignal, roomId, selfId }) => {
       });
 
       pc.ontrack = (event) => {
-        
-        let remoteStream = null;
-        
+        let remoteStream = remoteStreamsMapRef.current[remoteId];
         if (event.streams && event.streams.length > 0) {
           remoteStream = event.streams[0];
         } else if (event.track) {
-          // Fallback: create or get existing stream for this peer
-          if (!remoteStreamsMapRef.current[remoteId]) {
+          if (!remoteStream) {
             remoteStream = new MediaStream();
-            remoteStreamsMapRef.current[remoteId] = remoteStream;
-          } else {
-            remoteStream = remoteStreamsMapRef.current[remoteId];
           }
-          if (!remoteStream.getTracks().some(t => t.id === event.track.id)) {
+          if (!remoteStream.getTracks().some((t) => t.id === event.track.id)) {
             remoteStream.addTrack(event.track);
           }
         }
-        
         if (remoteStream) {
-          setRemoteStreams((prev) => {
-            return { ...prev, [remoteId]: remoteStream };
-          });
-        }
-      };
-      
-      pc.onconnectionstatechange = () => {
-        if (pc.connectionState === 'failed') {
-          // Connection failed - handle cleanup
+          remoteStreamsMapRef.current[remoteId] = remoteStream;
+          setRemoteStreams((prev) => ({ ...prev, [remoteId]: remoteStream }));
         }
       };
 
       pc.onicecandidate = (event) => {
         if (event.candidate) {
-            sendSignal({
+          sendSignal({
             type: 'candidate',
             to: remoteId,
             from: selfId,
-            roomId: roomId,
+            roomId: room,
             candidate: event.candidate,
           });
         }
       };
 
-      pc.oniceconnectionstatechange = () => {
-        if (pc.iceConnectionState === 'connected' || pc.iceConnectionState === 'completed') {
-          setTimeout(() => {
-            const receivers = pc.getReceivers();
-            const tracks = receivers.map(r => r.track).filter(t => t && t.readyState === 'live');
-            
-            if (tracks.length > 0) {
-              setRemoteStreams((prev) => {
-                const existingStream = prev[remoteId];
-                const existingTrackCount = existingStream ? existingStream.getTracks().length : 0;
-                
-                if (!existingStream || existingTrackCount < tracks.length) {
-                  const remoteStream = new MediaStream(tracks);
-                  return { ...prev, [remoteId]: remoteStream };
-                } else {
-                  return prev;
-                }
-              });
-            }
-          }, 1000);
+      pc.onconnectionstatechange = () => {
+        if (pc.connectionState === 'failed' || pc.connectionState === 'closed') {
+          const current = remoteStreamsMapRef.current[remoteId];
+          if (current) {
+            current.getTracks().forEach((track) => track.stop());
+            delete remoteStreamsMapRef.current[remoteId];
+            setRemoteStreams((prev) => {
+              const next = { ...prev };
+              delete next[remoteId];
+              return next;
+            });
+          }
         }
       };
 
       if (isInitiator) {
-        try {
-          const offer = await pc.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: true });
-          await pc.setLocalDescription(offer);
-          sendSignal({ type: 'offer', to: remoteId, from: selfId, roomId: roomId, sdp: offer });
-        } catch (error) {
-          // Handle offer creation error
-        }
+        const offer = await pc.createOffer({
+          offerToReceiveAudio: true,
+          offerToReceiveVideo: true,
+        });
+        await pc.setLocalDescription(offer);
+        sendSignal({ type: 'offer', to: remoteId, from: selfId, roomId: room, sdp: offer });
       }
 
       return pc;
     },
-    [ensureLocalStream, roomId, selfId, sendSignal]
+    [ensureLocalStream, selfId, sendSignal]
   );
 
   const handleSignal = useCallback(
     async (message) => {
       const { type, from, sdp, candidate, roomId: messageRoomId } = message;
       if (!from) return;
-      
-      // Use roomId from message if available, otherwise fall back to roomId from props
-      const effectiveRoomId = messageRoomId || roomId;
+
+      if (messageRoomId) {
+        roomIdRef.current = messageRoomId;
+      }
 
       let pc = peerRef.current[from];
-      
-      // For offer, create peer connection if it doesn't exist (as non-initiator)
+
       if (type === 'offer' && !pc) {
-        pc = await createPeer(from, false);
+        pc = await createPeer(from, false, messageRoomId || roomIdRef.current);
       }
-      
+
       if (!pc && (type === 'answer' || type === 'candidate')) {
-        for (let i = 0; i < 20; i++) {
-          await new Promise(resolve => setTimeout(resolve, 100));
+        for (let i = 0; i < 20; i += 1) {
+          await new Promise((resolve) => setTimeout(resolve, 100));
           pc = peerRef.current[from];
           if (pc) break;
         }
-        if (!pc) {
-          return;
-        }
+        if (!pc) return;
       }
 
-      if (!pc) {
-        return;
-      }
+      if (!pc) return;
 
       switch (type) {
         case 'offer': {
           await pc.setRemoteDescription(new RTCSessionDescription(sdp));
+          await flushPendingCandidates(from);
           const answer = await pc.createAnswer();
           await pc.setLocalDescription(answer);
-          sendSignal({ type: 'answer', to: from, from: selfId, roomId: effectiveRoomId, sdp: answer });
+          sendSignal({
+            type: 'answer',
+            to: from,
+            from: selfId,
+            roomId: messageRoomId || roomIdRef.current,
+            sdp: answer,
+          });
           break;
         }
         case 'answer': {
-          const currentState = pc.signalingState;
-          if (currentState === 'have-local-offer' || currentState === 'stable') {
-            try {
-              await pc.setRemoteDescription(new RTCSessionDescription(sdp));
-            } catch (err) {
-              // Handle error silently
-            }
+          if (pc.signalingState === 'have-local-offer') {
+            await pc.setRemoteDescription(new RTCSessionDescription(sdp));
+            await flushPendingCandidates(from);
           }
           break;
         }
         case 'candidate': {
-          if (candidate) {
-            try {
-              await pc.addIceCandidate(new RTCIceCandidate(candidate));
-            } catch (err) {
-              if (err.name === 'InvalidStateError' || err.name === 'OperationError') {
-                setTimeout(async () => {
-                  try {
-                    await pc.addIceCandidate(new RTCIceCandidate(candidate));
-                  } catch (retryErr) {
-                    // Handle retry error silently
-                  }
-                }, 500);
-              }
-            }
+          if (!candidate) break;
+          if (!pc.remoteDescription) {
+            pendingCandidatesRef.current[from] = pendingCandidatesRef.current[from] || [];
+            pendingCandidatesRef.current[from].push(new RTCIceCandidate(candidate));
+            break;
+          }
+          try {
+            await pc.addIceCandidate(new RTCIceCandidate(candidate));
+          } catch (err) {
+            // Ignore candidates arriving after the connection closed
           }
           break;
         }
@@ -190,28 +192,31 @@ export const useWebRTC = ({ sendSignal, roomId, selfId }) => {
           break;
       }
     },
-    [createPeer, roomId, selfId, sendSignal]
+    [createPeer, flushPendingCandidates, selfId, sendSignal]
   );
 
   const startWithTargets = useCallback(
-    async (targetIds = []) => {
+    async (targetIds = [], room = roomIdRef.current) => {
+      roomIdRef.current = room;
       await ensureLocalStream();
-      await Promise.all(targetIds.map((id) => createPeer(id, true)));
+      await Promise.all(targetIds.map((id) => createPeer(id, true, room)));
     },
     [createPeer, ensureLocalStream]
   );
 
   const leave = useCallback(() => {
-    Object.values(peerRef.current).forEach((pc) => pc.close());
-    peerRef.current = {};
-    remoteStreamsMapRef.current = {}; // Clear the streams map
-    // Use functional update to avoid dependency on remoteStreams
-    setRemoteStreams((prev) => {
-      Object.values(prev).forEach((stream) =>
-        stream.getTracks().forEach((t) => t.stop())
-      );
-      return {};
+    Object.values(peerRef.current).forEach((pc) => {
+      try {
+        pc.close();
+      } catch (e) {
+        // Ignore
+      }
     });
+    peerRef.current = {};
+    remoteStreamsMapRef.current = {};
+    pendingCandidatesRef.current = {};
+    roomIdRef.current = null;
+    setRemoteStreams({});
     if (localStreamRef.current) {
       localStreamRef.current.getTracks().forEach((t) => t.stop());
       localStreamRef.current = null;
@@ -219,9 +224,7 @@ export const useWebRTC = ({ sendSignal, roomId, selfId }) => {
     }
   }, []);
 
-  useEffect(() => {
-    return () => leave();
-  }, [leave]);
+  useEffect(() => () => leave(), [leave]);
 
   return {
     localStream,
@@ -234,4 +237,3 @@ export const useWebRTC = ({ sendSignal, roomId, selfId }) => {
 };
 
 export default useWebRTC;
-
